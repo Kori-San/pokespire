@@ -1,6 +1,8 @@
 # Pokespire — Agent Handoff
 
-> This file is a pointer for any AI agent (or human) picking up Pokespire mid-flight. **The full plan lives at `~/.claude/plans/cosmic-floating-anchor.md`** — read it top to bottom before doing anything. This file is a one-page summary so you don't get lost if you found the repo first.
+> This file is a pointer for any AI agent (or human) picking up Pokespire mid-flight. **The full plan lives at [`PLAN.md`](PLAN.md) in the repo root** — read it top to bottom before doing anything. This file is a one-page summary so you don't get lost if you found the repo first.
+>
+> **New machine? Resuming from another computer?** Just `git pull` and read `PLAN.md` + `HANDOFF.md`. If you want plan mode to treat `PLAN.md` as its working plan, ask the agent to load it at the start of the session — Claude's plan mode otherwise creates a fresh plan file each time.
 
 ## What this project is
 
@@ -10,7 +12,7 @@
 
 | File | Purpose |
 | --- | --- |
-| `~/.claude/plans/cosmic-floating-anchor.md` | **THE PLAN.** Tech stack, folder layout, data shapes, milestones, verification plan, legal notes. Start here. |
+| [`PLAN.md`](PLAN.md) | **THE PLAN.** Tech stack, folder layout, data shapes, milestones, verification plan, legal notes. Start here. |
 | `design-reference/chats/chat1.md` | Full chat with the design tool that shows how the user arrived at the current design — read for tone and intent. |
 | `design-reference/project/Pokespire.html` | Host file for the visual prototype (screen dimensions). |
 | `design-reference/project/src/data.js` | Palette tokens (`PAL`), formulas, sample cards. Port palette to `src/styles/tokens.css`. |
@@ -36,7 +38,7 @@
 ## Suggested next-agent first turn
 
 1. Enter plan mode (the user typically triggers this themselves).
-2. Read the full plan at `~/.claude/plans/cosmic-floating-anchor.md`.
+2. Read the full plan at [`PLAN.md`](PLAN.md).
 3. Skim `design-reference/chats/chat1.md` and `design-reference/project/src/combat.jsx`.
 4. Confirm with the user whether the three pre-MVP additions reshuffle milestones or just expand M3/M5.
 5. Resolve the **stat-based damage formula** and **evolution trigger** open questions before starting M2.
