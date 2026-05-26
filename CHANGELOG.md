@@ -16,3 +16,5 @@ This project uses an epoch-based roadmap (see [`TODO.md`](TODO.md)); versions ar
   - Internationalization via `react-i18next` with French and English locales, surfaced as a globe button opening a flag dropdown (UK / France).
   - TitleScreen with GBA-era chrome and a New Game button.
   - Documentation: `rules/` (technical standards), `wiki/` (game design), numbered `planning/` plans, and `CLAUDE.md` (agent working agreement).
+- **Combat vertical slice** (in progress)
+  - Shared domain types: `PokeType` (18 types), base stats, growth rates, statuses, card/effect shapes, and combat state/actions.

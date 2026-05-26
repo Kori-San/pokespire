@@ -19,7 +19,6 @@ Legend: `[ ]` todo · `[~]` in progress
 
 ### Combat vertical slice
 
-- [ ] Type system: 18 types + `PokeType` union
 - [ ] `typeChart.ts` (18×18 matrix) + tests
 - [ ] `CardDef` + `Effect` shapes; `effects.ts` registry
 - [ ] ~15 starter cards incl. ORB + 1 weather card (`cards.ts`)
