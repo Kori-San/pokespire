@@ -27,7 +27,7 @@ the core decision. Local saves (IndexedDB), PWA, "play anywhere" like Pokerogue.
 
 ### Hooks
 
-- Husky `pre-commit` runs **lint-staged (Prettier + ESLint)** then the **full Vitest suite**. Both must pass. No pre-push hook.
+- Husky `pre-commit` runs **lint-staged (Prettier + ESLint)**, then **`tsc` typecheck**, then the **full Vitest suite**. All must pass. No pre-push hook.
 
 ### Files & docs
 
@@ -43,7 +43,8 @@ the core decision. Local saves (IndexedDB), PWA, "play anywhere" like Pokerogue.
 
 ## Build / test commands
 
-- `npm run dev` — dev server. `npm run build` — typecheck + production build.
+- `npm run dev` — app dev server (:5173). `npm run storybook` — component gallery (:6006). `npm run dev:all` — both at once (labeled).
+- `npm run build` — typecheck + production build. `npm run typecheck` — `tsc` only.
 - `npm test` — Vitest once. `npm run lint` — ESLint. `npm run format` — Prettier.
 
 ## Roadmap

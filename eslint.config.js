@@ -3,12 +3,18 @@ import globals from 'globals';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import tseslint from 'typescript-eslint';
+import storybook from 'eslint-plugin-storybook';
+import vitest from '@vitest/eslint-plugin';
 import prettier from 'eslint-config-prettier';
 
 export default tseslint.config(
-  { ignores: ['dist', 'dev-dist', 'coverage'] },
+  { ignores: ['dist', 'dev-dist', 'coverage', 'storybook-static'] },
   {
-    extends: [js.configs.recommended, ...tseslint.configs.recommendedTypeChecked],
+    extends: [
+      js.configs.recommended,
+      ...tseslint.configs.strictTypeChecked,
+      ...tseslint.configs.stylisticTypeChecked,
+    ],
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
       ecmaVersion: 2022,
@@ -30,10 +36,13 @@ export default tseslint.config(
   },
   {
     files: ['**/*.{test,spec}.{ts,tsx}', 'src/test/**'],
+    plugins: { vitest },
     rules: {
+      ...vitest.configs.recommended.rules,
       '@typescript-eslint/no-non-null-assertion': 'off',
       '@typescript-eslint/unbound-method': 'off',
     },
   },
+  ...storybook.configs['flat/recommended'],
   prettier,
 );

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SUPPORTED_LANGUAGES, type Language } from '@/i18n';
+import { cx } from '@/ui/cx';
 import styles from './LanguageToggle.module.css';
 
 const FLAGS: Record<Language, { label: string; Flag: () => ReactElement }> = {
@@ -43,7 +44,9 @@ export function LanguageToggle() {
         aria-label={t('common.language')}
         aria-haspopup="menu"
         aria-expanded={open}
-        onClick={() => setOpen((o) => !o)}
+        onClick={() => {
+          setOpen((o) => !o);
+        }}
       >
         <Globe />
       </button>
@@ -58,8 +61,10 @@ export function LanguageToggle() {
                   type="button"
                   role="menuitemradio"
                   aria-checked={lng === current}
-                  className={lng === current ? `${styles.item} ${styles.active}` : styles.item}
-                  onClick={() => choose(lng)}
+                  className={cx(styles.item, lng === current && styles.active)}
+                  onClick={() => {
+                    choose(lng);
+                  }}
                 >
                   <span className={styles.flag}>
                     <Flag />

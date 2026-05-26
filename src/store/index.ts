@@ -9,5 +9,7 @@ interface UIState {
 
 export const useUIStore = create<UIState>((set) => ({
   screen: 'title',
-  setScreen: (screen) => set({ screen }),
+  setScreen: (screen) => {
+    set({ screen });
+  },
 }));

@@ -8,7 +8,7 @@
 
 ## Hooks (Husky)
 
-- **pre-commit** runs `lint-staged` (Prettier + ESLint on staged files) **and** the full Vitest suite (`npm test`). Both must pass. No pre-push hook.
+- **pre-commit** runs `lint-staged` (Prettier + ESLint on staged files), then `tsc` typecheck (`npm run typecheck`), then the full Vitest suite (`npm test`). All must pass. No pre-push hook.
 - Do not bypass hooks (`--no-verify`) unless explicitly authorized — fix the underlying issue.
 
 ## Branches

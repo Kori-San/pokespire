@@ -10,6 +10,7 @@ node_modules
 dist
 dev-dist
 coverage
+storybook-static
 *.tsbuildinfo
 
 # Editor / OS

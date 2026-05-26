@@ -16,6 +16,12 @@ This project uses an epoch-based roadmap (see [`TODO.md`](TODO.md)); versions ar
   - Internationalization via `react-i18next` with French and English locales, surfaced as a globe button opening a flag dropdown (UK / France).
   - TitleScreen with GBA-era chrome and a New Game button.
   - Documentation: `rules/` (technical standards), `wiki/` (game design), numbered `planning/` plans, and `CLAUDE.md` (agent working agreement).
+- **Developer tooling**
+  - Storybook 10 (React + Vite) with a11y addon and stories for the UI primitives; PWA disabled under Storybook so it builds cleanly.
+  - Hardened ESLint to `strict-type-checked` + `stylistic-type-checked`, with the Storybook and Vitest plugins; added a `cx` class-name helper.
+  - Autoprefixer + a generous browserslist (`last 2 years`, `> 0.5%`, Firefox ESR, not dead).
+  - Pre-commit now also runs a `tsc` typecheck (lint-staged → typecheck → tests).
+  - `npm run dev:all` runs the app and Storybook together (via `concurrently`).
 - **Combat vertical slice** (in progress)
   - Shared domain types: `PokeType` (18 types), base stats, growth rates, statuses, card/effect shapes, and combat state/actions.
   - 18×18 modern type chart with combined dual-type effectiveness (`typeEffectiveness`).

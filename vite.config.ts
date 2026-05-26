@@ -8,6 +8,7 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
+      disable: process.env.STORYBOOK === 'true',
       registerType: 'autoUpdate',
       includeAssets: ['fonts/**/*', 'sprites/fallback/*'],
       manifest: {

@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react';
+import { cx } from '@/ui/cx';
 import styles from './Box.module.css';
 
 interface BoxProps {
@@ -9,7 +10,7 @@ interface BoxProps {
 
 export function Box({ children, className, style }: BoxProps) {
   return (
-    <div className={className ? `${styles.box} ${className}` : styles.box} style={style}>
+    <div className={cx(styles.box, className)} style={style}>
       {children}
     </div>
   );
