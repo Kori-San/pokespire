@@ -1,5 +1,8 @@
 # Pokespire — Agent Handoff
 
+> **⚠️ SUPERSEDED — historical record.** The living plan is [02_mvp-plan.md](02_mvp-plan.md).
+> Kept for traceability; references to `PLAN.md`/`HANDOFF.md` paths below are pre-reorg.
+
 > This file is a pointer for any AI agent (or human) picking up Pokespire mid-flight. **The full plan lives at [`PLAN.md`](PLAN.md) in the repo root** — read it top to bottom before doing anything. This file is a one-page summary so you don't get lost if you found the repo first.
 >
 > **New machine? Resuming from another computer?** Just `git pull` and read `PLAN.md` + `HANDOFF.md`. If you want plan mode to treat `PLAN.md` as its working plan, ask the agent to load it at the start of the session — Claude's plan mode otherwise creates a fresh plan file each time.
@@ -10,14 +13,14 @@
 
 ## Where to read what
 
-| File | Purpose |
-| --- | --- |
-| [`PLAN.md`](PLAN.md) | **THE PLAN.** Tech stack, folder layout, data shapes, milestones, verification plan, legal notes. Start here. |
-| `design-reference/chats/chat1.md` | Full chat with the design tool that shows how the user arrived at the current design — read for tone and intent. |
-| `design-reference/project/Pokespire.html` | Host file for the visual prototype (screen dimensions). |
-| `design-reference/project/src/data.js` | Palette tokens (`PAL`), formulas, sample cards. Port palette to `src/styles/tokens.css`. |
-| `design-reference/project/src/combat.jsx` | Reference combat scene — visual + interaction target (DO NOT literally port; rebuild data-driven). |
-| `design-reference/project/src/screens.jsx`, `ui.jsx`, `design-canvas.jsx` | Other screens + UI primitives. |
+| File                                                                      | Purpose                                                                                                          |
+| ------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| [`PLAN.md`](PLAN.md)                                                      | **THE PLAN.** Tech stack, folder layout, data shapes, milestones, verification plan, legal notes. Start here.    |
+| `design-reference/chats/chat1.md`                                         | Full chat with the design tool that shows how the user arrived at the current design — read for tone and intent. |
+| `design-reference/project/Pokespire.html`                                 | Host file for the visual prototype (screen dimensions).                                                          |
+| `design-reference/project/src/data.js`                                    | Palette tokens (`PAL`), formulas, sample cards. Port palette to `src/styles/tokens.css`.                         |
+| `design-reference/project/src/combat.jsx`                                 | Reference combat scene — visual + interaction target (DO NOT literally port; rebuild data-driven).               |
+| `design-reference/project/src/screens.jsx`, `ui.jsx`, `design-canvas.jsx` | Other screens + UI primitives.                                                                                   |
 
 ## Locked decisions (do NOT re-litigate without checking with the user)
 

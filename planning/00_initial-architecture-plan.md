@@ -1,16 +1,20 @@
 # Pokespire — MVP Architecture Plan
 
+> **⚠️ SUPERSEDED — historical record.** This is the prior agent's draft. The living plan is
+> [02_mvp-plan.md](02_mvp-plan.md). Kept for traceability; do not build from this directly.
+
 > **HANDOFF FILE.** This file IS the handoff. The author is starting a new session and will re-enter plan mode to re-read this. Everything a fresh agent needs to take over is in this document. Read it top to bottom before doing anything. If `/tmp/pokespire-design/` still exists, also read those source files — critical excerpts are inlined below as backup in case `/tmp` was wiped.
 
 ---
 
 ## Handoff — what the next agent must know
 
-**Working directory:** `/home/kori/pokespire` — empty repo, only LICENSE (presumably MIT) and a 2-line README saying *"Pokémon based Rogue-like and Deck-builder"*. Branch: `main`. Clean working tree at handoff.
+**Working directory:** `/home/kori/pokespire` — empty repo, only LICENSE (presumably MIT) and a 2-line README saying _"Pokémon based Rogue-like and Deck-builder"_. Branch: `main`. Clean working tree at handoff.
 
 **Project intent in one paragraph.** Pokespire is a **non-commercial Pokémon fan-game**: a web-deployable Slay-the-Spire-style roguelike deckbuilder where you pick a captured Pokémon as your starter, traverse a branching map, fight battles with a card-based combat system, and capture more Pokémon to grow your collection. Up to 6 Pokémon in your team during a run; switching costs 1 energy mid-turn; STAB and full 18-type effectiveness make the switch decision the core lever. Saves locally (IndexedDB); the goal is "play anywhere" like Pokerogue.
 
 **Key decisions already locked with the user** (do NOT re-litigate without checking):
+
 - Tech stack: Vite + React 18 + TypeScript + Zustand + Dexie + CSS Modules. No router in v1.
 - Roster: **Gen 1 (151)** in v1, architecture supports all 1025.
 - Sprites: **Gen 5 Black & White animated** style for ALL Pokémon for visual uniformity. Primary source PokéAPI (`sprites.versions['generation-v']['black-white'].animated.front_default`), fallback Smogon Sprite Project.
@@ -19,9 +23,10 @@
 - UI chrome: GBA-era — white textbox with blue rounded tube border, sky/grass battle backdrop, Pixelify Sans + Press Start 2P fonts. Visual reference is the design prototype.
 
 **Where the design context lives:**
+
 - `/tmp/pokespire-design/` — extracted handoff bundle from Claude Design with the visual prototype. **READ THIS IF IT STILL EXISTS.** Key files:
   - `pokespire/README.md` — handoff instructions from the design tool.
-  - `pokespire/chats/chat1.md` — full back-and-forth showing how the user iterated the design (started GameBoy DMG, pivoted to GBA-era full color, then added switching + STAB + capture %). Read this for *intent*.
+  - `pokespire/chats/chat1.md` — full back-and-forth showing how the user iterated the design (started GameBoy DMG, pivoted to GBA-era full color, then added switching + STAB + capture %). Read this for _intent_.
   - `pokespire/project/Pokespire.html` — host file showing screen layout dimensions.
   - `pokespire/project/src/data.js` — palette tokens (PAL), original creatures/enemies, cards, type chart, damage/capture formulas. Note: design used 6 original types (Ember/Tide/Flora/Spark/Mind/Umbra) — real game uses all 18 Pokémon types instead.
   - `pokespire/project/src/combat.jsx` — full reference CombatScene (576 lines). Visual + interaction target.
@@ -32,6 +37,7 @@
 **Inlined essentials** (so this plan is self-contained):
 
 `PAL` palette tokens from `data.js` — **preserve verbatim** as `src/styles/tokens.css` custom properties:
+
 ```
 boxBg #f8f8f8 · boxBgAlt #e8eef8 · boxBorder #283058 · boxBorderHi #5878a8 · boxBorderLo #101830
 textDark #282838 · textMid #585878 · textLight #f8f8f8
@@ -42,22 +48,25 @@ hpHigh #58d048 · hpMid #f8c020 · hpLow #e84050 · hpBg #383850
 ```
 
 Reference combat formulas from `data.js` — port to TypeScript in `src/game/combat/damage.ts` and `capture.ts`:
+
 ```js
 // Damage: cardType vs attackerType (STAB) × cardType vs defenderType (effectiveness)
 const stab = cardType === attackerType ? 1.25 : 1;
-const eff  = MATCHUPS[cardType]?.[defenderType] ?? 1;     // 18×18 chart in v1
+const eff = MATCHUPS[cardType]?.[defenderType] ?? 1; // 18×18 chart in v1
 // Capture % at given HP ratio:
-const missing = 1 - (hp / maxHp);
+const missing = 1 - hp / maxHp;
 const k = orbId === 'greatorb' ? 1.5 : 1.0;
 const chance = clamp(missing * k, 0, 1);
 ```
 
 Reference card shape from prototype (we keep the structure, replace per-card `id` branching with data-driven `effects[]`):
+
 ```js
 { id:'cinderlash', name:'CINDERLASH', type:'EMBER', cost:2, kind:'ATK', dmg:11, text:'Deal 11 damage.\nApply 1 BURN.' }
 ```
 
 **Conversation context the next agent should know:**
+
 - The user is iterating quickly and decisive. They want concise answers and clear options.
 - The user already answered 3 multi-question rounds: scope (end-to-end MVP architecture, local saves designed for cloud later), roster (Gen 1 v1, all gens later, Gen 5 BW animated sprites), card model (curated type-flavored cards not Pokémon-locked, Smogon project as fallback for missing sprites).
 - The user explicitly added three pre-MVP requirements at handoff time — see **Pre-MVP additions** section below.
@@ -65,6 +74,7 @@ Reference card shape from prototype (we keep the structure, replace per-card `id
 - Plan was assembled with help of a Plan subagent. The architecture is solid; next agent should not redo Phase 1/2 from scratch — verify against this plan, ask the user any remaining clarifying questions, then exit plan mode.
 
 **What to do first** (suggested next-agent flow):
+
 1. Re-enter plan mode (user said they'll trigger this).
 2. Read this entire plan file.
 3. If `/tmp/pokespire-design/` exists, skim `chat1.md` for tone and `combat.jsx` for the visual target. If not, the inlined excerpts above are sufficient.
@@ -173,18 +183,22 @@ resolveSprite(dexId: number, facing: 'front' | 'back'): Promise<string>
 
 ```ts
 type Effect =
-  | { kind: 'damage';      amount: number }
-  | { kind: 'block';       amount: number }
-  | { kind: 'heal';        amount: number }
-  | { kind: 'draw';        count: number }
-  | { kind: 'applyStatus'; target: 'self'|'foe'; status: StatusId; stacks: number }
-  | { kind: 'energy';      amount: number; when: 'now'|'nextTurn' }
-  | { kind: 'capture';     orbTier: 'orb'|'great'|'ultra'|'master' };
+  | { kind: 'damage'; amount: number }
+  | { kind: 'block'; amount: number }
+  | { kind: 'heal'; amount: number }
+  | { kind: 'draw'; count: number }
+  | { kind: 'applyStatus'; target: 'self' | 'foe'; status: StatusId; stacks: number }
+  | { kind: 'energy'; amount: number; when: 'now' | 'nextTurn' }
+  | { kind: 'capture'; orbTier: 'orb' | 'great' | 'ultra' | 'master' };
 
 interface CardDef {
-  id: string; name: string; type: PokeType; cost: number;
-  kind: 'ATK'|'SKL'|'PWR'|'ORB';
-  effects: Effect[]; text: string;
+  id: string;
+  name: string;
+  type: PokeType;
+  cost: number;
+  kind: 'ATK' | 'SKL' | 'PWR' | 'ORB';
+  effects: Effect[];
+  text: string;
 }
 ```
 
@@ -223,11 +237,19 @@ calcDamage(card, attacker, defender, statuses): {
 
 ```ts
 interface RunState {
-  id: string; seed: number; schemaVersion: number; updatedAt: number;
-  team: TeamMember[];          // up to 6, each with HP + persistent statuses
-  deck: string[]; draw: string[]; discard: string[]; exhaust: string[];
-  map: MapGraph; currentNodeId: string; visitedNodeIds: string[];
-  combat?: CombatState;        // present only mid-battle
+  id: string;
+  seed: number;
+  schemaVersion: number;
+  updatedAt: number;
+  team: TeamMember[]; // up to 6, each with HP + persistent statuses
+  deck: string[];
+  draw: string[];
+  discard: string[];
+  exhaust: string[];
+  map: MapGraph;
+  currentNodeId: string;
+  visitedNodeIds: string[];
+  combat?: CombatState; // present only mid-battle
   rewardsPending?: RewardOffer;
 }
 ```
