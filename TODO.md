@@ -23,7 +23,6 @@ Legend: `[ ]` todo · `[~]` in progress
 - [ ] ~15 starter cards incl. ORB + 1 weather card (`cards.ts`)
 - [ ] Pure combat `reducer.ts` + `actions.ts`
 - [ ] `selectComputedCardView` selector (live computed card damage)
-- [ ] Statuses BURN + WEAK; `statusTick.ts`
 - [ ] Enemy intent (`intent.ts`)
 - [ ] `services/pokeapi.ts` (typed client + zod)
 - [ ] `services/sprites.ts` (BW animated, live fetch + in-memory cache)
