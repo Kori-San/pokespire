@@ -11,7 +11,7 @@ the core decision. Local saves (IndexedDB), PWA, "play anywhere" like Pokerogue.
 
 ## Where things live
 
-- **`planning/`** — numbered plans (`NN_name.md`). `02_mvp-plan.md` is the **living plan**; keep it updated _during_ each session to trace decisions and progress. Lower numbers are superseded history.
+- **`planning/`** — numbered plans (`NN_descriptive-name.md`). **When a plan is approved** (e.g. on exiting plan mode), it is immediately **numbered + renamed descriptively and moved into `planning/`**, then **kept alive for the entire session** — updated in place as decisions are made and tasks land (see the plan's own Session progress log). It is never left to go stale. The highest-numbered plan is the current living one; lower numbers are superseded history (banner-flagged).
 - **`rules/`** — technical standards (how we build). Normative; follow them.
 - **`wiki/`** — game design & theorycraft (why the game works this way).
 - **`TODO.md`** — epoch-grouped task list. **`CHANGELOG.md`** — shipped changes (Keep a Changelog).
@@ -32,7 +32,7 @@ the core decision. Local saves (IndexedDB), PWA, "play anywhere" like Pokerogue.
 ### Files & docs
 
 - Root-level meta files are **CAPITALISED** (`README.md`, `LICENSE`, `CHANGELOG.md`, `TODO.md`, `CLAUDE.md`). Topic docs in `rules/`/`wiki/` stay lowercase.
-- Update the living plan, `TODO.md`, and `CHANGELOG.md` as part of doing the work — not as an afterthought.
+- **Task workflow:** todo → done → **delete the task's line from `TODO.md`** → **append an entry to `CHANGELOG.md`**. Don't leave checked-off items in `TODO.md`; git history + `CHANGELOG.md` are the record. Keep the living plan (`planning/02_mvp-plan.md`) updated as you go.
 - **No stray temp files.** Generated assets are committed; the scripts/throwaway that made them are not. Flag any placeholder asset in `TODO.md` so it gets replaced.
 
 ### Code

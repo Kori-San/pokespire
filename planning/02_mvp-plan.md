@@ -463,7 +463,15 @@ A running trace of what's actually been built (keep appending; pair with `CHANGE
   - TitleScreen (GBA chrome, Box/Button/LanguageToggle primitives) + smoke test.
   - Docs: `rules/` (8 files), `wiki/` (13 files), `TODO.md`, `CHANGELOG.md`, this `planning/` set, `CLAUDE.md`.
   - Placeholder assets flagged in `TODO.md` (PWA icons, fallback sprite, text logo).
-- **Pending:** browser verification (dev server render, SW registration, install prompt, lang toggle); then atomic gitmoji commits.
+- Committed as 10 atomic gitmoji commits. Moved the design-reference bundle to gitignored `tmp/`.
+- Replaced the FR/EN text toggle with a **globe button → flag dropdown** (UK/France, autonym labels).
+- **Conventions added mid-session:** task workflow is **done → delete TODO line → append CHANGELOG**; comments only when non-obvious; `tmp/` for local-only scratch; machine-specific tooling stays out of committed files entirely.
+- **Pending:** browser verification (needs user — dev server render, SW registration, install prompt, flag dropdown).
+
+### 2026-05-27 — Session 2 (combat vertical slice)
+
+- Building Part 2: type system + 18×18 chart, deterministic damage/capture math, statuses (BURN/WEAK), data-driven cards/effects, pure combat reducer, live computed card view, enemy intent, PokéAPI/sprite services, and the BattleStage UI with switch + end-of-demo overlay.
+- _(appending as tasks land)_
 
 ## Open / TBD (resolve before the relevant task group)
 

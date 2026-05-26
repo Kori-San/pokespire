@@ -3,10 +3,11 @@
 Epoch-based roadmap. **v0 = MVP** (a complete, fun, playable game). Later epochs add scope.
 Full design rationale lives in [`wiki/`](wiki/); technical standards in [`rules/`](rules/).
 
-Structure: **Parts** group the work; each **task** (a checkbox) is sized to be **one commit**
-(atomic, gitmoji, via `gitk`). Tackle parts roughly in order; reorder freely if dependencies hold.
+Structure: **Parts** group the work; each **task** is sized to be **one commit**
+(atomic, gitmoji). Tackle parts roughly in order; reorder freely if dependencies hold.
+**Completed tasks are deleted** from this file — git history + `CHANGELOG.md` hold the record.
 
-Legend: `[ ]` todo · `[~]` in progress · `[x]` done
+Legend: `[ ]` todo · `[~]` in progress
 
 ---
 
@@ -14,15 +15,7 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done
 
 ### Scaffold + PWA + i18n
 
-- [x] Vite + React 18 + TypeScript project
-- [x] Tooling: ESLint + Prettier + Vitest, strict tsconfig
-- [x] Husky + lint-staged (pre-commit: Prettier + ESLint + Vitest)
-- [x] Self-hosted OFL fonts (Press Start 2P, Pixelify Sans) + `tokens.css` (PAL palette + 18 type colors)
-- [x] PWA: `vite-plugin-pwa`, manifest, service worker, runtime caching for PokéAPI + sprites
-- [x] i18n: `react-i18next`, FR + EN locale files, language toggle
-- [x] TitleScreen with GBA chrome + NEW GAME button
-- [x] Seed `rules/`, `wiki/`, `planning/`, `CLAUDE.md`, `TODO.md`, `CHANGELOG.md`
-- [ ] Browser verification (dev server, SW registration, install prompt, lang toggle)
+- [ ] Browser verification (dev server, SW registration, install prompt, lang toggle) — needs user
 
 ### Combat vertical slice
 
