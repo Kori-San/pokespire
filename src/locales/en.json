@@ -1,0 +1,13 @@
+{
+  "title": {
+    "tagline": "A roguelike deckbuilder",
+    "newGame": "NEW GAME",
+    "continue": "CONTINUE",
+    "pokedex": "POKÉDEX",
+    "settings": "SETTINGS"
+  },
+  "common": {
+    "language": "Language",
+    "back": "Back"
+  }
+}
