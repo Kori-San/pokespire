@@ -18,3 +18,4 @@ This project uses an epoch-based roadmap (see [`TODO.md`](TODO.md)); versions ar
   - Documentation: `rules/` (technical standards), `wiki/` (game design), numbered `planning/` plans, and `CLAUDE.md` (agent working agreement).
 - **Combat vertical slice** (in progress)
   - Shared domain types: `PokeType` (18 types), base stats, growth rates, statuses, card/effect shapes, and combat state/actions.
+  - 18×18 modern type chart with combined dual-type effectiveness (`typeEffectiveness`).

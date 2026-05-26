@@ -19,8 +19,7 @@ Legend: `[ ]` todo · `[~]` in progress
 
 ### Combat vertical slice
 
-- [ ] `typeChart.ts` (18×18 matrix) + tests
-- [ ] `CardDef` + `Effect` shapes; `effects.ts` registry
+- [ ] `effects.ts` registry (consumes the `CardDef`/`Effect` shapes already defined)
 - [ ] ~15 starter cards incl. ORB + 1 weather card (`cards.ts`)
 - [ ] Pure combat `reducer.ts` + `actions.ts`
 - [ ] `damage.ts` — levelScale + atk/def scale + STAB + eff + weather/item hooks + tests
