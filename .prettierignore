@@ -1,0 +1,12 @@
+# Local-only scratch — never reformat
+tmp/
+
+# Build output & deps
+dist
+dev-dist
+coverage
+node_modules
+
+# Generated
+package-lock.json
+public/fonts/OFL-*.txt
