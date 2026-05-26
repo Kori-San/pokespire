@@ -20,5 +20,5 @@ This project uses an epoch-based roadmap (see [`TODO.md`](TODO.md)); versions ar
   - Shared domain types: `PokeType` (18 types), base stats, growth rates, statuses, card/effect shapes, and combat state/actions.
   - 18×18 modern type chart with combined dual-type effectiveness (`typeEffectiveness`).
   - Deterministic damage formula (`calcDamage`): STAB, type effectiveness with a chip floor for immunities, level + base-stat scaling, plus WEAK / weather / held-item hooks. Returns a full breakdown for the live card display; covered by worked-example tests.
-  - Capture math (`calcCaptureChance` / `rollCapture`): chance rises as HP drops, scales with orb tier and a shiny ×5 bonus, master orb guaranteed; RNG injected for determinism.
+  - Capture math (`calcCaptureChance` / `rollCapture`) using the real Gen III/IV formula: a small catch chance even at full HP that rises as HP drops, real ball tiers (Poké/Great/Ultra/Master), a shiny ×5 bonus, and an injected RNG for determinism.
   - Status registry (BURN, WEAK) with `applyStatus` and an end-of-turn `tickStatuses` (tick damage then per-stack decay).

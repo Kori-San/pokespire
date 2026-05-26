@@ -51,12 +51,19 @@ foes (Onix) force a switch; legendaries hit hard from L5 (balanced elsewhere —
 
 ## Capture
 
+Uses the **real Gen III/IV formula** so chances feel authentic — including a small
+catch chance even at full HP.
+
 ```
-chance = clamp(missingHpRatio × tierMultiplier × speciesCatchRate × shinyBonus, 0, 1)
+a = ((3·maxHP − 2·HP) · catchRate · ballBonus · shinyBonus) / (3·maxHP) · statusBonus
+if a ≥ 255 → guaranteed
+else  perShake = 1048560 / (16711680 / a)^(1/4) / 65536
+      chance   = perShake^4          // four shakes must all pass
 ```
 
-- Orb tiers (orb < great < ultra < master) raise `tierMultiplier`.
-- Lower enemy HP → higher chance. Shiny → ×5 (see [shinies.md](shinies.md)).
+- **Balls:** Poké Ball (×1) < Great Ball (×1.5) < Ultra Ball (×2) < Master Ball (guaranteed). FR names: Poké Ball / Super Ball / Hyper Ball / Master Ball.
+- `catchRate` is the species' PokéAPI `capture_rate` (0–255). The HP term keeps a baseline at full HP and rises as HP drops.
+- Shiny → `shinyBonus` ×5 (see [shinies.md](shinies.md)). Status (sleep/freeze ×2.5, etc.) is a hooked `statusBonus`.
 - On success: joins the team at the enemy's current level, full HP, no statuses (team-full → release/skip modal). Solo runs: capture is dex-only.
 
 ## Effectiveness display (UX)
