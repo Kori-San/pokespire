@@ -1,0 +1,10 @@
+.box {
+  background: var(--box-bg);
+  border: var(--border-w) solid var(--box-border);
+  border-radius: var(--radius-box);
+  box-shadow:
+    inset 0 0 0 2px var(--box-border-hi),
+    0 4px 0 var(--box-border-lo);
+  padding: var(--space-6);
+  color: var(--text-dark);
+}

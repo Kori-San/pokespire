@@ -1,0 +1,40 @@
+.button {
+  font-family: var(--font-display);
+  font-size: 12px;
+  line-height: 1.4;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-btn);
+  border: 3px solid var(--box-border);
+  transition: transform 0.05s ease;
+  width: 100%;
+}
+
+.button:active {
+  transform: translateY(2px);
+}
+
+.button:focus-visible {
+  outline: 3px solid var(--type-electric);
+  outline-offset: 2px;
+}
+
+.primary {
+  background: var(--box-bg-alt);
+  color: var(--text-dark);
+  box-shadow: 0 3px 0 var(--box-border-lo);
+}
+
+.primary:hover {
+  background: var(--sky-bot);
+}
+
+.ghost {
+  background: transparent;
+  color: var(--text-light);
+  border-color: var(--box-border-hi);
+  box-shadow: none;
+}
+
+.ghost:hover {
+  background: rgba(248, 248, 248, 0.12);
+}
