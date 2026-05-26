@@ -22,7 +22,6 @@ Legend: `[ ]` todo · `[~]` in progress
 - [ ] `effects.ts` registry (consumes the `CardDef`/`Effect` shapes already defined)
 - [ ] ~15 starter cards incl. ORB + 1 weather card (`cards.ts`)
 - [ ] Pure combat `reducer.ts` + `actions.ts`
-- [ ] `damage.ts` — levelScale + atk/def scale + STAB + eff + weather/item hooks + tests
 - [ ] `capture.ts` — capture chance vs missing HP + tests
 - [ ] `selectComputedCardView` selector (live computed card damage)
 - [ ] Statuses BURN + WEAK; `statusTick.ts`
