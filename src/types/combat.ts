@@ -13,6 +13,9 @@ export interface Combatant {
   types: PokeType[];
   level: number;
   baseStats: BaseStats;
+  /** Species capture rate, 0–255 (PokéAPI `capture_rate`). Used by the capture roll. */
+  catchRate: number;
+  shiny: boolean;
   maxHp: number;
   hp: number;
   block: number;

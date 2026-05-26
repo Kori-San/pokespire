@@ -10,6 +10,8 @@ function mon(statuses: StatusInstance[], hp = 100): Combatant {
     types: ['normal'],
     level: 5,
     baseStats: { hp: 100, atk: 50, def: 50, spAtk: 50, spDef: 50, spd: 50 },
+    catchRate: 45,
+    shiny: false,
     maxHp: 100,
     hp,
     block: 0,

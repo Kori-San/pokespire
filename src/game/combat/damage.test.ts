@@ -23,6 +23,8 @@ function mon(
     types,
     level,
     baseStats,
+    catchRate: 45,
+    shiny: false,
     maxHp: 100,
     hp: 100,
     block: 0,
