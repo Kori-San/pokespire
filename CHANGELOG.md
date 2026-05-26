@@ -13,6 +13,6 @@ This project uses an epoch-based roadmap (see [`TODO.md`](TODO.md)); versions ar
   - Tooling: ESLint (flat config, type-checked), Prettier, Vitest + Testing Library, Husky + lint-staged (pre-commit runs format + lint + the full test suite).
   - Self-hosted OFL fonts (Press Start 2P, Pixelify Sans) and design tokens (`tokens.css`) preserving the prototype PAL palette plus all 18 Pokémon type colors.
   - PWA via `vite-plugin-pwa`: web manifest, auto-update service worker, runtime caching for PokéAPI + sprite origins.
-  - Internationalization via `react-i18next` with French and English locales and a language toggle.
+  - Internationalization via `react-i18next` with French and English locales, surfaced as a globe button opening a flag dropdown (UK / France).
   - TitleScreen with GBA-era chrome and a New Game button.
   - Documentation: `rules/` (technical standards), `wiki/` (game design), numbered `planning/` plans, and `CLAUDE.md` (agent working agreement).
