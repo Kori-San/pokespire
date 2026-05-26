@@ -23,7 +23,7 @@ This is the **living plan** for the current build, kept up to date during the se
 | PWA                  | Full PWA in v1 via `vite-plugin-pwa`. Service worker caches sprites + PokéAPI responses for offline play. Manifest enables "Install to Home Screen." Per-user private cache (origin-scoped).                                                      |
 | Testing              | Vitest + React Testing Library, ESLint (flat, type-checked) + Prettier. Optional GitHub Actions CI.                                                                                                                                               |
 | Git hooks            | Husky + lint-staged. **pre-commit** runs lint-staged (Prettier + ESLint on staged files) **and** the full Vitest suite. No pre-push hook.                                                                                                         |
-| Git workflow         | All git via the **`gitk`** wrapper (not `git`). Commits use **gitmoji** + are **atomic/isolated** (one logical change each). See [rules/git-workflow.md](../rules/git-workflow.md).                                                               |
+| Git workflow         | Commits use **gitmoji** + are **atomic/isolated** (one task = one commit). See [rules/git-workflow.md](../rules/git-workflow.md).                                                                                                                 |
 | i18n                 | French + English from day 1 via `react-i18next`. All UI strings in `src/locales/{en,fr}.json`. Architecture supports adding languages later.                                                                                                      |
 | Versioning model     | No rigid v1/v2. Work is grouped into **epochs**: **v0 = MVP** (full playable loop), v1 = "Pokémon enhancement" (more gens / special forms), v2+ = further epochs. Tasks tracked in repo-root `TODO.md`; shipped changes logged in `CHANGELOG.md`. |
 | Docs                 | `rules/` = technical standards, `wiki/` = game design (both living). `planning/` = numbered plans (`NN_name.md`), kept updated during each session. `CLAUDE.md` = working agreement for the AI agent.                                             |
@@ -463,7 +463,7 @@ A running trace of what's actually been built (keep appending; pair with `CHANGE
   - TitleScreen (GBA chrome, Box/Button/LanguageToggle primitives) + smoke test.
   - Docs: `rules/` (8 files), `wiki/` (13 files), `TODO.md`, `CHANGELOG.md`, this `planning/` set, `CLAUDE.md`.
   - Placeholder assets flagged in `TODO.md` (PWA icons, fallback sprite, text logo).
-- **Pending:** browser verification (dev server render, SW registration, install prompt, lang toggle); then atomic gitmoji commits via `gitk`.
+- **Pending:** browser verification (dev server render, SW registration, install prompt, lang toggle); then atomic gitmoji commits.
 
 ## Open / TBD (resolve before the relevant task group)
 
