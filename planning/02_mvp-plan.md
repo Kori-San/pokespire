@@ -471,7 +471,14 @@ A running trace of what's actually been built (keep appending; pair with `CHANGE
 ### 2026-05-27 — Session 2 (combat vertical slice)
 
 - Building Part 2: type system + 18×18 chart, deterministic damage/capture math, statuses (BURN/WEAK), data-driven cards/effects, pure combat reducer, live computed card view, enemy intent, PokéAPI/sprite services, and the BattleStage UI with switch + end-of-demo overlay.
-- _(appending as tasks land)_
+- **Pure combat-math core done (all tested, committed):**
+  - Shared domain types (`src/types/`): `PokeType` (18), base stats, growth rates, statuses, card/effect shapes, combat state/actions.
+  - `data/typeChart.ts` — 18×18 modern chart + `typeEffectiveness`.
+  - `game/combat/damage.ts` — deterministic formula (STAB, eff w/ chip floor, level + stat scaling, WEAK/weather/item hooks) returning a full breakdown for the live display.
+  - `game/combat/capture.ts` — **real Gen III/IV capture formula** with real ball names (Poké/Great/Ultra/Master); slight chance at full HP, shiny ×5.
+  - `data/statuses.ts` + `game/combat/statusTick.ts` — BURN/WEAK, `applyStatus`, end-of-turn tick + decay.
+- **Decision (this session):** capture uses the authentic Gen III/IV formula and real ball terminology (FR: Super/Hyper Ball), not a simplified model.
+- **Next:** effects registry + starter cards → pure reducer (+ deck/draw) → live `selectComputedCardView` → enemy intent → PokéAPI/sprite services → BattleStage UI (switch + end-of-demo overlay).
 
 ## Open / TBD (resolve before the relevant task group)
 
