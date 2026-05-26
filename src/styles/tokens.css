@@ -1,0 +1,74 @@
+/*
+ * Design tokens. The --box / --sky / --grass / --hp palette is preserved verbatim
+ * from the design prototype's PAL object (local-only reference in tmp/design-reference).
+ * The 18 --type-* colors are the real Pokémon type palette (the prototype used
+ * 6 fictional types for IP safety; the real game uses all 18).
+ */
+:root {
+  --box-bg: #f8f8f8;
+  --box-bg-alt: #e8eef8;
+  --box-border: #283058;
+  --box-border-hi: #5878a8;
+  --box-border-lo: #101830;
+  --text-dark: #282838;
+  --text-mid: #585878;
+  --text-light: #f8f8f8;
+
+  --sky-top: #7cc4ec;
+  --sky-bot: #bfe4f8;
+  --sky-horizon: #fdd9b5;
+  --grass: #74c850;
+  --grass-dark: #3c8c34;
+  --grass-light: #a8e070;
+  --earth: #c89460;
+  --earth-dark: #8c5028;
+  --platform: #d0a06c;
+  --platform-dk: #8c5828;
+
+  --hp-high: #58d048;
+  --hp-mid: #f8c020;
+  --hp-low: #e84050;
+  --hp-bg: #383850;
+
+  /* Effectiveness feedback (live card damage display) */
+  --eff-super: #58d048;
+  --eff-good: #74c850;
+  --eff-stab: #f8c020;
+  --eff-neutral: #f8f8f8;
+  --eff-resist: #a0a0b0;
+  --eff-immune: #e84050;
+
+  /* 18 real Pokémon types */
+  --type-normal: #a8a878;
+  --type-fire: #f08030;
+  --type-water: #6890f0;
+  --type-electric: #f8d030;
+  --type-grass: #78c850;
+  --type-ice: #98d8d8;
+  --type-fighting: #c03028;
+  --type-poison: #a040a0;
+  --type-ground: #e0c068;
+  --type-flying: #a890f0;
+  --type-psychic: #f85888;
+  --type-bug: #a8b820;
+  --type-rock: #b8a038;
+  --type-ghost: #705898;
+  --type-dragon: #7038f8;
+  --type-dark: #705848;
+  --type-steel: #b8b8d0;
+  --type-fairy: #ee99ac;
+
+  --font-display: 'Press Start 2P', monospace;
+  --font-body: 'Pixelify Sans', monospace;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  --border-w: 4px;
+  --radius-box: 12px;
+  --radius-btn: 8px;
+}
