@@ -22,6 +22,11 @@ This project uses an epoch-based roadmap (see [`TODO.md`](TODO.md)); versions ar
   - Autoprefixer + a generous browserslist (`last 2 years`, `> 0.5%`, Firefox ESR, not dead).
   - Pre-commit now also runs a `tsc` typecheck (lint-staged → typecheck → tests).
   - `npm run dev:all` runs the app and Storybook together (via `concurrently`).
+  - GitHub Actions CI (typecheck/lint, tests + coverage, build) and Dependabot (npm + github-actions, grouped minor/patch, ⬆️ gitmoji prefix).
+  - commitlint with a gitmoji rule (`commit-msg` hook) enforcing our `<gitmoji> <subject>` style.
+  - Vitest v8 coverage (`npm run test:coverage`, report-only) and a `knip` script for unused-code detection.
+  - `eslint-plugin-i18next` flags hardcoded user-facing JSX text in app code.
+  - Claude Code permission guardrails (`.claude/settings.json`): plan-mode default, deny push/force/reset/clean/secret reads; a sectioned `.gitignore`.
 - **Combat vertical slice** (in progress)
   - Shared domain types: `PokeType` (18 types), base stats, growth rates, statuses, card/effect shapes, and combat state/actions.
   - 18×18 modern type chart with combined dual-type effectiveness (`typeEffectiveness`).

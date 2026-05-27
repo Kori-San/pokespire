@@ -5,6 +5,7 @@ import reactRefresh from 'eslint-plugin-react-refresh';
 import tseslint from 'typescript-eslint';
 import storybook from 'eslint-plugin-storybook';
 import vitest from '@vitest/eslint-plugin';
+import i18next from 'eslint-plugin-i18next';
 import prettier from 'eslint-config-prettier';
 
 export default tseslint.config(
@@ -41,6 +42,14 @@ export default tseslint.config(
       ...vitest.configs.recommended.rules,
       '@typescript-eslint/no-non-null-assertion': 'off',
       '@typescript-eslint/unbound-method': 'off',
+    },
+  },
+  {
+    files: ['src/**/*.tsx'],
+    ignores: ['**/*.stories.tsx', '**/*.test.tsx'],
+    plugins: { i18next },
+    rules: {
+      'i18next/no-literal-string': ['error', { mode: 'jsx-text-only' }],
     },
   },
   ...storybook.configs['flat/recommended'],
