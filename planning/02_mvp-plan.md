@@ -482,7 +482,8 @@ A running trace of what's actually been built (keep appending; pair with `CHANGE
 - **Combatant** now carries `catchRate` (0–255) + `shiny`; capture uses the **real Gen III/IV formula** (small chance at full HP).
 - **Card engine layer done (tested, committed):** `deck.ts` (seeded shuffle + draw with discard reshuffle), `effects.ts` (`applyEffect` — pure executor for damage/block/heal/draw/status/energy/weather/capture), `data/cards.ts` (~18 starter cards incl. weather + ball cards + a universal `STARTER_DECK`).
 - **Card numbers:** `effects[].amount` is the single source of truth (base value); the on-screen number is **computed live** by the upcoming `selectComputedCardView` + Card UI (not the static `text`, which is just rules flavor).
-- **Next:** enemy intent → pure reducer (PLAY_CARD/SWITCH/END_TURN/ENEMY_ACT/status ticks) → live `selectComputedCardView` → PokéAPI/sprite services → BattleStage UI (switch + end-of-demo overlay). SpeciesDef deferred to persistence/run-loop.
+- **Headless combat engine COMPLETE (76 tests, deterministic, committed):** `intent.ts` (enemy AI), `run/rng.ts` (seeded mulberry32 with resumable state), `reducer.ts` (`createCombat` + `combatReducer`: PLAY_CARD / SWITCH / END_TURN, enemy phase, status ticks, faints, next-turn draw), `selectors.ts` (`selectComputedCardView` — live value + effectiveness tier + tooltip + capture %).
+- **Next (needs visual review):** PokéAPI client (zod) + sprite resolver (BW animated) → BattleStage / Hand / Card (effectiveness tags + tooltip) / PartyBar UI + switch + end-of-demo overlay, with Storybook stories. SpeciesDef still deferred to persistence/run-loop.
 
 ## Open / TBD (resolve before the relevant task group)
 
