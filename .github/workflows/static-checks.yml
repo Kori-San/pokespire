@@ -1,0 +1,44 @@
+# ─────────────────────────────────────────────────────────────
+# 🔍 Static Checks — typecheck + lint
+# ─────────────────────────────────────────────────────────────
+name: Static Checks
+run-name: "🔍 [${{ github.workflow }} #${{ github.run_number }}] ${{ github.head_ref || github.ref_name }} by @${{ github.actor }}"
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: "static-checks-${{ github.head_ref || github.ref_name }}"
+  cancel-in-progress: true
+
+jobs:
+  static-checks:
+    name: Typecheck & Lint
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: "[1/4] Checkout"
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: "[2/4] Setup Node"
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: "[3/4] Install"
+        run: npm ci
+
+      - name: "[4/4] Typecheck + Lint"
+        run: |
+          npm run typecheck
+          npm run lint
