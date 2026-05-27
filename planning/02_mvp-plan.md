@@ -478,7 +478,9 @@ A running trace of what's actually been built (keep appending; pair with `CHANGE
   - `game/combat/capture.ts` — **real Gen III/IV capture formula** with real ball names (Poké/Great/Ultra/Master); slight chance at full HP, shiny ×5.
   - `data/statuses.ts` + `game/combat/statusTick.ts` — BURN/WEAK, `applyStatus`, end-of-turn tick + decay.
 - **Decision (this session):** capture uses the authentic Gen III/IV formula and real ball terminology (FR: Super/Hyper Ball), not a simplified model.
-- **Next:** effects registry + starter cards → pure reducer (+ deck/draw) → live `selectComputedCardView` → enemy intent → PokéAPI/sprite services → BattleStage UI (switch + end-of-demo overlay).
+- **Mid-session infra hardening (committed):** Storybook 10 + stories + `dev:all`; ESLint bumped to strict + stylistic type-checked, plus Storybook/Vitest/i18next plugins; autoprefixer + browserslist; Vitest v8 coverage (report-only); knip; commitlint (gitmoji `commit-msg` hook); pre-commit now also typechecks. CI as **three separate workflows** (🔍 static-checks, 🧪 tests+coverage, 🏗️ build) + Dependabot, in the project's run-name/section format. `.claude/settings.json` permission guardrails (plan-mode default; deny push/force/reset/clean/secret reads); `.gitignore` resectioned.
+- **Combatant** now carries `catchRate` (0–255) + `shiny`; capture uses the **real Gen III/IV formula** (small chance at full HP).
+- **Next:** SpeciesDef data model → effects registry + starter cards → pure reducer (+ deck/draw) → live `selectComputedCardView` → enemy intent → PokéAPI/sprite services → BattleStage UI (switch + end-of-demo overlay).
 
 ## Open / TBD (resolve before the relevant task group)
 
