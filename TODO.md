@@ -99,6 +99,7 @@ Legend: `[ ]` todo · `[~]` in progress
 - [ ] Gens 2-9 data (sprite resolver already handles them)
 - [ ] Mega Evolve / Dynamax transform cards (Dynamax → Gmax form if the species has one)
 - [ ] Sprite vendoring: switch to **Gen-V-animated-only** (no static fallback); Smogon for Gen 6+
+- [ ] Handle single-frame "gifs" — some megas/forms on PokéAPI (e.g. `articuno-galar`) are static, fan-made-looking images saved as `.gif`. Detect single-frame and treat as static / source a real animation / skip
 - [ ] More legendaries / mythicals
 - [ ] Expanded card pool
 
