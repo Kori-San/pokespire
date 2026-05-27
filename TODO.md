@@ -97,7 +97,8 @@ Legend: `[ ]` todo · `[~]` in progress
 ### v1 · Pokémon enhancement
 
 - [ ] Gens 2-9 data (sprite resolver already handles them)
-- [ ] Special forms: paradox / Gmax / mega-evolution (all solo-only)
+- [ ] Mega Evolve / Dynamax transform cards (Dynamax → Gmax form if the species has one)
+- [ ] Sprite vendoring: switch to **Gen-V-animated-only** (no static fallback); Smogon for Gen 6+
 - [ ] More legendaries / mythicals
 - [ ] Expanded card pool
 
@@ -121,5 +122,4 @@ Legend: `[ ]` todo · `[~]` in progress
 Temporary; must be swapped for real artwork:
 
 - [ ] `public/icons/icon-192.png`, `icon-512.png`, `icon-512-maskable.png` — generated placeholder PWA icons (plain bordered box). Need a real Pokespire app icon.
-- [ ] `public/sprites/fallback/unknown.png` — generated placeholder "unknown sprite". Need a proper "missing Pokémon" graphic.
 - [ ] TitleScreen logo is plain text — consider a real pixel-art wordmark.
