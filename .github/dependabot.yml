@@ -1,0 +1,59 @@
+# .github/dependabot.yml
+#
+# Per-ecosystem policy:
+#   - commit-message.prefix "⬆️"        → titles open as "⬆️ Bump <pkg> from X to Y"
+#                                          (consistent with our gitmoji style)
+#   - labels                              → "🤖 Bot" + "📦 Dependencies" + ecosystem
+#   - versioning-strategy increase-if-necessary (npm)
+#                                          → only update the lockfile within the existing
+#                                          range; don't widen "^7" → "^8" just to allow a major
+#   - ignore version-update:semver-major  → never auto-open a major bump (we bump majors by
+#                                          hand). Security advisories bypass ignore and still open.
+#   - groups: minor-patch                 → batch weekly minor/patch bumps into ONE PR per
+#                                          ecosystem instead of one PR per dependency.
+version: 2
+updates:
+  # ─── JavaScript (npm) ─────────────────────────────────────────────
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    versioning-strategy: increase-if-necessary
+    commit-message:
+      prefix: "⬆️"
+    labels:
+      - "🤖 Bot"
+      - "📦 Dependencies"
+      - "🟨 JavaScript"
+    allow:
+      - dependency-type: "all"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+    groups:
+      js-minor-patch:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+
+  # ─── GitHub Actions ───────────────────────────────────────────────
+  - package-ecosystem: "github-actions"
+    directory: "/.github/workflows/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "⬆️"
+    labels:
+      - "🤖 Bot"
+      - "📦 Dependencies"
+      - "🐙 GitHub Actions"
+    allow:
+      - dependency-type: "all"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+    groups:
+      actions-minor-patch:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
