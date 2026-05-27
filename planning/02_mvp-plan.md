@@ -480,7 +480,9 @@ A running trace of what's actually been built (keep appending; pair with `CHANGE
 - **Decision (this session):** capture uses the authentic Gen III/IV formula and real ball terminology (FR: Super/Hyper Ball), not a simplified model.
 - **Mid-session infra hardening (committed):** Storybook 10 + stories + `dev:all`; ESLint bumped to strict + stylistic type-checked, plus Storybook/Vitest/i18next plugins; autoprefixer + browserslist; Vitest v8 coverage (report-only); knip; commitlint (gitmoji `commit-msg` hook); pre-commit now also typechecks. CI as **three separate workflows** (🔍 static-checks, 🧪 tests+coverage, 🏗️ build) + Dependabot, in the project's run-name/section format. `.claude/settings.json` permission guardrails (plan-mode default; deny push/force/reset/clean/secret reads); `.gitignore` resectioned.
 - **Combatant** now carries `catchRate` (0–255) + `shiny`; capture uses the **real Gen III/IV formula** (small chance at full HP).
-- **Next:** SpeciesDef data model → effects registry + starter cards → pure reducer (+ deck/draw) → live `selectComputedCardView` → enemy intent → PokéAPI/sprite services → BattleStage UI (switch + end-of-demo overlay).
+- **Card engine layer done (tested, committed):** `deck.ts` (seeded shuffle + draw with discard reshuffle), `effects.ts` (`applyEffect` — pure executor for damage/block/heal/draw/status/energy/weather/capture), `data/cards.ts` (~18 starter cards incl. weather + ball cards + a universal `STARTER_DECK`).
+- **Card numbers:** `effects[].amount` is the single source of truth (base value); the on-screen number is **computed live** by the upcoming `selectComputedCardView` + Card UI (not the static `text`, which is just rules flavor).
+- **Next:** enemy intent → pure reducer (PLAY_CARD/SWITCH/END_TURN/ENEMY_ACT/status ticks) → live `selectComputedCardView` → PokéAPI/sprite services → BattleStage UI (switch + end-of-demo overlay). SpeciesDef deferred to persistence/run-loop.
 
 ## Open / TBD (resolve before the relevant task group)
 
