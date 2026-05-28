@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { CardDef, Combatant, CombatState, Effect, PokeType } from '@/types';
+import { EMPTY_STAGES } from '@/types';
 import { applyEffect } from './effects';
 
 function mon(overrides: Partial<Combatant> = {}): Combatant {
@@ -15,6 +16,7 @@ function mon(overrides: Partial<Combatant> = {}): Combatant {
     hp: 100,
     block: 0,
     statuses: [],
+    stages: { ...EMPTY_STAGES },
     ...overrides,
   };
 }
@@ -122,6 +124,50 @@ describe('applyEffect', () => {
       rng(0),
     );
     expect(out.weather).toEqual({ kind: 'rain', turnsLeft: 4 });
+  });
+
+  it('stat raises self or foe stages, clamped to [-6, +6]', () => {
+    const up = applyEffect(
+      state(),
+      { kind: 'stat', target: 'self', stat: 'atk', stages: 2 },
+      card('normal'),
+      rng(0),
+    );
+    expect(up.team[0]?.stages.atk).toBe(2);
+
+    const stacked = applyEffect(
+      up,
+      { kind: 'stat', target: 'self', stat: 'atk', stages: 6 },
+      card('normal'),
+      rng(0),
+    );
+    expect(stacked.team[0]?.stages.atk).toBe(6);
+
+    const down = applyEffect(
+      state(),
+      { kind: 'stat', target: 'foe', stat: 'def', stages: -1 },
+      card('normal'),
+      rng(0),
+    );
+    expect(down.enemy.stages.def).toBe(-1);
+  });
+
+  it('damage rolls a crit at the active mon stages.crit chance', () => {
+    // rng(0.99) sits above the default 1/16 crit chance — base case lands without a crit.
+    const base = applyEffect(state(), { kind: 'damage', amount: 10 }, card('fire'), rng(0.99));
+    const baseDealt = 100 - base.enemy.hp;
+
+    // Boost crit to +4 → guaranteed crit at any roll.
+    const buffed = state({
+      team: [
+        mon({
+          stages: { hp: 0, atk: 0, def: 0, spAtk: 0, spDef: 0, spd: 0, crit: 4 },
+        }),
+      ],
+    });
+    const critted = applyEffect(buffed, { kind: 'damage', amount: 10 }, card('fire'), rng(0.99));
+    const critDealt = 100 - critted.enemy.hp;
+    expect(critDealt).toBeGreaterThan(baseDealt);
   });
 
   it('capture succeeds or fails based on the roll', () => {

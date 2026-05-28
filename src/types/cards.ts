@@ -1,5 +1,5 @@
 import type { PokeType, StatusId } from './pokemon';
-import type { WeatherKind } from './combat';
+import type { Stat, WeatherKind } from './combat';
 
 export type BallTier = 'poke' | 'great' | 'ultra' | 'master';
 
@@ -30,6 +30,7 @@ export type Effect =
   | { kind: 'heal'; amount: number }
   | { kind: 'draw'; count: number }
   | { kind: 'applyStatus'; target: 'self' | 'foe'; status: StatusId; stacks: number }
+  | { kind: 'stat'; target: 'self' | 'foe'; stat: Stat; stages: number }
   | { kind: 'energy'; amount: number; when: 'now' | 'nextTurn' }
   | { kind: 'weather'; weather: WeatherKind; turns: number }
   | { kind: 'capture'; ballTier: BallTier };

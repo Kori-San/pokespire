@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Combatant, CombatState, PokeType } from '@/types';
+import { EMPTY_STAGES } from '@/types';
 import { selectComputedCardView, selectHandViews } from './selectors';
 
 function mon(types: PokeType[], overrides: Partial<Combatant> = {}): Combatant {
@@ -15,6 +16,7 @@ function mon(types: PokeType[], overrides: Partial<Combatant> = {}): Combatant {
     hp: 100,
     block: 0,
     statuses: [],
+    stages: { ...EMPTY_STAGES },
     ...overrides,
   };
 }

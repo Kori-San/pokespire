@@ -80,6 +80,14 @@ function renderLine(line: EffectLine, t: TFunction): string {
       const key = line.self ? 'cards:lines.applyStatusSelf' : 'cards:lines.applyStatus';
       return t(key, { stacks: line.stacks, status });
     }
+    case 'stat': {
+      const stat = t(`cards:stat.${line.stat}`);
+      const stages = Math.abs(line.stages);
+      const direction = line.stages > 0 ? 'Raise' : 'Lower';
+      const target = line.self ? 'Self' : 'Foe';
+      // Four keys: cards:lines.statRaiseSelf / statRaiseFoe / statLowerSelf / statLowerFoe.
+      return t(`cards:lines.stat${direction}${target}`, { stat, stages });
+    }
     case 'energy':
       return t('cards:lines.energy', { value: line.value });
     case 'weather': {

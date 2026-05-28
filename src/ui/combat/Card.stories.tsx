@@ -7,6 +7,7 @@ import type {
   MoveCategory,
   PokeType,
   Rarity,
+  Stat,
   StatusId,
   WeatherKind,
 } from '@/types';
@@ -80,11 +81,13 @@ const EFFECT_KINDS = [
   'heal',
   'draw',
   'applyStatus',
+  'stat',
   'energy',
   'weather',
   'capture',
 ] as const satisfies readonly Effect['kind'][];
 const STATUSES = ['burn', 'weak'] as const satisfies readonly StatusId[];
+const STATS = ['atk', 'def', 'spAtk', 'spDef', 'spd', 'crit'] as const satisfies readonly Stat[];
 const WEATHERS = ['sun', 'rain', 'sand', 'hail'] as const satisfies readonly WeatherKind[];
 const BALL_TIERS = ['poke', 'great', 'ultra', 'master'] as const satisfies readonly BallTier[];
 const EFFECTIVENESS = [
@@ -107,6 +110,8 @@ interface PlaygroundArgs {
   count: number;
   stacks: number;
   status: StatusId;
+  stat: Stat;
+  stages: number;
   applyToSelf: boolean;
   weather: WeatherKind;
   turns: number;
@@ -139,6 +144,8 @@ export const Playground: StoryObj<PlaygroundArgs> = {
     count: 1,
     stacks: 1,
     status: 'burn',
+    stat: 'atk',
+    stages: 2,
     applyToSelf: false,
     weather: 'sun',
     turns: 4,
@@ -164,6 +171,8 @@ export const Playground: StoryObj<PlaygroundArgs> = {
     count: { control: { type: 'number', min: 1, max: 5, step: 1 } },
     stacks: { control: { type: 'number', min: 1, max: 5, step: 1 } },
     status: { control: 'select', options: STATUSES },
+    stat: { control: 'select', options: STATS },
+    stages: { control: { type: 'number', min: -6, max: 6, step: 1 } },
     applyToSelf: { control: 'boolean' },
     weather: { control: 'select', options: WEATHERS },
     turns: { control: { type: 'number', min: 1, max: 8, step: 1 } },
@@ -228,6 +237,13 @@ function buildEffect(a: PlaygroundArgs): Effect {
         target: a.applyToSelf ? 'self' : 'foe',
         status: a.status,
         stacks: a.stacks,
+      };
+    case 'stat':
+      return {
+        kind: 'stat',
+        target: a.applyToSelf ? 'self' : 'foe',
+        stat: a.stat,
+        stages: a.stages,
       };
     case 'energy':
       return { kind: 'energy', amount: a.amount, when: a.energyWhen };

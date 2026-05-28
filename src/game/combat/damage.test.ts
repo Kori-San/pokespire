@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { BaseStats, Combatant, PokeType, StatusInstance, Weather } from '@/types';
+import { EMPTY_STAGES } from '@/types';
 import { calcDamage } from './damage';
 
 const stats = (atk: number, def: number): BaseStats => ({
@@ -29,6 +30,7 @@ function mon(
     hp: 100,
     block: 0,
     statuses,
+    stages: { ...EMPTY_STAGES },
   };
 }
 

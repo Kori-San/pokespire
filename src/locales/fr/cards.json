@@ -6,6 +6,10 @@
     "draw": "Pioche {{count}}.",
     "applyStatus": "Inflige {{stacks}} {{status}}.",
     "applyStatusSelf": "Inflige {{stacks}} {{status}} (à soi).",
+    "statRaiseSelf": "Augmente {{stat}} de {{stages}}.",
+    "statRaiseFoe": "Augmente {{stat}} de l'ennemi de {{stages}}.",
+    "statLowerSelf": "Baisse {{stat}} de {{stages}}.",
+    "statLowerFoe": "Baisse {{stat}} de l'ennemi de {{stages}}.",
     "energy": "Gagne {{value}} d'énergie.",
     "weather": "Invoque {{weather}}.",
     "capture": "{{percent}}% de capture."
@@ -20,6 +24,15 @@
   "status": {
     "burn": "Brûlure",
     "weak": "Affaibli"
+  },
+  "stat": {
+    "hp": "PV",
+    "atk": "Attaque",
+    "def": "Défense",
+    "spAtk": "Atq. Spé.",
+    "spDef": "Déf. Spé.",
+    "spd": "Vitesse",
+    "crit": "Critique"
   },
   "weather": {
     "sun": "Plein Soleil",

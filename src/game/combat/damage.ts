@@ -1,4 +1,5 @@
 import type { Combatant, MoveCategory, PokeType, Weather } from '@/types';
+import { stageMultiplier } from '@/types';
 import { typeEffectiveness } from '@/data/typeChart';
 
 export const STAB_MULTIPLIER = 1.25;
@@ -84,8 +85,10 @@ export function calcDamage({
   const weakMod = attacker.statuses.some((s) => s.id === 'weak') ? WEAK_MULTIPLIER : 1;
   const weatherMod = weatherMultiplier(cardType, weather);
   const lvl = levelScale(attacker.level);
-  const atkStat = category === 'special' ? attacker.baseStats.spAtk : attacker.baseStats.atk;
-  const defStat = category === 'special' ? defender.baseStats.spDef : defender.baseStats.def;
+  const atkKey = category === 'special' ? 'spAtk' : 'atk';
+  const defKey = category === 'special' ? 'spDef' : 'def';
+  const atkStat = attacker.baseStats[atkKey] * stageMultiplier(attacker.stages[atkKey]);
+  const defStat = defender.baseStats[defKey] * stageMultiplier(defender.stages[defKey]);
   const atk = atkScale(atkStat);
   const def = defScale(defStat);
 

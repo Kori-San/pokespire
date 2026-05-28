@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Combatant, StatusInstance } from '@/types';
+import { EMPTY_STAGES } from '@/types';
 import { applyStatus } from '@/data/statuses';
 import { tickStatuses } from './statusTick';
 
@@ -16,6 +17,7 @@ function mon(statuses: StatusInstance[], hp = 100): Combatant {
     hp,
     block: 0,
     statuses,
+    stages: { ...EMPTY_STAGES },
   };
 }
 

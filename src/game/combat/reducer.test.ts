@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Combatant, CombatState, PokeType } from '@/types';
+import { EMPTY_STAGES } from '@/types';
 import { STARTER_DECK } from '@/data/cards';
 import { combatReducer, createCombat, HAND_SIZE, START_ENERGY } from './reducer';
 
@@ -16,6 +17,7 @@ function mon(overrides: Partial<Combatant> = {}): Combatant {
     hp: 100,
     block: 0,
     statuses: [],
+    stages: { ...EMPTY_STAGES },
     ...overrides,
   };
 }
@@ -88,6 +90,14 @@ describe('combatReducer — SWITCH', () => {
     const s = state({ team: [mon(), mon({ name: 'b', hp: 0 })] });
     const out = combatReducer(s, { type: 'SWITCH', teamIndex: 1 });
     expect(out).toBe(s);
+  });
+
+  it('resets the outgoing mon stat-stages to zero on switch-out', () => {
+    const s = state({
+      team: [mon({ stages: { ...EMPTY_STAGES, atk: 4, crit: 2 } }), mon({ name: 'b' })],
+    });
+    const out = combatReducer(s, { type: 'SWITCH', teamIndex: 1 });
+    expect(out.team[0]?.stages).toEqual(EMPTY_STAGES);
   });
 });
 

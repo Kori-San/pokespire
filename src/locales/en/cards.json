@@ -6,6 +6,10 @@
     "draw": "Draw {{count}}.",
     "applyStatus": "Apply {{stacks}} {{status}}.",
     "applyStatusSelf": "Apply {{stacks}} {{status}} (self).",
+    "statRaiseSelf": "Raise own {{stat}} by {{stages}}.",
+    "statRaiseFoe": "Raise foe's {{stat}} by {{stages}}.",
+    "statLowerSelf": "Lower own {{stat}} by {{stages}}.",
+    "statLowerFoe": "Lower foe's {{stat}} by {{stages}}.",
     "energy": "Gain {{value}} energy.",
     "weather": "Summon {{weather}}.",
     "capture": "{{percent}}% catch chance."
@@ -20,6 +24,15 @@
   "status": {
     "burn": "Burn",
     "weak": "Weak"
+  },
+  "stat": {
+    "hp": "HP",
+    "atk": "Attack",
+    "def": "Defense",
+    "spAtk": "Sp. Atk",
+    "spDef": "Sp. Def",
+    "spd": "Speed",
+    "crit": "Crit"
   },
   "weather": {
     "sun": "Harsh Sunlight",

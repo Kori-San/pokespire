@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Combatant } from '@/types';
+import { EMPTY_STAGES } from '@/types';
 import { rollIntent } from './intent';
 
 const enemy: Combatant = {
@@ -14,6 +15,7 @@ const enemy: Combatant = {
   hp: 30,
   block: 0,
   statuses: [],
+  stages: { ...EMPTY_STAGES },
 };
 
 describe('rollIntent', () => {

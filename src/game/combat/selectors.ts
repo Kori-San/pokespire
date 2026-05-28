@@ -1,4 +1,4 @@
-import type { CardDef, CombatState, StatusId, WeatherKind } from '@/types';
+import type { CardDef, CombatState, Stat, StatusId, WeatherKind } from '@/types';
 import { CARDS } from '@/data/cards';
 import { calcCaptureChance } from './capture';
 import { calcDamage, type DamageBreakdown } from './damage';
@@ -108,6 +108,7 @@ export type EffectLine =
   | { kind: 'heal'; value: number }
   | { kind: 'draw'; count: number }
   | { kind: 'applyStatus'; status: StatusId; stacks: number; self: boolean }
+  | { kind: 'stat'; stat: Stat; stages: number; self: boolean }
   | { kind: 'energy'; value: number }
   | { kind: 'weather'; weather: WeatherKind }
   | { kind: 'capture'; percent: number };
@@ -138,6 +139,14 @@ export function selectCardLines(card: CardDef, view: ComputedCardView): EffectLi
           kind: 'applyStatus',
           status: e.status,
           stacks: e.stacks,
+          self: e.target === 'self',
+        });
+        break;
+      case 'stat':
+        lines.push({
+          kind: 'stat',
+          stat: e.stat,
+          stages: e.stages,
           self: e.target === 'self',
         });
         break;

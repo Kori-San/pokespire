@@ -1,8 +1,17 @@
-import type { CardDef, Combatant, CombatState, Effect } from '@/types';
+import type { CardDef, Combatant, CombatState, Effect, StatStages } from '@/types';
+import { critChance, CRIT_MULTIPLIER } from '@/types';
 import { applyStatus } from '@/data/statuses';
 import { calcCaptureChance, rollCapture } from './capture';
 import { calcDamage } from './damage';
 import { drawCards } from './deck';
+
+const STAGE_MIN = -6;
+const STAGE_MAX = 6;
+
+function bumpStage(stages: StatStages, stat: keyof StatStages, delta: number): StatStages {
+  const next = Math.max(STAGE_MIN, Math.min(STAGE_MAX, stages[stat] + delta));
+  return { ...stages, [stat]: next };
+}
 
 function activeOf(state: CombatState): Combatant {
   const mon = state.team[state.activeIndex];
@@ -29,16 +38,19 @@ export function applyEffect(
 ): CombatState {
   switch (effect.kind) {
     case 'damage': {
+      const attacker = activeOf(state);
       const { final } = calcDamage({
         amount: effect.amount,
         cardType: card.type,
         category: card.category,
-        attacker: activeOf(state),
+        attacker,
         defender: state.enemy,
         weather: state.weather,
       });
-      const absorbed = Math.min(state.enemy.block, final);
-      const hp = Math.max(0, state.enemy.hp - (final - absorbed));
+      const crit = rng() < critChance(attacker.stages.crit);
+      const dealt = crit ? Math.round(final * CRIT_MULTIPLIER) : final;
+      const absorbed = Math.min(state.enemy.block, dealt);
+      const hp = Math.max(0, state.enemy.hp - (dealt - absorbed));
       const enemy = { ...state.enemy, block: state.enemy.block - absorbed, hp };
       return { ...state, enemy, outcome: hp <= 0 ? 'win' : state.outcome };
     }
@@ -71,6 +83,19 @@ export function applyEffect(
         enemy: {
           ...state.enemy,
           statuses: applyStatus(state.enemy.statuses, effect.status, effect.stacks),
+        },
+      };
+    }
+    case 'stat': {
+      if (effect.target === 'self') {
+        const a = activeOf(state);
+        return setActive(state, { ...a, stages: bumpStage(a.stages, effect.stat, effect.stages) });
+      }
+      return {
+        ...state,
+        enemy: {
+          ...state.enemy,
+          stages: bumpStage(state.enemy.stages, effect.stat, effect.stages),
         },
       };
     }

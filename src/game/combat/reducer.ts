@@ -1,4 +1,5 @@
 import type { CombatAction, Combatant, CombatState } from '@/types';
+import { EMPTY_STAGES } from '@/types';
 import { CARDS } from '@/data/cards';
 import { applyStatus } from '@/data/statuses';
 import { rngFrom, type SeededRng } from '@/game/run/rng';
@@ -91,7 +92,10 @@ function switchTo(state: CombatState, teamIndex: number): CombatState {
   if (teamIndex === state.activeIndex) return state;
   const target = state.team[teamIndex];
   if (!target || target.hp <= 0 || state.energy < SWITCH_COST) return state;
-  const team = state.team.map((mon, i) => (i === state.activeIndex ? { ...mon, block: 0 } : mon));
+  // Outgoing mon loses block and resets stat-stages (canon: stages don't persist on bench).
+  const team = state.team.map((mon, i) =>
+    i === state.activeIndex ? { ...mon, block: 0, stages: { ...EMPTY_STAGES } } : mon,
+  );
   return { ...state, team, activeIndex: teamIndex, energy: state.energy - SWITCH_COST };
 }
 

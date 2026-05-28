@@ -64,4 +64,14 @@ export const NORMAL_CARDS: CardDef[] = [
     rarity: 'epic',
     effects: [{ kind: 'heal', amount: 10 }],
   },
+  {
+    id: 'swordsDance',
+    name: 'SWORDS DANCE',
+    type: 'normal',
+    cost: 1,
+    kind: 'SKL',
+    category: 'status',
+    rarity: 'rare',
+    effects: [{ kind: 'stat', target: 'self', stat: 'atk', stages: 2 }],
+  },
 ];
