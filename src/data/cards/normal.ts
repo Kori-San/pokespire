@@ -8,6 +8,7 @@ export const NORMAL_CARDS: CardDef[] = [
     cost: 1,
     kind: 'ATK',
     category: 'physical',
+    rarity: 'common',
     effects: [{ kind: 'damage', amount: 8 }],
   },
   {
@@ -17,6 +18,7 @@ export const NORMAL_CARDS: CardDef[] = [
     cost: 0,
     kind: 'ATK',
     category: 'physical',
+    rarity: 'common',
     effects: [{ kind: 'damage', amount: 5 }],
   },
   {
@@ -26,6 +28,7 @@ export const NORMAL_CARDS: CardDef[] = [
     cost: 1,
     kind: 'SKL',
     category: 'status',
+    rarity: 'common',
     effects: [{ kind: 'block', amount: 6 }],
   },
   {
@@ -35,6 +38,7 @@ export const NORMAL_CARDS: CardDef[] = [
     cost: 0,
     kind: 'SKL',
     category: 'status',
+    rarity: 'common',
     effects: [{ kind: 'applyStatus', target: 'foe', status: 'weak', stacks: 1 }],
   },
   {
@@ -44,6 +48,7 @@ export const NORMAL_CARDS: CardDef[] = [
     cost: 1,
     kind: 'SKL',
     category: 'status',
+    rarity: 'common',
     effects: [
       { kind: 'draw', count: 1 },
       { kind: 'energy', amount: 1, when: 'now' },
@@ -56,6 +61,7 @@ export const NORMAL_CARDS: CardDef[] = [
     cost: 1,
     kind: 'SKL',
     category: 'status',
+    rarity: 'epic',
     effects: [{ kind: 'heal', amount: 10 }],
   },
 ];

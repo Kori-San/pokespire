@@ -13,6 +13,7 @@ export const BALL_CARDS: CardDef[] = [
     cost: 1,
     kind: 'BALL',
     category: 'status',
+    rarity: 'common',
     effects: [{ kind: 'capture', ballTier: 'poke' }],
   },
   {
@@ -22,6 +23,7 @@ export const BALL_CARDS: CardDef[] = [
     cost: 2,
     kind: 'BALL',
     category: 'status',
+    rarity: 'uncommon',
     effects: [{ kind: 'capture', ballTier: 'great' }],
   },
 ];

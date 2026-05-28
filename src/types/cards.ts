@@ -6,6 +6,17 @@ export type BallTier = 'poke' | 'great' | 'ultra' | 'master';
 export type CardKind = 'ATK' | 'SKL' | 'PWR' | 'BALL' | 'ITEM';
 
 /**
+ * Pokespire rarity tied to canonical move PP — the rarer it is, the fewer times
+ * canon lets you use it.
+ *   - `common`   ↔ 30–40 PP (Tackle, Ember, Water Gun, Gust)
+ *   - `uncommon` ↔ 20–25 PP (Flamethrower, Surf, Calm Mind)
+ *   - `rare`     ↔ 10–15 PP (Fire Blast, Swords Dance, Dragon Dance)
+ *   - `epic`     ↔  5  PP   (Hyper Beam, Recover, Sunny Day, Mega Evolve, Dynamax)
+ * Drives reward-table offer rates. See wiki/cards.md § Rarity.
+ */
+export type Rarity = 'common' | 'uncommon' | 'rare' | 'epic';
+
+/**
  * Canonical Gen-IV move category — selects which stat pair the damage formula reads.
  * Physical → atk/def, special → spAtk/spDef. Status covers every non-damaging card
  * (SKL / PWR / BALL). The HGSS icon at `public/sprites/move-category/<category>.png`
@@ -30,6 +41,7 @@ export interface CardDef {
   cost: number;
   kind: CardKind;
   category: MoveCategory;
+  rarity: Rarity;
   /**
    * The card's effects hold **base** values (base damage, base stacks/turns). The on-card
    * description is generated live from these — substituting the *computed* value for the

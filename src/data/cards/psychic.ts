@@ -8,6 +8,7 @@ export const PSYCHIC_CARDS: CardDef[] = [
     cost: 1,
     kind: 'ATK',
     category: 'special',
+    rarity: 'uncommon',
     effects: [{ kind: 'damage', amount: 9 }],
   },
 ];

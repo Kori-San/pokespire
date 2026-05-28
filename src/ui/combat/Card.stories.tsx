@@ -6,6 +6,7 @@ import type {
   Effect,
   MoveCategory,
   PokeType,
+  Rarity,
   StatusId,
   WeatherKind,
 } from '@/types';
@@ -21,6 +22,7 @@ const ember: CardDef = {
   cost: 1,
   kind: 'ATK',
   category: 'special',
+  rarity: 'uncommon',
   effects: [
     { kind: 'damage', amount: 8 },
     { kind: 'applyStatus', target: 'foe', status: 'burn', stacks: 1 },
@@ -34,6 +36,7 @@ const pokeBall: CardDef = {
   cost: 1,
   kind: 'BALL',
   category: 'status',
+  rarity: 'common',
   effects: [{ kind: 'capture', ballTier: 'poke' }],
 };
 
@@ -70,6 +73,7 @@ export const CaptureBall: Story = {
 
 const CARD_KINDS = ['ATK', 'SKL', 'PWR', 'BALL', 'ITEM'] as const satisfies readonly CardKind[];
 const CATEGORIES = ['physical', 'special', 'status'] as const satisfies readonly MoveCategory[];
+const RARITIES = ['common', 'uncommon', 'rare', 'epic'] as const satisfies readonly Rarity[];
 const EFFECT_KINDS = [
   'damage',
   'block',
@@ -97,6 +101,7 @@ interface PlaygroundArgs {
   cost: number;
   kind: CardKind;
   category: MoveCategory;
+  rarity: Rarity;
   effect: Effect['kind'];
   amount: number;
   count: number;
@@ -128,6 +133,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
     cost: 1,
     kind: 'ATK',
     category: 'special',
+    rarity: 'uncommon',
     effect: 'damage',
     amount: 8,
     count: 1,
@@ -152,6 +158,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
     cost: { control: { type: 'number', min: 0, max: 3, step: 1 } },
     kind: { control: 'select', options: CARD_KINDS },
     category: { control: 'inline-radio', options: CATEGORIES },
+    rarity: { control: 'inline-radio', options: RARITIES },
     effect: { control: 'select', options: EFFECT_KINDS },
     amount: { control: { type: 'number', min: 0, max: 50, step: 1 } },
     count: { control: { type: 'number', min: 1, max: 5, step: 1 } },
@@ -184,6 +191,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
       cost: args.cost,
       kind: args.kind,
       category: args.category,
+      rarity: args.rarity,
       effects,
     };
     const view: ComputedCardView = {

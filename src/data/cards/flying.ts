@@ -8,6 +8,7 @@ export const FLYING_CARDS: CardDef[] = [
     cost: 1,
     kind: 'ATK',
     category: 'special',
+    rarity: 'common',
     effects: [{ kind: 'damage', amount: 8 }],
   },
 ];

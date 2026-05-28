@@ -8,6 +8,7 @@ export const GRASS_CARDS: CardDef[] = [
     cost: 1,
     kind: 'ATK',
     category: 'physical',
+    rarity: 'uncommon',
     effects: [{ kind: 'damage', amount: 9 }],
   },
 ];

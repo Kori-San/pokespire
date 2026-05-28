@@ -47,6 +47,7 @@ const card = (type: PokeType, ...effects: Effect[]): CardDef => ({
   cost: 1,
   kind: 'ATK',
   category: 'physical',
+  rarity: 'common',
   effects,
 });
 
