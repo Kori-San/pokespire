@@ -6,8 +6,8 @@ const stats = (atk: number, def: number): BaseStats => ({
   hp: 45,
   atk,
   def,
-  spAtk: 50,
-  spDef: 50,
+  spAtk: atk,
+  spDef: def,
   spd: 50,
 });
 
@@ -37,6 +37,7 @@ describe('calcDamage', () => {
     const r = calcDamage({
       amount: 10,
       cardType: 'fire',
+      category: 'special',
       attacker: mon(['fire'], 5, stats(52, 43)),
       defender: mon(['normal'], 5, stats(56, 35)),
     });
@@ -48,6 +49,7 @@ describe('calcDamage', () => {
     const r = calcDamage({
       amount: 10,
       cardType: 'fire',
+      category: 'special',
       attacker: mon(['fire'], 10, stats(52, 43)),
       defender: mon(['normal'], 10, stats(56, 35)),
     });
@@ -58,6 +60,7 @@ describe('calcDamage', () => {
     const r = calcDamage({
       amount: 10,
       cardType: 'fire',
+      category: 'special',
       attacker: mon(['fire'], 5, stats(52, 43)),
       defender: mon(['grass', 'poison'], 5, stats(49, 49)),
     });
@@ -69,6 +72,7 @@ describe('calcDamage', () => {
     const r = calcDamage({
       amount: 10,
       cardType: 'fire',
+      category: 'special',
       attacker: mon(['psychic'], 5, stats(110, 90)),
       defender: mon(['normal'], 5, stats(56, 35)),
     });
@@ -80,6 +84,7 @@ describe('calcDamage', () => {
     const r = calcDamage({
       amount: 10,
       cardType: 'normal',
+      category: 'physical',
       attacker: mon(['normal'], 5, stats(56, 35)),
       defender: mon(['ghost', 'poison'], 5, stats(60, 60)),
     });
@@ -93,12 +98,14 @@ describe('calcDamage', () => {
     const base = calcDamage({
       amount: 20,
       cardType: 'fire',
+      category: 'special',
       attacker: mon(['fire'], 10, stats(80, 80)),
       defender: mon(['normal'], 10, stats(60, 60)),
     });
     const weak = calcDamage({
       amount: 20,
       cardType: 'fire',
+      category: 'special',
       attacker: mon(['fire'], 10, stats(80, 80), [{ id: 'weak', stacks: 1 }]),
       defender: mon(['normal'], 10, stats(60, 60)),
     });
@@ -111,6 +118,7 @@ describe('calcDamage', () => {
     const fire = calcDamage({
       amount: 10,
       cardType: 'fire',
+      category: 'special',
       attacker: mon(['fire'], 10, stats(60, 60)),
       defender: mon(['normal'], 10, stats(60, 60)),
       weather: sun,
@@ -118,6 +126,7 @@ describe('calcDamage', () => {
     const water = calcDamage({
       amount: 10,
       cardType: 'water',
+      category: 'special',
       attacker: mon(['water'], 10, stats(60, 60)),
       defender: mon(['normal'], 10, stats(60, 60)),
       weather: sun,
@@ -130,9 +139,45 @@ describe('calcDamage', () => {
     const r = calcDamage({
       amount: 0,
       cardType: 'fire',
+      category: 'special',
       attacker: mon(['fire'], 5, stats(52, 43)),
       defender: mon(['normal'], 5, stats(56, 35)),
     });
     expect(r.final).toBe(0);
+  });
+
+  it('special cards read spAtk / spDef, physical read atk / def', () => {
+    const attacker = mon(['fire'], 10, {
+      hp: 45,
+      atk: 50,
+      def: 50,
+      spAtk: 130,
+      spDef: 50,
+      spd: 50,
+    });
+    const defender = mon(['normal'], 10, {
+      hp: 45,
+      atk: 50,
+      def: 130,
+      spAtk: 50,
+      spDef: 50,
+      spd: 50,
+    });
+    const special = calcDamage({
+      amount: 20,
+      cardType: 'fire',
+      category: 'special',
+      attacker,
+      defender,
+    });
+    const physical = calcDamage({
+      amount: 20,
+      cardType: 'fire',
+      category: 'physical',
+      attacker,
+      defender,
+    });
+    // special sees attacker.spAtk (high) and defender.spDef (low) → bigger number
+    expect(special.final).toBeGreaterThan(physical.final);
   });
 });

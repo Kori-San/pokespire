@@ -67,6 +67,7 @@ export function selectComputedCardView(
     const breakdown = calcDamage({
       amount: dmg.amount,
       cardType: card.type,
+      category: card.category,
       attacker,
       defender: state.enemy,
       weather: state.weather,

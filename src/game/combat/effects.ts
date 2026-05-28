@@ -32,6 +32,7 @@ export function applyEffect(
       const { final } = calcDamage({
         amount: effect.amount,
         cardType: card.type,
+        category: card.category,
         attacker: activeOf(state),
         defender: state.enemy,
         weather: state.weather,

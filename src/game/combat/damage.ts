@@ -1,4 +1,4 @@
-import type { Combatant, PokeType, Weather } from '@/types';
+import type { Combatant, MoveCategory, PokeType, Weather } from '@/types';
 import { typeEffectiveness } from '@/data/typeChart';
 
 export const STAB_MULTIPLIER = 1.25;
@@ -54,6 +54,13 @@ export interface DamageBreakdown {
 export interface DamageParams {
   amount: number;
   cardType: PokeType;
+  /**
+   * Selects which stat pair the formula reads. `physical` → attacker.atk / defender.def;
+   * `special` → attacker.spAtk / defender.spDef. `status` cards don't deal damage and
+   * never reach this function — but the type is permitted so callers can pass `card.category`
+   * directly without narrowing.
+   */
+  category: MoveCategory;
   attacker: Combatant;
   defender: Combatant;
   weather?: Weather | null;
@@ -64,6 +71,7 @@ export interface DamageParams {
 export function calcDamage({
   amount,
   cardType,
+  category,
   attacker,
   defender,
   weather = null,
@@ -76,8 +84,10 @@ export function calcDamage({
   const weakMod = attacker.statuses.some((s) => s.id === 'weak') ? WEAK_MULTIPLIER : 1;
   const weatherMod = weatherMultiplier(cardType, weather);
   const lvl = levelScale(attacker.level);
-  const atk = atkScale(attacker.baseStats.atk);
-  const def = defScale(defender.baseStats.def);
+  const atkStat = category === 'special' ? attacker.baseStats.spAtk : attacker.baseStats.atk;
+  const defStat = category === 'special' ? defender.baseStats.spDef : defender.baseStats.def;
+  const atk = atkScale(atkStat);
+  const def = defScale(defStat);
 
   const product = amount * stab * eff * weakMod * weatherMod * itemMod * lvl * atk * def;
   const final = amount > 0 ? Math.max(1, Math.round(product)) : 0;
