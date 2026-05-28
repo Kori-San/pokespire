@@ -28,11 +28,13 @@
   "vineWhip": "VINE WHIP",
   "energyBall": "ENERGY BALL",
   "leafBlade": "LEAF BLADE",
+  "gigaDrain": "GIGA DRAIN",
   "growth": "GROWTH",
 
   "thunderShock": "THUNDER SHOCK",
   "thunderbolt": "THUNDERBOLT",
   "chargeBeam": "CHARGE BEAM",
+  "parabolicCharge": "PARABOLIC CHARGE",
 
   "iceBeam": "ICE BEAM",
   "icicleCrash": "ICICLE CRASH",
@@ -40,6 +42,7 @@
 
   "doubleKick": "DOUBLE KICK",
   "closeCombat": "CLOSE COMBAT",
+  "drainPunch": "DRAIN PUNCH",
   "bulkUp": "BULK UP",
 
   "sludgeBomb": "SLUDGE BOMB",
@@ -60,6 +63,7 @@
 
   "bugBuzz": "BUG BUZZ",
   "xScissor": "X-SCISSOR",
+  "leechLife": "LEECH LIFE",
   "quiverDance": "QUIVER DANCE",
 
   "powerGem": "POWER GEM",

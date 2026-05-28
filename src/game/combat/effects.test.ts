@@ -171,6 +171,21 @@ describe('applyEffect', () => {
     expect(critDealt).toBeGreaterThan(baseDealt);
   });
 
+  it('lifesteal deals damage and heals user for percent of the dealt amount', () => {
+    const s = state({ team: [mon({ hp: 50 })] });
+    const out = applyEffect(
+      s,
+      { kind: 'lifesteal', amount: 20, percent: 50 },
+      card('normal'),
+      rng(0.99),
+    );
+    const dealt = 100 - out.enemy.hp;
+    const healed = (out.team[0]?.hp ?? 0) - 50;
+    // 50% of dealt damage, rounded.
+    expect(healed).toBe(Math.round(dealt * 0.5));
+    expect(out.team[0]?.hp).toBeLessThanOrEqual(100);
+  });
+
   it('capture succeeds or fails based on the roll', () => {
     const s = state({ enemy: mon({ name: 'foe', hp: 5 }) });
     const caught = applyEffect(s, { kind: 'capture', ballTier: 'ultra' }, card('normal'), rng(0));

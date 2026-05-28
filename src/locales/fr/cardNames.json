@@ -28,11 +28,13 @@
   "vineWhip": "FOUET LIANES",
   "energyBall": "ÉCO-SPHÈRE",
   "leafBlade": "LAME-FEUILLE",
+  "gigaDrain": "GIGA-SANGSUE",
   "growth": "CROISSANCE",
 
   "thunderShock": "ÉCLAIR",
   "thunderbolt": "TONNERRE",
   "chargeBeam": "RAYON CHARGE",
+  "parabolicCharge": "PARABOCHARGE",
 
   "iceBeam": "LASER GLACE",
   "icicleCrash": "ÉBOUL-GLACE",
@@ -40,6 +42,7 @@
 
   "doubleKick": "DOUBLE PIED",
   "closeCombat": "CLOSE COMBAT",
+  "drainPunch": "POING DRAIN",
   "bulkUp": "GONFLETTE",
 
   "sludgeBomb": "BOMBE-BEURK",
@@ -60,6 +63,7 @@
 
   "bugBuzz": "BOURDON",
   "xScissor": "PLAIE CROIX",
+  "leechLife": "VAMPIRISME",
   "quiverDance": "DANSE-PAPILLON",
 
   "powerGem": "JOYAU DE VIE",

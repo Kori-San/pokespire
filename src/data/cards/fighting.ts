@@ -26,6 +26,16 @@ export const FIGHTING_CARDS: CardDef[] = [
     ],
   },
   {
+    id: 'drainPunch',
+    name: 'DRAIN PUNCH',
+    type: 'fighting',
+    cost: 2,
+    kind: 'ATK',
+    category: 'physical',
+    rarity: 'rare',
+    effects: [{ kind: 'lifesteal', amount: 16, percent: 50 }],
+  },
+  {
     id: 'bulkUp',
     name: 'BULK UP',
     type: 'fighting',

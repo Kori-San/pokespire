@@ -35,9 +35,6 @@ export const FAIRY_CARDS: CardDef[] = [
     kind: 'ATK',
     category: 'special',
     rarity: 'rare',
-    effects: [
-      { kind: 'damage', amount: 10 },
-      { kind: 'heal', amount: 8 },
-    ],
+    effects: [{ kind: 'lifesteal', amount: 10, percent: 75 }],
   },
 ];

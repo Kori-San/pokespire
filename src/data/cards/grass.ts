@@ -35,6 +35,16 @@ export const GRASS_CARDS: CardDef[] = [
     effects: [{ kind: 'damage', amount: 20 }],
   },
   {
+    id: 'gigaDrain',
+    name: 'GIGA DRAIN',
+    type: 'grass',
+    cost: 2,
+    kind: 'ATK',
+    category: 'special',
+    rarity: 'rare',
+    effects: [{ kind: 'lifesteal', amount: 16, percent: 50 }],
+  },
+  {
     id: 'growth',
     name: 'GROWTH',
     type: 'grass',

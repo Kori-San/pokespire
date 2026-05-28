@@ -54,6 +54,35 @@ export function applyEffect(
       const enemy = { ...state.enemy, block: state.enemy.block - absorbed, hp };
       return { ...state, enemy, outcome: hp <= 0 ? 'win' : state.outcome };
     }
+    case 'lifesteal': {
+      const attacker = activeOf(state);
+      const { final } = calcDamage({
+        amount: effect.amount,
+        cardType: card.type,
+        category: card.category,
+        attacker,
+        defender: state.enemy,
+        weather: state.weather,
+      });
+      const crit = rng() < critChance(attacker.stages.crit);
+      const dealt = crit ? Math.round(final * CRIT_MULTIPLIER) : final;
+      const absorbed = Math.min(state.enemy.block, dealt);
+      const hp = Math.max(0, state.enemy.hp - (dealt - absorbed));
+      const enemy = { ...state.enemy, block: state.enemy.block - absorbed, hp };
+      // Heal scales with the rolled `dealt` so STAB / super-effective / crit all amplify the
+      // restoration too. Block still trims HP damage but not the heal, by design.
+      const healed = Math.round((dealt * effect.percent) / 100);
+      const healedAttacker = {
+        ...attacker,
+        hp: Math.min(attacker.maxHp, attacker.hp + healed),
+      };
+      const stepped: CombatState = {
+        ...state,
+        enemy,
+        outcome: hp <= 0 ? 'win' : state.outcome,
+      };
+      return setActive(stepped, healedAttacker);
+    }
     case 'block': {
       const a = activeOf(state);
       return setActive(state, { ...a, block: a.block + effect.amount });

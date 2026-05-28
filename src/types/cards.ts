@@ -26,6 +26,13 @@ export type MoveCategory = 'physical' | 'special' | 'status';
 
 export type Effect =
   | { kind: 'damage'; amount: number }
+  /**
+   * Damage + percent-of-damage heal in one effect. The full damage formula runs (STAB,
+   * type-eff, stat-stages, crit roll), then the attacker heals `percent`% of the final
+   * dealt amount. Scales naturally with every multiplier — a STAB super-effective lifesteal
+   * heals proportionally more. Reads as "Deal X damage, recover Y HP." on the card.
+   */
+  | { kind: 'lifesteal'; amount: number; percent: number }
   | { kind: 'block'; amount: number }
   | { kind: 'heal'; amount: number }
   | { kind: 'draw'; count: number }

@@ -25,6 +25,16 @@ export const BUG_CARDS: CardDef[] = [
     effects: [{ kind: 'damage', amount: 16 }],
   },
   {
+    id: 'leechLife',
+    name: 'LEECH LIFE',
+    type: 'bug',
+    cost: 2,
+    kind: 'ATK',
+    category: 'physical',
+    rarity: 'rare',
+    effects: [{ kind: 'lifesteal', amount: 16, percent: 50 }],
+  },
+  {
     id: 'quiverDance',
     name: 'QUIVER DANCE',
     type: 'bug',

@@ -73,6 +73,8 @@ function renderLine(line: EffectLine, t: TFunction): string {
   switch (line.kind) {
     case 'damage':
       return t('cards:lines.damage', { value: line.value });
+    case 'lifesteal':
+      return t('cards:lines.lifesteal', { value: line.value, heal: line.heal });
     case 'block':
       return t('cards:lines.block', { value: line.value });
     case 'heal':

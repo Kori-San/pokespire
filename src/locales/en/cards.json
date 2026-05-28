@@ -1,6 +1,7 @@
 {
   "lines": {
     "damage": "Deal {{value}} damage.",
+    "lifesteal": "Deal {{value}} damage, recover {{heal}} HP.",
     "block": "Gain {{value}} Block.",
     "heal": "Heal {{value}} HP.",
     "draw": "Draw {{count}}.",

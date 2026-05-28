@@ -22,6 +22,16 @@ export const ELECTRIC_CARDS: CardDef[] = [
     effects: [{ kind: 'damage', amount: 18 }],
   },
   {
+    id: 'parabolicCharge',
+    name: 'PARABOLIC CHARGE',
+    type: 'electric',
+    cost: 1,
+    kind: 'ATK',
+    category: 'special',
+    rarity: 'rare',
+    effects: [{ kind: 'lifesteal', amount: 12, percent: 50 }],
+  },
+  {
     id: 'chargeBeam',
     name: 'CHARGE BEAM',
     type: 'electric',

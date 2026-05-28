@@ -77,6 +77,7 @@ const CATEGORIES = ['physical', 'special', 'status'] as const satisfies readonly
 const RARITIES = ['common', 'uncommon', 'rare', 'epic'] as const satisfies readonly Rarity[];
 const EFFECT_KINDS = [
   'damage',
+  'lifesteal',
   'block',
   'heal',
   'draw',
@@ -107,6 +108,7 @@ interface PlaygroundArgs {
   rarity: Rarity;
   effect: Effect['kind'];
   amount: number;
+  lifestealPercent: number;
   count: number;
   stacks: number;
   status: StatusId;
@@ -141,6 +143,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
     rarity: 'uncommon',
     effect: 'damage',
     amount: 8,
+    lifestealPercent: 50,
     count: 1,
     stacks: 1,
     status: 'burn',
@@ -168,6 +171,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
     rarity: { control: 'inline-radio', options: RARITIES },
     effect: { control: 'select', options: EFFECT_KINDS },
     amount: { control: { type: 'number', min: 0, max: 50, step: 1 } },
+    lifestealPercent: { control: { type: 'number', min: 0, max: 100, step: 5 } },
     count: { control: { type: 'number', min: 1, max: 5, step: 1 } },
     stacks: { control: { type: 'number', min: 1, max: 5, step: 1 } },
     status: { control: 'select', options: STATUSES },
@@ -225,6 +229,8 @@ function buildEffect(a: PlaygroundArgs): Effect {
   switch (a.effect) {
     case 'damage':
       return { kind: 'damage', amount: a.amount };
+    case 'lifesteal':
+      return { kind: 'lifesteal', amount: a.amount, percent: a.lifestealPercent };
     case 'block':
       return { kind: 'block', amount: a.amount };
     case 'heal':
@@ -270,18 +276,18 @@ export const Gallery: StoryObj = {
       }}
     >
       {Object.values(CARDS).map((card) => {
-        const dmg = card.effects.find((e) => e.kind === 'damage');
+        const dmg = card.effects.find((e) => e.kind === 'damage' || e.kind === 'lifesteal');
         const cap = card.effects.find((e) => e.kind === 'capture');
         const view: ComputedCardView = {
           cardId: card.id,
           cost: card.cost,
           affordable: true,
-          ...(dmg?.kind === 'damage' && {
+          ...(dmg && {
             damage: {
               value: dmg.amount,
               effectiveness: 'neutral',
               stab: false,
-              tooltip: `${dmg.amount} base`,
+              tooltip: `${String(dmg.amount)} base`,
             },
           }),
           ...(cap?.kind === 'capture' && { capturePercent: 50 }),

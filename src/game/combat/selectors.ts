@@ -62,8 +62,10 @@ export function selectComputedCardView(
     affordable: state.energy >= card.cost,
   };
 
-  const dmg = card.effects.find((e) => e.kind === 'damage');
-  if (dmg?.kind === 'damage') {
+  // Both `damage` and `lifesteal` go through the same formula for live display — find
+  // either, pick the first one (cards in our pool only ever have one damage-shaped effect).
+  const dmg = card.effects.find((e) => e.kind === 'damage' || e.kind === 'lifesteal');
+  if (dmg) {
     const breakdown = calcDamage({
       amount: dmg.amount,
       cardType: card.type,
@@ -104,6 +106,7 @@ export function selectHandViews(state: CombatState): ComputedCardView[] {
 /** Structured description line for a card effect — translated at the UI layer (no strings here). */
 export type EffectLine =
   | { kind: 'damage'; value: number }
+  | { kind: 'lifesteal'; value: number; heal: number; percent: number }
   | { kind: 'block'; value: number }
   | { kind: 'heal'; value: number }
   | { kind: 'draw'; count: number }
@@ -125,6 +128,12 @@ export function selectCardLines(card: CardDef, view: ComputedCardView): EffectLi
       case 'damage':
         lines.push({ kind: 'damage', value: view.damage?.value ?? e.amount });
         break;
+      case 'lifesteal': {
+        const value = view.damage?.value ?? e.amount;
+        const heal = Math.round((value * e.percent) / 100);
+        lines.push({ kind: 'lifesteal', value, heal, percent: e.percent });
+        break;
+      }
       case 'block':
         lines.push({ kind: 'block', value: e.amount });
         break;

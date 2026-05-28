@@ -1,6 +1,7 @@
 {
   "lines": {
     "damage": "Inflige {{value}} dégâts.",
+    "lifesteal": "Inflige {{value}} dégâts, récupère {{heal}} PV.",
     "block": "Gagne {{value}} de Bouclier.",
     "heal": "Soigne {{value}} PV.",
     "draw": "Pioche {{count}}.",
