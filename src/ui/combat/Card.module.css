@@ -1,6 +1,9 @@
 .card {
-  --type-dark: color-mix(in srgb, var(--card-type) 65%, black);
-  --type-light: color-mix(in srgb, var(--card-type) 45%, white);
+  /* Local shades of the card's tint. Named --card-* to avoid colliding with the global
+   * --type-dark / --type-light (DARK is a real Pokémon type — the collision blanks the
+   * banner for dark-type cards). */
+  --card-shade: color-mix(in srgb, var(--card-type) 65%, black);
+  --card-highlight: color-mix(in srgb, var(--card-type) 45%, white);
   position: relative;
   display: flex;
   flex-direction: column;
@@ -15,7 +18,7 @@
   border-radius: 8px;
   box-shadow:
     inset 0 0 0 3px var(--card-type),
-    inset 0 0 0 5px var(--type-dark),
+    inset 0 0 0 5px var(--card-shade),
     0 4px 0 rgba(0, 0, 0, 0.3);
 }
 
@@ -44,7 +47,7 @@
   font-size: 9px;
   letter-spacing: 0.5px;
   text-align: center;
-  text-shadow: 1px 1px 0 var(--type-dark);
+  text-shadow: 1px 1px 0 var(--card-shade);
   border-radius: 2px;
 }
 
