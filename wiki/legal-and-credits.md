@@ -16,6 +16,7 @@ the credited sources and cached locally per-user.
 
 - **Fonts:** Press Start 2P and Pixelify Sans, both SIL Open Font License (OFL 1.1). License files in `public/fonts/` (`OFL-PressStart2P.txt`, `OFL-PixelifySans.txt`).
 - **UI chrome / tokens:** neutral GBA-era styling, no IP assets.
+- **Missingno fallback sprite** (`public/sprites/fallback/missingno.gif`) — fan work by RetroNC (DeviantArt).
 
 ## Code & asset tracking
 

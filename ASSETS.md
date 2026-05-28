@@ -7,6 +7,14 @@ owners (Nintendo / Game Freak / The Pokémon Company).
 See [`wiki/legal-and-credits.md`](wiki/legal-and-credits.md) for the player-facing
 in-game credits text.
 
+## Fallback sprites
+
+| Path                                    | Source                                                                                       | Refresh |
+| --------------------------------------- | -------------------------------------------------------------------------------------------- | ------- |
+| `public/sprites/fallback/missingno.gif` | _Missingno Sprite_ by [RetroNC](https://www.deviantart.com/retronc) on DeviantArt — fan work | manual  |
+
+Served by the sprite resolver when a species/form has no vendored animated sprite.
+
 ## Fonts
 
 | Path                                | Family         | License                   | Source                                                           |
