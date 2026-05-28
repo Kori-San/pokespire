@@ -1,0 +1,20 @@
+{
+  "tackle": "TACKLE",
+  "quickAttack": "QUICK ATTACK",
+  "ember": "EMBER",
+  "waterGun": "WATER GUN",
+  "vineWhip": "VINE WHIP",
+  "thunderShock": "THUNDER SHOCK",
+  "confusion": "CONFUSION",
+  "gust": "GUST",
+  "doubleKick": "DOUBLE KICK",
+  "harden": "HARDEN",
+  "withdraw": "WITHDRAW",
+  "growl": "GROWL",
+  "focusEnergy": "FOCUS ENERGY",
+  "recover": "RECOVER",
+  "sunnyDay": "SUNNY DAY",
+  "rainDance": "RAIN DANCE",
+  "pokeBall": "POKÉ BALL",
+  "greatBall": "GREAT BALL"
+}

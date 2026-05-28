@@ -17,15 +17,15 @@ interface CardProps {
 }
 
 /**
- * A hand card. Name + description are localized via `react-i18next` (`card.names.*`,
- * `card.lines.*`, `card.status.*`, `card.weather.*`); the description's numbers are
+ * A hand card. Name + description are localized via `react-i18next` (`cardNames:*`,
+ * `cards:lines.*`, `cards:status.*`, `cards:weather.*`); the description's numbers are
  * computed live for the current matchup, so the text always matches what the card does.
  */
 export function Card({ card, view, onPlay }: CardProps) {
   const { t } = useTranslation();
   const lines = selectCardLines(card, view);
   const description = lines.map((line) => renderLine(line, t)).join(' ');
-  const name = t(`card.names.${card.id}`, { defaultValue: card.name });
+  const name = t(`cardNames:${card.id}`, { defaultValue: card.name });
 
   return (
     <button
@@ -57,25 +57,25 @@ export function Card({ card, view, onPlay }: CardProps) {
 function renderLine(line: EffectLine, t: TFunction): string {
   switch (line.kind) {
     case 'damage':
-      return t('card.lines.damage', { value: line.value });
+      return t('cards:lines.damage', { value: line.value });
     case 'block':
-      return t('card.lines.block', { value: line.value });
+      return t('cards:lines.block', { value: line.value });
     case 'heal':
-      return t('card.lines.heal', { value: line.value });
+      return t('cards:lines.heal', { value: line.value });
     case 'draw':
-      return t('card.lines.draw', { count: line.count });
+      return t('cards:lines.draw', { count: line.count });
     case 'applyStatus': {
-      const status = t(`card.status.${line.status}`);
-      const key = line.self ? 'card.lines.applyStatusSelf' : 'card.lines.applyStatus';
+      const status = t(`cards:status.${line.status}`);
+      const key = line.self ? 'cards:lines.applyStatusSelf' : 'cards:lines.applyStatus';
       return t(key, { stacks: line.stacks, status });
     }
     case 'energy':
-      return t('card.lines.energy', { value: line.value });
+      return t('cards:lines.energy', { value: line.value });
     case 'weather': {
-      const weather = t(`card.weather.${line.weather}`);
-      return t('card.lines.weather', { weather });
+      const weather = t(`cards:weather.${line.weather}`);
+      return t('cards:lines.weather', { weather });
     }
     case 'capture':
-      return t('card.lines.capture', { percent: line.percent });
+      return t('cards:lines.capture', { percent: line.percent });
   }
 }

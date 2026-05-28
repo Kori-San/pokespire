@@ -1,0 +1,29 @@
+{
+  "lines": {
+    "damage": "Deal {{value}} damage.",
+    "block": "Gain {{value}} Block.",
+    "heal": "Heal {{value}} HP.",
+    "draw": "Draw {{count}}.",
+    "applyStatus": "Apply {{stacks}} {{status}}.",
+    "applyStatusSelf": "Apply {{stacks}} {{status}} (self).",
+    "energy": "Gain {{value}} energy.",
+    "weather": "Summon {{weather}}.",
+    "capture": "{{percent}}% catch chance."
+  },
+  "kind": {
+    "ATK": "ATK",
+    "SKL": "SKL",
+    "PWR": "PWR",
+    "BALL": "BALL"
+  },
+  "status": {
+    "burn": "Burn",
+    "weak": "Weak"
+  },
+  "weather": {
+    "sun": "Harsh Sunlight",
+    "rain": "Rain",
+    "sand": "Sandstorm",
+    "hail": "Hail"
+  }
+}

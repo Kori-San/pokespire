@@ -1,0 +1,29 @@
+{
+  "lines": {
+    "damage": "Inflige {{value}} dégâts.",
+    "block": "Gagne {{value}} de Bouclier.",
+    "heal": "Soigne {{value}} PV.",
+    "draw": "Pioche {{count}}.",
+    "applyStatus": "Inflige {{stacks}} {{status}}.",
+    "applyStatusSelf": "Inflige {{stacks}} {{status}} (à soi).",
+    "energy": "Gagne {{value}} d'énergie.",
+    "weather": "Invoque {{weather}}.",
+    "capture": "{{percent}}% de capture."
+  },
+  "kind": {
+    "ATK": "ATK",
+    "SKL": "SKL",
+    "PWR": "PWR",
+    "BALL": "BALL"
+  },
+  "status": {
+    "burn": "Brûlure",
+    "weak": "Affaibli"
+  },
+  "weather": {
+    "sun": "Plein Soleil",
+    "rain": "Pluie",
+    "sand": "Tempête de Sable",
+    "hail": "Grêle"
+  }
+}

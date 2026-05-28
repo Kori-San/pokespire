@@ -1,0 +1,20 @@
+{
+  "tackle": "CHARGE",
+  "quickAttack": "VIVE-ATTAQUE",
+  "ember": "FLAMMÈCHE",
+  "waterGun": "PISTOLET À O",
+  "vineWhip": "FOUET LIANES",
+  "thunderShock": "ÉCLAIR",
+  "confusion": "CHOC MENTAL",
+  "gust": "TORNADE",
+  "doubleKick": "DOUBLE PIED",
+  "harden": "ARMURE",
+  "withdraw": "REPLI",
+  "growl": "RUGISSEMENT",
+  "focusEnergy": "PUISSANCE",
+  "recover": "SOIN",
+  "sunnyDay": "ZÉNITH",
+  "rainDance": "DANSE PLUIE",
+  "pokeBall": "POKÉ BALL",
+  "greatBall": "SUPER BALL"
+}
