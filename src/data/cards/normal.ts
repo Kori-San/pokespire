@@ -1,0 +1,61 @@
+import type { CardDef } from '@/types';
+
+export const NORMAL_CARDS: CardDef[] = [
+  {
+    id: 'tackle',
+    name: 'TACKLE',
+    type: 'normal',
+    cost: 1,
+    kind: 'ATK',
+    category: 'physical',
+    effects: [{ kind: 'damage', amount: 8 }],
+  },
+  {
+    id: 'quickAttack',
+    name: 'QUICK ATTACK',
+    type: 'normal',
+    cost: 0,
+    kind: 'ATK',
+    category: 'physical',
+    effects: [{ kind: 'damage', amount: 5 }],
+  },
+  {
+    id: 'harden',
+    name: 'HARDEN',
+    type: 'normal',
+    cost: 1,
+    kind: 'SKL',
+    category: 'status',
+    effects: [{ kind: 'block', amount: 6 }],
+  },
+  {
+    id: 'growl',
+    name: 'GROWL',
+    type: 'normal',
+    cost: 0,
+    kind: 'SKL',
+    category: 'status',
+    effects: [{ kind: 'applyStatus', target: 'foe', status: 'weak', stacks: 1 }],
+  },
+  {
+    id: 'focusEnergy',
+    name: 'FOCUS ENERGY',
+    type: 'normal',
+    cost: 1,
+    kind: 'SKL',
+    category: 'status',
+    effects: [
+      { kind: 'draw', count: 1 },
+      { kind: 'energy', amount: 1, when: 'now' },
+    ],
+  },
+  {
+    id: 'recover',
+    name: 'RECOVER',
+    type: 'normal',
+    cost: 1,
+    kind: 'SKL',
+    category: 'status',
+    effects: [{ kind: 'heal', amount: 10 }],
+  },
+];
