@@ -1,0 +1,11 @@
+/*
+ * Storybook overrides — the app's global.css locks the body so the GBA-era layout doesn't
+ * scroll. Stories aren't the app: relax that so long galleries (e.g. the full card pool)
+ * are reachable.
+ */
+html,
+body,
+#storybook-root {
+  height: auto !important;
+  overflow: auto !important;
+}
