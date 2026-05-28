@@ -45,6 +45,11 @@ export function critChance(stage: number): number {
 
 export const CRIT_MULTIPLIER = 1.5;
 
+/** A Combatant's speed with stat-stages folded in — used for turn-order comparison. */
+export function effectiveSpeed(mon: Combatant): number {
+  return mon.baseStats.spd * stageMultiplier(mon.stages.spd);
+}
+
 export interface Weather {
   kind: WeatherKind;
   turnsLeft: number;
@@ -89,6 +94,12 @@ export interface CombatState {
   weather: Weather | null;
   rngState: number;
   outcome: CombatOutcome;
+  /**
+   * True when the enemy was faster than the active mon this turn and already executed its
+   * intent at turn start (before the player could play any cards). The end-of-turn flow
+   * then skips the enemy phase so the enemy still acts exactly once per turn.
+   */
+  enemyActed: boolean;
   log: string[];
 }
 

@@ -1,5 +1,5 @@
 import type { CombatAction, Combatant, CombatState } from '@/types';
-import { EMPTY_STAGES } from '@/types';
+import { EMPTY_STAGES, effectiveSpeed } from '@/types';
 import { CARDS } from '@/data/cards';
 import { applyStatus } from '@/data/statuses';
 import { rngFrom, type SeededRng } from '@/game/run/rng';
@@ -37,7 +37,7 @@ export function createCombat(opts: CreateCombatOptions): CombatState {
   const rng = rngFrom(opts.seed);
   const shuffled = shuffle(opts.deck, rng.next);
   const piles = drawCards({ draw: shuffled, hand: [], discard: [] }, HAND_SIZE, rng.next);
-  return {
+  const fresh: CombatState = {
     team: opts.team,
     activeIndex: 0,
     enemy: opts.enemy,
@@ -52,8 +52,10 @@ export function createCombat(opts: CreateCombatOptions): CombatState {
     weather: null,
     rngState: rng.state,
     outcome: 'ongoing',
+    enemyActed: false,
     log: [],
   };
+  return maybeEnemyGoesFirst(fresh, rng);
 }
 
 export function combatReducer(state: CombatState, action: CombatAction): CombatState {
@@ -107,10 +109,12 @@ function endTurn(state: CombatState): CombatState {
   s = resolveFaints(s);
   if (s.outcome !== 'ongoing') return { ...s, rngState: rng.state };
 
-  // Enemy acts on its telegraphed intent, then its own statuses tick.
-  s = enemyAct(s);
-  s = resolveFaints(s);
-  if (s.outcome !== 'ongoing') return { ...s, rngState: rng.state };
+  // Enemy acts on its telegraphed intent — UNLESS it already went first at turn start.
+  if (!s.enemyActed) {
+    s = enemyAct(s);
+    s = resolveFaints(s);
+    if (s.outcome !== 'ongoing') return { ...s, rngState: rng.state };
+  }
 
   const enemyTick = tickStatuses(s.enemy);
   s = { ...s, enemy: enemyTick.combatant };
@@ -162,12 +166,28 @@ function startTurn(state: CombatState, rng: SeededRng): CombatState {
     HAND_SIZE,
     rng.next,
   );
-  return {
+  const next: CombatState = {
     ...state,
     team,
     energy: state.maxEnergy,
     enemyIntent: rollIntent(state.enemy, rng.next),
     ...piles,
     turn: state.turn + 1,
+    enemyActed: false,
   };
+  return maybeEnemyGoesFirst(next, rng);
+}
+
+/**
+ * If the enemy is faster than the active mon, execute its telegraphed intent immediately
+ * at the start of the turn (before the player can play any cards), and mark `enemyActed`
+ * so the end-of-turn flow skips its enemy phase. Ties go to the player.
+ */
+function maybeEnemyGoesFirst(state: CombatState, rng: SeededRng): CombatState {
+  if (effectiveSpeed(state.enemy) <= effectiveSpeed(activeOf(state))) {
+    return { ...state, rngState: rng.state, enemyActed: false };
+  }
+  let s = enemyAct(state);
+  s = resolveFaints(s);
+  return { ...s, rngState: rng.state, enemyActed: true };
 }

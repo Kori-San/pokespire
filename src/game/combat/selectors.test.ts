@@ -37,6 +37,7 @@ function state(overrides: Partial<CombatState> = {}): CombatState {
     weather: null,
     rngState: 1,
     outcome: 'ongoing',
+    enemyActed: false,
     log: [],
     ...overrides,
   };

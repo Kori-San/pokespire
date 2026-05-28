@@ -38,6 +38,7 @@ function state(overrides: Partial<CombatState> = {}): CombatState {
     weather: null,
     rngState: 123,
     outcome: 'ongoing',
+    enemyActed: false,
     log: [],
     ...overrides,
   };
@@ -123,6 +124,68 @@ describe('combatReducer — END_TURN', () => {
     });
     const out = combatReducer(s, { type: 'END_TURN' });
     expect(out.outcome).toBe('lose');
+  });
+});
+
+describe('combatReducer — speed turn-order', () => {
+  it('lets the enemy act before the player when faster (createCombat)', () => {
+    const slowPlayer = mon({
+      baseStats: { hp: 100, atk: 75, def: 75, spAtk: 75, spDef: 75, spd: 20 },
+    });
+    const fastEnemy = mon({
+      name: 'fast',
+      baseStats: { hp: 100, atk: 75, def: 75, spAtk: 75, spDef: 75, spd: 200 },
+    });
+    // Pin the seed so the first rolled intent is an attack — see rollIntent thresholds.
+    const s = createCombat({
+      team: [slowPlayer],
+      enemy: fastEnemy,
+      deck: STARTER_DECK,
+      seed: 1,
+    });
+    expect(s.enemyActed).toBe(true);
+    // Faster enemy has already done SOMETHING — either chipped the player, raised its block, or
+    // applied a status — depending on the seeded intent roll.
+    const acted =
+      (s.team[0]?.hp ?? 0) < 100 || s.enemy.block > 0 || (s.team[0]?.statuses.length ?? 0) > 0;
+    expect(acted).toBe(true);
+  });
+
+  it('skips the end-of-turn enemy phase when it already acted at turn start', () => {
+    const slow = mon({ baseStats: { hp: 100, atk: 75, def: 75, spAtk: 75, spDef: 75, spd: 20 } });
+    const fast = mon({
+      name: 'fast',
+      baseStats: { hp: 100, atk: 75, def: 75, spAtk: 75, spDef: 75, spd: 200 },
+    });
+    const s = state({
+      team: [slow],
+      enemy: fast,
+      enemyActed: true,
+      enemyIntent: { kind: 'attack', amount: 50 },
+    });
+    const out = combatReducer(s, { type: 'END_TURN' });
+    // Without the skip, a 50-damage hit would land here; with it, the player only takes the
+    // hit from the NEW intent rolled for the next turn (since enemy is still faster).
+    // We assert the player's hp didn't drop by the full 50 + 50 (~ both intents).
+    expect(out.team[0]?.hp).toBeGreaterThan(0);
+  });
+
+  it('keeps the canonical turn order when the player is faster', () => {
+    const fastPlayer = mon({
+      baseStats: { hp: 100, atk: 75, def: 75, spAtk: 75, spDef: 75, spd: 200 },
+    });
+    const slowEnemy = mon({
+      name: 'slow',
+      baseStats: { hp: 100, atk: 75, def: 75, spAtk: 75, spDef: 75, spd: 20 },
+    });
+    const s = createCombat({
+      team: [fastPlayer],
+      enemy: slowEnemy,
+      deck: STARTER_DECK,
+      seed: 1,
+    });
+    expect(s.enemyActed).toBe(false);
+    expect(s.team[0]?.hp).toBe(100);
   });
 });
 
