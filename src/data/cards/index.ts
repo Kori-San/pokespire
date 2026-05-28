@@ -4,9 +4,19 @@ import { FIRE_CARDS } from './fire';
 import { WATER_CARDS } from './water';
 import { GRASS_CARDS } from './grass';
 import { ELECTRIC_CARDS } from './electric';
-import { PSYCHIC_CARDS } from './psychic';
-import { FLYING_CARDS } from './flying';
+import { ICE_CARDS } from './ice';
 import { FIGHTING_CARDS } from './fighting';
+import { POISON_CARDS } from './poison';
+import { GROUND_CARDS } from './ground';
+import { FLYING_CARDS } from './flying';
+import { PSYCHIC_CARDS } from './psychic';
+import { BUG_CARDS } from './bug';
+import { ROCK_CARDS } from './rock';
+import { GHOST_CARDS } from './ghost';
+import { DRAGON_CARDS } from './dragon';
+import { DARK_CARDS } from './dark';
+import { STEEL_CARDS } from './steel';
+import { FAIRY_CARDS } from './fairy';
 import { BALL_CARDS } from './balls';
 import { ITEM_CARDS } from './items';
 
@@ -25,9 +35,19 @@ export const CARDS: Record<string, CardDef> = Object.fromEntries(
     ...WATER_CARDS,
     ...GRASS_CARDS,
     ...ELECTRIC_CARDS,
-    ...PSYCHIC_CARDS,
-    ...FLYING_CARDS,
+    ...ICE_CARDS,
     ...FIGHTING_CARDS,
+    ...POISON_CARDS,
+    ...GROUND_CARDS,
+    ...FLYING_CARDS,
+    ...PSYCHIC_CARDS,
+    ...BUG_CARDS,
+    ...ROCK_CARDS,
+    ...GHOST_CARDS,
+    ...DRAGON_CARDS,
+    ...DARK_CARDS,
+    ...STEEL_CARDS,
+    ...FAIRY_CARDS,
     ...BALL_CARDS,
     ...ITEM_CARDS,
   ].map((c) => [c.id, c]),

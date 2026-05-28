@@ -1,0 +1,34 @@
+import type { CardDef } from '@/types';
+
+export const ICE_CARDS: CardDef[] = [
+  {
+    id: 'iceBeam',
+    name: 'ICE BEAM',
+    type: 'ice',
+    cost: 2,
+    kind: 'ATK',
+    category: 'special',
+    rarity: 'uncommon',
+    effects: [{ kind: 'damage', amount: 18 }],
+  },
+  {
+    id: 'icicleCrash',
+    name: 'ICICLE CRASH',
+    type: 'ice',
+    cost: 2,
+    kind: 'ATK',
+    category: 'physical',
+    rarity: 'uncommon',
+    effects: [{ kind: 'damage', amount: 16 }],
+  },
+  {
+    id: 'snowscape',
+    name: 'SNOWSCAPE',
+    type: 'ice',
+    cost: 1,
+    kind: 'SKL',
+    category: 'status',
+    rarity: 'epic',
+    effects: [{ kind: 'weather', weather: 'hail', turns: 4 }],
+  },
+];

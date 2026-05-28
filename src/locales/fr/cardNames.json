@@ -1,21 +1,103 @@
 {
   "tackle": "CHARGE",
   "quickAttack": "VIVE-ATTAQUE",
-  "ember": "FLAMMÈCHE",
-  "waterGun": "PISTOLET À O",
-  "vineWhip": "FOUET LIANES",
-  "thunderShock": "ÉCLAIR",
-  "confusion": "CHOC MENTAL",
-  "gust": "TORNADE",
-  "doubleKick": "DOUBLE PIED",
+  "extremeSpeed": "VITESSE EXTRÊME",
+  "hyperVoice": "MÉGAPHONE",
+  "doubleEdge": "DAMOCLÈS",
+  "hyperBeam": "ULTRALASER",
   "harden": "ARMURE",
-  "withdraw": "REPLI",
   "growl": "RUGISSEMENT",
   "focusEnergy": "PUISSANCE",
   "recover": "SOIN",
+  "softBoiled": "DOUX REGARD",
   "swordsDance": "DANSE LAMES",
+
+  "ember": "FLAMMÈCHE",
+  "flamethrower": "LANCE-FLAMMES",
+  "willOWisp": "FEU FOLLET",
+  "flameCharge": "NITROCHARGE",
   "sunnyDay": "ZÉNITH",
+
+  "waterGun": "PISTOLET À O",
+  "surf": "SURF",
+  "scald": "ÉBULLITION",
+  "withdraw": "REPLI",
+  "shellSmash": "EXUVIATION",
   "rainDance": "DANSE PLUIE",
+
+  "vineWhip": "FOUET LIANES",
+  "energyBall": "ÉCO-SPHÈRE",
+  "leafBlade": "LAME-FEUILLE",
+  "growth": "CROISSANCE",
+
+  "thunderShock": "ÉCLAIR",
+  "thunderbolt": "TONNERRE",
+  "chargeBeam": "RAYON CHARGE",
+
+  "iceBeam": "LASER GLACE",
+  "icicleCrash": "ÉBOUL-GLACE",
+  "snowscape": "NEIGE",
+
+  "doubleKick": "DOUBLE PIED",
+  "closeCombat": "CLOSE COMBAT",
+  "bulkUp": "GONFLETTE",
+
+  "sludgeBomb": "BOMBE-BEURK",
+  "poisonJab": "DIRECT TOXIK",
+  "coil": "ENROULEMENT",
+
+  "earthquake": "SÉISME",
+  "earthPower": "TELLURIFORCE",
+
+  "gust": "TORNADE",
+  "aerialAce": "AILE D'ACIER",
+  "tailwind": "VENT ARRIÈRE",
+
+  "confusion": "CHOC MENTAL",
+  "psychic": "PSYKO",
+  "zenHeadbutt": "PSYKOUD'BOUL",
+  "calmMind": "PLÉNITUDE",
+
+  "bugBuzz": "BOURDON",
+  "xScissor": "PLAIE CROIX",
+  "quiverDance": "DANSE-PAPILLON",
+
+  "powerGem": "JOYAU DE VIE",
+  "stoneEdge": "LAME DE ROC",
+  "sandstorm": "TEMPÊTE DE SABLE",
+  "rockPolish": "POLI-LUSTRE",
+
+  "shadowBall": "BALL'OMBRE",
+  "shadowClaw": "GRIFFE OMBRE",
+
+  "dragonPulse": "DRACO-CHOC",
+  "dragonClaw": "DRACO-GRIFFE",
+  "dragonDance": "DANSE DRACO",
+
+  "darkPulse": "AURA NOIRE",
+  "crunch": "MÂCHOUILLE",
+  "nightSlash": "TRANCHE-NUIT",
+  "nastyPlot": "MACHINATION",
+
+  "flashCannon": "LUMI-CANON",
+  "ironHead": "TÊTE DE FER",
+  "ironDefense": "MUR DE FER",
+
+  "moonblast": "LUMI-ÉCLAT",
+  "playRough": "CÂLINERIE",
+  "drainingKiss": "VAMPIBAISER",
+
   "pokeBall": "POKÉ BALL",
-  "greatBall": "SUPER BALL"
+  "greatBall": "SUPER BALL",
+  "ultraBall": "HYPER BALL",
+  "masterBall": "MASTER BALL",
+
+  "potion": "POTION",
+  "superPotion": "SUPER POTION",
+  "hyperPotion": "HYPER POTION",
+  "maxPotion": "POTION MAX",
+  "xAttack": "ATTAQUE +",
+  "xDefend": "DÉFENSE +",
+  "xSpeed": "VITESSE +",
+  "direHit": "CRITIK +"
 }

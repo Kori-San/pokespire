@@ -1,9 +1,90 @@
 import type { CardDef } from '@/types';
 
 /**
- * Generic consumables that aren't canonical Pokémon moves — POTION, X ATTACK,
- * REPEL, MEGA EVOLVE, DYNAMAX, … Visually flagged by the `--card-item` border
- * (potion amber) regardless of `card.type`. Empty for now; items land as the
- * pool grows.
+ * Generic consumables that aren't canonical Pokémon moves — potions, X-stat boosters,
+ * Dire Hit, etc. Visually flagged by the `--card-item` border (potion amber) regardless
+ * of `card.type`. Potions heal more as the tier climbs; X-items push a stat-stage.
  */
-export const ITEM_CARDS: CardDef[] = [];
+export const ITEM_CARDS: CardDef[] = [
+  {
+    id: 'potion',
+    name: 'POTION',
+    type: 'normal',
+    cost: 1,
+    kind: 'ITEM',
+    category: 'status',
+    rarity: 'common',
+    effects: [{ kind: 'heal', amount: 15 }],
+  },
+  {
+    id: 'superPotion',
+    name: 'SUPER POTION',
+    type: 'normal',
+    cost: 1,
+    kind: 'ITEM',
+    category: 'status',
+    rarity: 'uncommon',
+    effects: [{ kind: 'heal', amount: 30 }],
+  },
+  {
+    id: 'hyperPotion',
+    name: 'HYPER POTION',
+    type: 'normal',
+    cost: 2,
+    kind: 'ITEM',
+    category: 'status',
+    rarity: 'rare',
+    effects: [{ kind: 'heal', amount: 60 }],
+  },
+  {
+    id: 'maxPotion',
+    name: 'MAX POTION',
+    type: 'normal',
+    cost: 3,
+    kind: 'ITEM',
+    category: 'status',
+    rarity: 'epic',
+    // Heal handler clamps to maxHp, so any large number = full restore.
+    effects: [{ kind: 'heal', amount: 999 }],
+  },
+  {
+    id: 'xAttack',
+    name: 'X ATTACK',
+    type: 'normal',
+    cost: 1,
+    kind: 'ITEM',
+    category: 'status',
+    rarity: 'uncommon',
+    effects: [{ kind: 'stat', target: 'self', stat: 'atk', stages: 1 }],
+  },
+  {
+    id: 'xDefend',
+    name: 'X DEFEND',
+    type: 'normal',
+    cost: 1,
+    kind: 'ITEM',
+    category: 'status',
+    rarity: 'uncommon',
+    effects: [{ kind: 'stat', target: 'self', stat: 'def', stages: 1 }],
+  },
+  {
+    id: 'xSpeed',
+    name: 'X SPEED',
+    type: 'normal',
+    cost: 1,
+    kind: 'ITEM',
+    category: 'status',
+    rarity: 'uncommon',
+    effects: [{ kind: 'stat', target: 'self', stat: 'spd', stages: 1 }],
+  },
+  {
+    id: 'direHit',
+    name: 'DIRE HIT',
+    type: 'normal',
+    cost: 1,
+    kind: 'ITEM',
+    category: 'status',
+    rarity: 'rare',
+    effects: [{ kind: 'stat', target: 'self', stat: 'crit', stages: 2 }],
+  },
+];

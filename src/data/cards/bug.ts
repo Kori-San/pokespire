@@ -1,20 +1,10 @@
 import type { CardDef } from '@/types';
 
-export const PSYCHIC_CARDS: CardDef[] = [
+export const BUG_CARDS: CardDef[] = [
   {
-    id: 'confusion',
-    name: 'CONFUSION',
-    type: 'psychic',
-    cost: 1,
-    kind: 'ATK',
-    category: 'special',
-    rarity: 'uncommon',
-    effects: [{ kind: 'damage', amount: 9 }],
-  },
-  {
-    id: 'psychic',
-    name: 'PSYCHIC',
-    type: 'psychic',
+    id: 'bugBuzz',
+    name: 'BUG BUZZ',
+    type: 'bug',
     cost: 2,
     kind: 'ATK',
     category: 'special',
@@ -25,9 +15,9 @@ export const PSYCHIC_CARDS: CardDef[] = [
     ],
   },
   {
-    id: 'zenHeadbutt',
-    name: 'ZEN HEADBUTT',
-    type: 'psychic',
+    id: 'xScissor',
+    name: 'X-SCISSOR',
+    type: 'bug',
     cost: 2,
     kind: 'ATK',
     category: 'physical',
@@ -35,16 +25,17 @@ export const PSYCHIC_CARDS: CardDef[] = [
     effects: [{ kind: 'damage', amount: 16 }],
   },
   {
-    id: 'calmMind',
-    name: 'CALM MIND',
-    type: 'psychic',
-    cost: 1,
+    id: 'quiverDance',
+    name: 'QUIVER DANCE',
+    type: 'bug',
+    cost: 2,
     kind: 'SKL',
     category: 'status',
-    rarity: 'rare',
+    rarity: 'epic',
     effects: [
       { kind: 'stat', target: 'self', stat: 'spAtk', stages: 1 },
       { kind: 'stat', target: 'self', stat: 'spDef', stages: 1 },
+      { kind: 'stat', target: 'self', stat: 'spd', stages: 1 },
     ],
   },
 ];

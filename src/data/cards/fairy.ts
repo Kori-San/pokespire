@@ -1,0 +1,43 @@
+import type { CardDef } from '@/types';
+
+export const FAIRY_CARDS: CardDef[] = [
+  {
+    id: 'moonblast',
+    name: 'MOONBLAST',
+    type: 'fairy',
+    cost: 2,
+    kind: 'ATK',
+    category: 'special',
+    rarity: 'uncommon',
+    effects: [
+      { kind: 'damage', amount: 19 },
+      { kind: 'stat', target: 'foe', stat: 'spAtk', stages: -1 },
+    ],
+  },
+  {
+    id: 'playRough',
+    name: 'PLAY ROUGH',
+    type: 'fairy',
+    cost: 2,
+    kind: 'ATK',
+    category: 'physical',
+    rarity: 'uncommon',
+    effects: [
+      { kind: 'damage', amount: 18 },
+      { kind: 'stat', target: 'foe', stat: 'atk', stages: -1 },
+    ],
+  },
+  {
+    id: 'drainingKiss',
+    name: 'DRAINING KISS',
+    type: 'fairy',
+    cost: 1,
+    kind: 'ATK',
+    category: 'special',
+    rarity: 'rare',
+    effects: [
+      { kind: 'damage', amount: 10 },
+      { kind: 'heal', amount: 8 },
+    ],
+  },
+];

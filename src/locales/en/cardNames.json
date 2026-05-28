@@ -1,21 +1,103 @@
 {
   "tackle": "TACKLE",
   "quickAttack": "QUICK ATTACK",
-  "ember": "EMBER",
-  "waterGun": "WATER GUN",
-  "vineWhip": "VINE WHIP",
-  "thunderShock": "THUNDER SHOCK",
-  "confusion": "CONFUSION",
-  "gust": "GUST",
-  "doubleKick": "DOUBLE KICK",
+  "extremeSpeed": "EXTREME SPEED",
+  "hyperVoice": "HYPER VOICE",
+  "doubleEdge": "DOUBLE-EDGE",
+  "hyperBeam": "HYPER BEAM",
   "harden": "HARDEN",
-  "withdraw": "WITHDRAW",
   "growl": "GROWL",
   "focusEnergy": "FOCUS ENERGY",
   "recover": "RECOVER",
+  "softBoiled": "SOFT-BOILED",
   "swordsDance": "SWORDS DANCE",
+
+  "ember": "EMBER",
+  "flamethrower": "FLAMETHROWER",
+  "willOWisp": "WILL-O-WISP",
+  "flameCharge": "FLAME CHARGE",
   "sunnyDay": "SUNNY DAY",
+
+  "waterGun": "WATER GUN",
+  "surf": "SURF",
+  "scald": "SCALD",
+  "withdraw": "WITHDRAW",
+  "shellSmash": "SHELL SMASH",
   "rainDance": "RAIN DANCE",
+
+  "vineWhip": "VINE WHIP",
+  "energyBall": "ENERGY BALL",
+  "leafBlade": "LEAF BLADE",
+  "growth": "GROWTH",
+
+  "thunderShock": "THUNDER SHOCK",
+  "thunderbolt": "THUNDERBOLT",
+  "chargeBeam": "CHARGE BEAM",
+
+  "iceBeam": "ICE BEAM",
+  "icicleCrash": "ICICLE CRASH",
+  "snowscape": "SNOWSCAPE",
+
+  "doubleKick": "DOUBLE KICK",
+  "closeCombat": "CLOSE COMBAT",
+  "bulkUp": "BULK UP",
+
+  "sludgeBomb": "SLUDGE BOMB",
+  "poisonJab": "POISON JAB",
+  "coil": "COIL",
+
+  "earthquake": "EARTHQUAKE",
+  "earthPower": "EARTH POWER",
+
+  "gust": "GUST",
+  "aerialAce": "AERIAL ACE",
+  "tailwind": "TAILWIND",
+
+  "confusion": "CONFUSION",
+  "psychic": "PSYCHIC",
+  "zenHeadbutt": "ZEN HEADBUTT",
+  "calmMind": "CALM MIND",
+
+  "bugBuzz": "BUG BUZZ",
+  "xScissor": "X-SCISSOR",
+  "quiverDance": "QUIVER DANCE",
+
+  "powerGem": "POWER GEM",
+  "stoneEdge": "STONE EDGE",
+  "sandstorm": "SANDSTORM",
+  "rockPolish": "ROCK POLISH",
+
+  "shadowBall": "SHADOW BALL",
+  "shadowClaw": "SHADOW CLAW",
+
+  "dragonPulse": "DRAGON PULSE",
+  "dragonClaw": "DRAGON CLAW",
+  "dragonDance": "DRAGON DANCE",
+
+  "darkPulse": "DARK PULSE",
+  "crunch": "CRUNCH",
+  "nightSlash": "NIGHT SLASH",
+  "nastyPlot": "NASTY PLOT",
+
+  "flashCannon": "FLASH CANNON",
+  "ironHead": "IRON HEAD",
+  "ironDefense": "IRON DEFENSE",
+
+  "moonblast": "MOONBLAST",
+  "playRough": "PLAY ROUGH",
+  "drainingKiss": "DRAINING KISS",
+
   "pokeBall": "POKÉ BALL",
-  "greatBall": "GREAT BALL"
+  "greatBall": "GREAT BALL",
+  "ultraBall": "ULTRA BALL",
+  "masterBall": "MASTER BALL",
+
+  "potion": "POTION",
+  "superPotion": "SUPER POTION",
+  "hyperPotion": "HYPER POTION",
+  "maxPotion": "MAX POTION",
+  "xAttack": "X ATTACK",
+  "xDefend": "X DEFEND",
+  "xSpeed": "X SPEED",
+  "direHit": "DIRE HIT"
 }
