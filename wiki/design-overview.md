@@ -12,6 +12,7 @@
 2. **A growing collection.** Capture wild Pokémon, level them, evolve them, complete the Pokédex. Captures unlock new starters across runs.
 3. **Readable depth.** Type math is intimidating — so cards show their _computed_ damage for the current matchup (STAB, effectiveness, level, item, weather all pre-applied), with effectiveness tags and a breakdown tooltip.
 4. **Earned challenge.** Regular up-to-6 teams at Ascension 0 is the balance baseline. Solo legendaries and the Ascension ladder are opt-in difficulty for mastery.
+5. **Real Pokémon mechanics, deckbuilder spine.** The math IS the math: STAB, type effectiveness, physical/special split, stat stages, speed turn-order, real capture formula. Where canon doesn't fit a deckbuilder (Mega Stones, Trade evolutions), Pokespire substitutes one clear rule (Mega/Dynamax are cards; trades become Linking Cord stones) rather than diverging into something un-Pokémon. New mechanics added on top — Ascensions, rarity tied to PP, universal starter deck — keep the same flavor. The test for any rule: would a Pokémon player feel at home? If not, find the rule that does.
 
 ## Core loop
 
