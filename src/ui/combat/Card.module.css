@@ -8,7 +8,7 @@
   display: flex;
   flex-direction: column;
   width: 134px;
-  min-height: 180px;
+  height: 180px;
   padding: 6px;
   font-family: var(--font-body);
   background: var(--box-bg);
@@ -51,14 +51,27 @@
   border-radius: 2px;
 }
 
-/* Description fills the middle */
+/* Description fills the middle. Font scales DOWN as effect count grows so the card never
+ * outgrows its locked height — see Card.tsx where `data-density` is computed from the
+ * number of effect lines. */
 .body {
   flex: 1;
   margin: 0;
   padding: 6px 2px;
   text-align: start;
   font-size: 14px;
-  line-height: 1.35;
+  line-height: 1.3;
+  overflow: hidden;
+}
+
+.body[data-density='mid'] {
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.body[data-density='dense'] {
+  font-size: 10px;
+  line-height: 1.15;
 }
 
 /* Footer — cost pips on the left, kind badge on the right */

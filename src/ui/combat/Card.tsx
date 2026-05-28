@@ -37,6 +37,8 @@ export function Card({ card, view, onPlay }: CardProps) {
   const lines = selectCardLines(card, view);
   const description = lines.map((line) => renderLine(line, t)).join(' ');
   const name = t(`cardNames:${card.id}`, { defaultValue: card.name });
+  // Density bucket — shrinks font so high-effect cards (Shell Smash, Quiver Dance) still fit.
+  const density = lines.length >= 5 ? 'dense' : lines.length >= 3 ? 'mid' : 'normal';
 
   return (
     <button
@@ -48,7 +50,9 @@ export function Card({ card, view, onPlay }: CardProps) {
       title={view.damage?.tooltip}
     >
       <span className={styles.banner}>{name}</span>
-      <p className={styles.body}>{description}</p>
+      <p className={styles.body} data-density={density}>
+        {description}
+      </p>
       <span className={styles.footer}>
         <EnergyBar
           current={card.cost}
