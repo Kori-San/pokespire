@@ -40,4 +40,5 @@ This project uses an epoch-based roadmap (see [`TODO.md`](TODO.md)); versions ar
   - `TypeChip` primitive — small 18-type tinted chip for surfacing a Pokémon's typing, with one story per type.
   - `EnergyPip` + `EnergyBar` primitives — GBA-flavored slanted bars in a `current`-out-of-`max` row. Used by hand cards (cost) and the combat HUD (remaining energy this turn).
   - Missingno fallback sprite (`public/sprites/fallback/missingno.gif`), replacing the placeholder `unknown.png`. Credit: RetroNC on DeviantArt.
+  - Local sprite resolver (`spriteUrl`, keyed by `formId`, Missingno fallback when the species has no vendored animated sprite).
   - **Pokédex vendoring pipeline:** `scripts/fetch-pokedex.mjs` (`npm run fetch-pokedex`) downloads Gen 1 data + BW-animated sprites locally so we self-host them (no runtime PokéAPI). All-gens, multi-form schema — per-form types/stats/sprites keyed by `formId`, plus generation, growth/catch rate, gender data, evolution links, and legendary/mythical/mega/Gmax + solo-only flags. Modes: `--dry-run`, `--skip-existing`, `--only`.
