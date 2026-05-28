@@ -16,6 +16,7 @@ the credited sources and cached locally per-user.
 
 - **Fonts:** Press Start 2P and Pixelify Sans, both SIL Open Font License (OFL 1.1). License files in `public/fonts/` (`OFL-PressStart2P.txt`, `OFL-PixelifySans.txt`).
 - **UI chrome / tokens:** neutral GBA-era styling, no IP assets.
+- **HGSS move-category icons** (`public/sprites/move-category/{physical,special,status}.png`) — fan-game use, sourced from Bulbapedia. Credit in the Credits screen and in [`../ASSETS.md`](../ASSETS.md).
 - **Missingno fallback sprite** (`public/sprites/fallback/missingno.gif`) — fan work by RetroNC (DeviantArt).
 
 ## Code & asset tracking

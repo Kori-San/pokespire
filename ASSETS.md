@@ -7,6 +7,20 @@ owners (Nintendo / Game Freak / The Pokémon Company).
 See [`wiki/legal-and-credits.md`](wiki/legal-and-credits.md) for the player-facing
 in-game credits text.
 
+## Move-category icons
+
+The Gen-IV HGSS physical / special / status banner icons shown on every damage card.
+
+| Path                                        | Source                                                                                                 | Refresh                    |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------------ | -------------------------- |
+| `public/sprites/move-category/physical.png` | [Bulbapedia — `PhysicalIC_HGSS.png`](https://bulbapedia.bulbagarden.net/wiki/File:PhysicalIC_HGSS.png) | `npm run fetch-move-icons` |
+| `public/sprites/move-category/special.png`  | [Bulbapedia — `SpecialIC_HGSS.png`](https://bulbapedia.bulbagarden.net/wiki/File:SpecialIC_HGSS.png)   | (same)                     |
+| `public/sprites/move-category/status.png`   | [Bulbapedia — `StatusIC_HGSS.png`](https://bulbapedia.bulbagarden.net/wiki/File:StatusIC_HGSS.png)     | (same)                     |
+
+Three 32×14 RGBA PNGs (~300 bytes each). Vendored once via
+[`scripts/fetch-move-icons.mjs`](scripts/fetch-move-icons.mjs), which uses Bulbapedia's
+`Special:FilePath` redirect — stable URLs regardless of CDN hash changes.
+
 ## Fallback sprites
 
 | Path                                    | Source                                                                                       | Refresh |
