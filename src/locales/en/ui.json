@@ -2,6 +2,10 @@
   "mon": {
     "level": "Lv. {{level}}"
   },
+  "intent": {
+    "attack": "ATK",
+    "defend": "DEF"
+  },
   "title": {
     "tagline": "A roguelike deckbuilder",
     "newGame": "NEW GAME",
