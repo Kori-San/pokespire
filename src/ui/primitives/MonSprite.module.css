@@ -1,0 +1,35 @@
+.figure {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.sprite {
+  width: 96px;
+  height: 96px;
+  image-rendering: pixelated;
+  object-fit: contain;
+}
+
+/* GBA-era nameplate — white box with the canonical navy border. */
+.nameplate {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  background: var(--box-bg);
+  border: 2px solid var(--box-border-lo);
+  border-radius: 4px;
+  font-family: var(--font-display);
+  font-size: 8px;
+  color: var(--text-dark);
+}
+
+.name {
+  letter-spacing: 0.5px;
+}
+
+.level {
+  color: var(--box-border-lo);
+}

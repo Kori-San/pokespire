@@ -1,4 +1,7 @@
 {
+  "mon": {
+    "level": "Lv. {{level}}"
+  },
   "title": {
     "tagline": "A roguelike deckbuilder",
     "newGame": "NEW GAME",
