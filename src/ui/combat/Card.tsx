@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react';
 import type { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import type { CardDef } from '@/types';
+import type { CardDef, CardKind, PokeType } from '@/types';
 import { selectCardLines, type ComputedCardView, type EffectLine } from '@/game/combat/selectors';
 import { EnergyBar } from '@/ui/primitives/EnergyBar';
 import { cx } from '@/ui/cx';
@@ -9,6 +9,17 @@ import styles from './Card.module.css';
 
 /** Energy ceiling visualised on every card; the deck cannot print costs above this. */
 const ENERGY_SLOTS = 3;
+
+/**
+ * The card's accent color. BALL and ITEM sit outside the 18-type palette (red / amber)
+ * so capture and consumable cards read as their own category at a glance; everything
+ * else inherits the active Pokémon-type tint.
+ */
+function tintVar(kind: CardKind, type: PokeType): string {
+  if (kind === 'BALL') return 'var(--card-ball)';
+  if (kind === 'ITEM') return 'var(--card-item)';
+  return `var(--type-${type})`;
+}
 
 interface CardProps {
   card: CardDef;
@@ -31,7 +42,7 @@ export function Card({ card, view, onPlay }: CardProps) {
     <button
       type="button"
       className={cx(styles.card, !view.affordable && styles.disabled)}
-      style={{ '--card-type': `var(--type-${card.type})` } as CSSProperties}
+      style={{ '--card-type': tintVar(card.kind, card.type) } as CSSProperties}
       disabled={!view.affordable}
       onClick={onPlay}
       title={view.damage?.tooltip}

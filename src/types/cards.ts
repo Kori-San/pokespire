@@ -3,7 +3,7 @@ import type { WeatherKind } from './combat';
 
 export type BallTier = 'poke' | 'great' | 'ultra' | 'master';
 
-export type CardKind = 'ATK' | 'SKL' | 'PWR' | 'BALL';
+export type CardKind = 'ATK' | 'SKL' | 'PWR' | 'BALL' | 'ITEM';
 
 /**
  * Canonical Gen-IV move category — selects which stat pair the damage formula reads.

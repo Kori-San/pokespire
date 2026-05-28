@@ -14,7 +14,8 @@
     "ATK": "ATK",
     "SKL": "SKL",
     "PWR": "PWR",
-    "BALL": "BALL"
+    "BALL": "BALL",
+    "ITEM": "ITEM"
   },
   "status": {
     "burn": "Burn",

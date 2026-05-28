@@ -68,7 +68,7 @@ export const CaptureBall: Story = {
   },
 };
 
-const CARD_KINDS = ['ATK', 'SKL', 'PWR', 'BALL'] as const satisfies readonly CardKind[];
+const CARD_KINDS = ['ATK', 'SKL', 'PWR', 'BALL', 'ITEM'] as const satisfies readonly CardKind[];
 const CATEGORIES = ['physical', 'special', 'status'] as const satisfies readonly MoveCategory[];
 const EFFECT_KINDS = [
   'damage',
