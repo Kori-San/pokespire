@@ -46,8 +46,8 @@ const card = (type: PokeType, ...effects: Effect[]): CardDef => ({
   type,
   cost: 1,
   kind: 'ATK',
+  category: 'physical',
   effects,
-  text: '',
 });
 
 const rng = (v: number) => () => v;

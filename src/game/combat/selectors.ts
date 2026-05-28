@@ -1,13 +1,16 @@
-import type { CombatState } from '@/types';
+import type { CardDef, CombatState, StatusId, WeatherKind } from '@/types';
 import { CARDS } from '@/data/cards';
 import { calcCaptureChance } from './capture';
 import { calcDamage, type DamageBreakdown } from './damage';
 
-export type EffectivenessTier = 'super' | 'stab' | 'neutral' | 'resisted' | 'immune';
+/** Type-effectiveness magnitude — drives the damage number's color/vibe. Independent of STAB. */
+export type Effectiveness = 'super' | 'neutral' | 'resisted' | 'immune';
 
 export interface ComputedDamage {
   value: number;
-  tier: EffectivenessTier;
+  effectiveness: Effectiveness;
+  /** Same-Type Attack Bonus active — drives the card's reinforced type border. */
+  stab: boolean;
   tooltip: string;
 }
 
@@ -19,11 +22,11 @@ export interface ComputedCardView {
   capturePercent?: number;
 }
 
-function tierOf(b: DamageBreakdown): EffectivenessTier {
+function effectivenessOf(b: DamageBreakdown): Effectiveness {
   if (b.immune) return 'immune';
   if (b.rawEff >= 2) return 'super';
   if (b.rawEff < 1) return 'resisted';
-  return b.stab > 1 ? 'stab' : 'neutral';
+  return 'neutral';
 }
 
 function buildTooltip(b: DamageBreakdown): string {
@@ -70,7 +73,8 @@ export function selectComputedCardView(
     });
     view.damage = {
       value: breakdown.final,
-      tier: tierOf(breakdown),
+      effectiveness: effectivenessOf(breakdown),
+      stab: breakdown.stab > 1,
       tooltip: buildTooltip(breakdown),
     };
   }
@@ -94,4 +98,58 @@ export function selectComputedCardView(
 /** Computed views for every card in hand (index-aligned). */
 export function selectHandViews(state: CombatState): ComputedCardView[] {
   return state.hand.map((_, i) => selectComputedCardView(state, i)).filter((v) => v !== null);
+}
+
+/** Structured description line for a card effect — translated at the UI layer (no strings here). */
+export type EffectLine =
+  | { kind: 'damage'; value: number }
+  | { kind: 'block'; value: number }
+  | { kind: 'heal'; value: number }
+  | { kind: 'draw'; count: number }
+  | { kind: 'applyStatus'; status: StatusId; stacks: number; self: boolean }
+  | { kind: 'energy'; value: number }
+  | { kind: 'weather'; weather: WeatherKind }
+  | { kind: 'capture'; percent: number };
+
+/**
+ * Description descriptors for a card's effects, with **live computed** values pulled from
+ * the view (damage value, capture %). Pure — no i18n. The UI layer translates each line
+ * via `react-i18next` so the text matches the active language; see Card.tsx.
+ */
+export function selectCardLines(card: CardDef, view: ComputedCardView): EffectLine[] {
+  const lines: EffectLine[] = [];
+  for (const e of card.effects) {
+    switch (e.kind) {
+      case 'damage':
+        lines.push({ kind: 'damage', value: view.damage?.value ?? e.amount });
+        break;
+      case 'block':
+        lines.push({ kind: 'block', value: e.amount });
+        break;
+      case 'heal':
+        lines.push({ kind: 'heal', value: e.amount });
+        break;
+      case 'draw':
+        lines.push({ kind: 'draw', count: e.count });
+        break;
+      case 'applyStatus':
+        lines.push({
+          kind: 'applyStatus',
+          status: e.status,
+          stacks: e.stacks,
+          self: e.target === 'self',
+        });
+        break;
+      case 'energy':
+        lines.push({ kind: 'energy', value: e.amount });
+        break;
+      case 'weather':
+        lines.push({ kind: 'weather', weather: e.weather });
+        break;
+      case 'capture':
+        lines.push({ kind: 'capture', percent: view.capturePercent ?? 0 });
+        break;
+    }
+  }
+  return lines;
 }

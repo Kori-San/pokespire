@@ -12,8 +12,8 @@ export const CARDS: Record<string, CardDef> = {
     type: 'normal',
     cost: 1,
     kind: 'ATK',
+    category: 'physical',
     effects: [{ kind: 'damage', amount: 8 }],
-    text: 'Deal 8 damage.',
   },
   quickAttack: {
     id: 'quickAttack',
@@ -21,8 +21,8 @@ export const CARDS: Record<string, CardDef> = {
     type: 'normal',
     cost: 0,
     kind: 'ATK',
+    category: 'physical',
     effects: [{ kind: 'damage', amount: 5 }],
-    text: 'Deal 5 damage.',
   },
   ember: {
     id: 'ember',
@@ -30,11 +30,11 @@ export const CARDS: Record<string, CardDef> = {
     type: 'fire',
     cost: 1,
     kind: 'ATK',
+    category: 'special',
     effects: [
       { kind: 'damage', amount: 8 },
       { kind: 'applyStatus', target: 'foe', status: 'burn', stacks: 1 },
     ],
-    text: 'Deal 8 damage.\nApply 1 BURN.',
   },
   waterGun: {
     id: 'waterGun',
@@ -42,8 +42,8 @@ export const CARDS: Record<string, CardDef> = {
     type: 'water',
     cost: 1,
     kind: 'ATK',
+    category: 'special',
     effects: [{ kind: 'damage', amount: 9 }],
-    text: 'Deal 9 damage.',
   },
   vineWhip: {
     id: 'vineWhip',
@@ -51,8 +51,8 @@ export const CARDS: Record<string, CardDef> = {
     type: 'grass',
     cost: 1,
     kind: 'ATK',
+    category: 'physical',
     effects: [{ kind: 'damage', amount: 9 }],
-    text: 'Deal 9 damage.',
   },
   thunderShock: {
     id: 'thunderShock',
@@ -60,8 +60,8 @@ export const CARDS: Record<string, CardDef> = {
     type: 'electric',
     cost: 1,
     kind: 'ATK',
+    category: 'special',
     effects: [{ kind: 'damage', amount: 8 }],
-    text: 'Deal 8 damage.',
   },
   confusion: {
     id: 'confusion',
@@ -69,8 +69,8 @@ export const CARDS: Record<string, CardDef> = {
     type: 'psychic',
     cost: 1,
     kind: 'ATK',
+    category: 'special',
     effects: [{ kind: 'damage', amount: 9 }],
-    text: 'Deal 9 damage.',
   },
   gust: {
     id: 'gust',
@@ -78,8 +78,8 @@ export const CARDS: Record<string, CardDef> = {
     type: 'flying',
     cost: 1,
     kind: 'ATK',
+    category: 'special',
     effects: [{ kind: 'damage', amount: 8 }],
-    text: 'Deal 8 damage.',
   },
   doubleKick: {
     id: 'doubleKick',
@@ -87,8 +87,8 @@ export const CARDS: Record<string, CardDef> = {
     type: 'fighting',
     cost: 2,
     kind: 'ATK',
+    category: 'physical',
     effects: [{ kind: 'damage', amount: 14 }],
-    text: 'Deal 14 damage.',
   },
   harden: {
     id: 'harden',
@@ -96,8 +96,8 @@ export const CARDS: Record<string, CardDef> = {
     type: 'normal',
     cost: 1,
     kind: 'SKL',
+    category: 'status',
     effects: [{ kind: 'block', amount: 6 }],
-    text: 'Gain 6 block.',
   },
   withdraw: {
     id: 'withdraw',
@@ -105,8 +105,8 @@ export const CARDS: Record<string, CardDef> = {
     type: 'water',
     cost: 1,
     kind: 'SKL',
+    category: 'status',
     effects: [{ kind: 'block', amount: 9 }],
-    text: 'Gain 9 block.',
   },
   growl: {
     id: 'growl',
@@ -114,8 +114,8 @@ export const CARDS: Record<string, CardDef> = {
     type: 'normal',
     cost: 0,
     kind: 'SKL',
+    category: 'status',
     effects: [{ kind: 'applyStatus', target: 'foe', status: 'weak', stacks: 1 }],
-    text: 'Apply 1 WEAK to the foe.',
   },
   focusEnergy: {
     id: 'focusEnergy',
@@ -123,11 +123,11 @@ export const CARDS: Record<string, CardDef> = {
     type: 'normal',
     cost: 1,
     kind: 'SKL',
+    category: 'status',
     effects: [
       { kind: 'draw', count: 1 },
       { kind: 'energy', amount: 1, when: 'now' },
     ],
-    text: 'Draw 1 card.\nGain 1 energy.',
   },
   recover: {
     id: 'recover',
@@ -135,8 +135,8 @@ export const CARDS: Record<string, CardDef> = {
     type: 'normal',
     cost: 1,
     kind: 'SKL',
+    category: 'status',
     effects: [{ kind: 'heal', amount: 10 }],
-    text: 'Heal 10 HP.',
   },
   sunnyDay: {
     id: 'sunnyDay',
@@ -144,8 +144,8 @@ export const CARDS: Record<string, CardDef> = {
     type: 'fire',
     cost: 1,
     kind: 'SKL',
+    category: 'status',
     effects: [{ kind: 'weather', weather: 'sun', turns: 4 }],
-    text: 'Summon harsh sunlight for 4 turns.',
   },
   rainDance: {
     id: 'rainDance',
@@ -153,8 +153,8 @@ export const CARDS: Record<string, CardDef> = {
     type: 'water',
     cost: 1,
     kind: 'SKL',
+    category: 'status',
     effects: [{ kind: 'weather', weather: 'rain', turns: 4 }],
-    text: 'Summon rain for 4 turns.',
   },
   pokeBall: {
     id: 'pokeBall',
@@ -162,8 +162,8 @@ export const CARDS: Record<string, CardDef> = {
     type: 'normal',
     cost: 1,
     kind: 'BALL',
+    category: 'status',
     effects: [{ kind: 'capture', ballTier: 'poke' }],
-    text: 'Attempt to catch the wild Pokémon.',
   },
   greatBall: {
     id: 'greatBall',
@@ -171,8 +171,8 @@ export const CARDS: Record<string, CardDef> = {
     type: 'normal',
     cost: 2,
     kind: 'BALL',
+    category: 'status',
     effects: [{ kind: 'capture', ballTier: 'great' }],
-    text: 'A better chance to catch the wild Pokémon.',
   },
 };
 

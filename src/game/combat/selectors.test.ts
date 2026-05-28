@@ -41,10 +41,11 @@ function state(overrides: Partial<CombatState> = {}): CombatState {
 }
 
 describe('selectComputedCardView', () => {
-  it('tags STAB + super-effective and computes the value', () => {
-    // Fire EMBER from a Fire mon vs a Grass foe → STAB + super.
+  it('flags STAB and super-effectiveness separately, and computes the value', () => {
+    // Fire EMBER from a Fire mon vs a Grass foe → STAB (border cue) + super (number cue).
     const view = selectComputedCardView(state(), 0);
-    expect(view?.damage?.tier).toBe('super');
+    expect(view?.damage?.effectiveness).toBe('super');
+    expect(view?.damage?.stab).toBe(true);
     expect(view?.damage?.value).toBeGreaterThan(8);
     expect(view?.damage?.tooltip).toContain('= ');
   });
@@ -63,7 +64,7 @@ describe('selectComputedCardView', () => {
       hand: ['tackle'],
     });
     const view = selectComputedCardView(s, 0);
-    expect(view?.damage?.tier).toBe('immune');
+    expect(view?.damage?.effectiveness).toBe('immune');
   });
 
   it('computes capture % for ball cards', () => {
