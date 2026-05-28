@@ -36,4 +36,5 @@ This project uses an epoch-based roadmap (see [`TODO.md`](TODO.md)); versions ar
   - Deck helpers (seeded shuffle + draw with discard reshuffle), data-driven effect executor (`applyEffect`), and a ~18-card starter pool (incl. weather + ball cards).
   - Enemy intent AI, a seeded resumable RNG (`rngFrom`), and the pure combat reducer (`createCombat` + PLAY_CARD / SWITCH / END_TURN with enemy phase, status ticks, faints, next-turn draw).
   - `ASSETS.md` asset-tracking registry — every committed binary asset gets a row with source URL, license, and refresh command; updated in the same commit that adds the asset.
+  - `HpBar` primitive — banded fill colors (high / mid / low) over a GBA-tinted track, with Storybook stories at each tier.
   - **Pokédex vendoring pipeline:** `scripts/fetch-pokedex.mjs` (`npm run fetch-pokedex`) downloads Gen 1 data + BW-animated sprites locally so we self-host them (no runtime PokéAPI). All-gens, multi-form schema — per-form types/stats/sprites keyed by `formId`, plus generation, growth/catch rate, gender data, evolution links, and legendary/mythical/mega/Gmax + solo-only flags. Modes: `--dry-run`, `--skip-existing`, `--only`.
