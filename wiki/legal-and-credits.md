@@ -17,7 +17,8 @@ the credited sources and cached locally per-user.
 - **Fonts:** Press Start 2P and Pixelify Sans, both SIL Open Font License (OFL 1.1). License files in `public/fonts/` (`OFL-PressStart2P.txt`, `OFL-PixelifySans.txt`).
 - **UI chrome / tokens:** neutral GBA-era styling, no IP assets.
 
-## Code
+## Code & asset tracking
 
-Code is under the repo `LICENSE`. An `ASSETS.md` (G8) will restate that runtime-fetched
-assets are not licensed by us and credit their sources.
+Code is under the repo `LICENSE`. The committed-asset registry — paths, sources, licenses,
+refresh commands — lives in [`../ASSETS.md`](../ASSETS.md) and is updated **in the same commit**
+as the asset itself, never deferred.

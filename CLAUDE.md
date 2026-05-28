@@ -34,6 +34,7 @@ the core decision. Local saves (IndexedDB), PWA, "play anywhere" like Pokerogue.
 - Root-level meta files are **CAPITALISED** (`README.md`, `LICENSE`, `CHANGELOG.md`, `TODO.md`, `CLAUDE.md`). Topic docs in `rules/`/`wiki/` stay lowercase.
 - **Task workflow:** todo → done → **delete the task's line from `TODO.md`** → **append an entry to `CHANGELOG.md`**. Don't leave checked-off items in `TODO.md`; git history + `CHANGELOG.md` are the record. Keep the living plan (`planning/02_mvp-plan.md`) updated as you go.
 - **No stray temp files.** Generated assets are committed; the scripts/throwaway that made them are not. Flag any placeholder asset in `TODO.md` so it gets replaced.
+- **Asset tracking:** every committed binary asset (`public/sprites/**`, `public/fonts/**`, etc.) gets a row in [`ASSETS.md`](ASSETS.md) with its source URL, license, and refresh command — updated in **the same commit** that adds the asset, never deferred.
 
 ### Code
 
