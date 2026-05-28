@@ -1,0 +1,12 @@
+.pip {
+  display: inline-block;
+  width: 16px;
+  height: 9px;
+  background: #b0b6c3;
+  border: 1px solid var(--box-border-lo);
+  transform: skewX(-22deg);
+}
+
+.lit {
+  background: var(--type-electric);
+}
