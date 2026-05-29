@@ -45,9 +45,19 @@ export function critChance(stage: number): number {
 
 export const CRIT_MULTIPLIER = 1.5;
 
-/** A Combatant's speed with stat-stages folded in — used for turn-order comparison. */
+/**
+ * A Combatant's speed with stat-stages AND status folded in — used for turn-order
+ * comparison. Paralyze halves the result (canon).
+ */
 export function effectiveSpeed(mon: Combatant): number {
-  return mon.baseStats.spd * stageMultiplier(mon.stages.spd);
+  let speed = mon.baseStats.spd * stageMultiplier(mon.stages.spd);
+  if (mon.statuses.some((s) => s.id === 'paralyze')) speed *= 0.5;
+  return speed;
+}
+
+/** True when the mon's action is locked this turn by sleep or freeze. */
+export function isIncapacitated(mon: Combatant): boolean {
+  return mon.statuses.some((s) => s.id === 'sleep' || s.id === 'freeze');
 }
 
 export interface Weather {

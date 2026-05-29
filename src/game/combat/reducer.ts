@@ -1,6 +1,6 @@
 import type { CombatAction, Combatant, CombatState } from '@/types';
-import { EMPTY_STAGES, effectiveSpeed } from '@/types';
-import { CARDS } from '@/data/cards';
+import { EMPTY_STAGES, effectiveSpeed, isIncapacitated } from '@/types';
+import { CARDS, exhaustsOnPlay } from '@/data/cards';
 import { applyStatus } from '@/data/statuses';
 import { rngFrom, type SeededRng } from '@/game/run/rng';
 import { applyEffect } from './effects';
@@ -76,12 +76,14 @@ function playCard(state: CombatState, handIndex: number): CombatState {
   const card = CARDS[id];
   if (!card || state.energy < card.cost) return state;
 
+  const exhausts = exhaustsOnPlay(card);
   const rng = rngFrom(state.rngState);
   let s: CombatState = {
     ...state,
     energy: state.energy - card.cost,
     hand: state.hand.filter((_, i) => i !== handIndex),
-    discard: [...state.discard, id],
+    discard: exhausts ? state.discard : [...state.discard, id],
+    exhaust: exhausts ? [...state.exhaust, id] : state.exhaust,
   };
   for (const effect of card.effects) {
     s = applyEffect(s, effect, card, rng.next);
@@ -131,6 +133,9 @@ function tickActiveStatuses(state: CombatState): CombatState {
 }
 
 function enemyAct(state: CombatState): CombatState {
+  // Sleep / freeze lock the action this turn — intent is wasted, status still ticks at
+  // end of turn so the duration counts down even on skipped turns.
+  if (isIncapacitated(state.enemy)) return state;
   const intent = state.enemyIntent;
   switch (intent.kind) {
     case 'attack': {

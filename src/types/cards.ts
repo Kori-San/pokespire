@@ -25,14 +25,24 @@ export type Rarity = 'common' | 'uncommon' | 'rare' | 'epic';
 export type MoveCategory = 'physical' | 'special' | 'status';
 
 export type Effect =
-  | { kind: 'damage'; amount: number }
+  /**
+   * Plain damage. `critBoost` (move-inherent +N crit stage for this hit only) and
+   * `recoilPercent` (self-damage % of dealt) are optional move modifiers — see the
+   * `Crit +N` / `Recoil N%` keywords.
+   */
+  | { kind: 'damage'; amount: number; critBoost?: number; recoilPercent?: number }
   /**
    * Damage + percent-of-damage heal in one effect. The full damage formula runs (STAB,
    * type-eff, stat-stages, crit roll), then the attacker heals `percent`% of the final
-   * dealt amount. Scales naturally with every multiplier — a STAB super-effective lifesteal
-   * heals proportionally more. Reads as "Deal X damage, recover Y HP." on the card.
+   * dealt amount. `critBoost` and `recoilPercent` apply same as on plain damage.
    */
-  | { kind: 'lifesteal'; amount: number; percent: number }
+  | {
+      kind: 'lifesteal';
+      amount: number;
+      percent: number;
+      critBoost?: number;
+      recoilPercent?: number;
+    }
   | { kind: 'block'; amount: number }
   | { kind: 'heal'; amount: number }
   | { kind: 'draw'; count: number }

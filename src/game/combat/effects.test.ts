@@ -171,6 +171,36 @@ describe('applyEffect', () => {
     expect(critDealt).toBeGreaterThan(baseDealt);
   });
 
+  it('move-inherent critBoost adds to the active mon stages.crit just for this hit', () => {
+    // Base case: rng above 1/16 → no crit, no critBoost.
+    const base = applyEffect(state(), { kind: 'damage', amount: 10 }, card('fire'), rng(0.2));
+    const baseDealt = 100 - base.enemy.hp;
+    // Same roll, but critBoost +4 → always crits.
+    const boosted = applyEffect(
+      state(),
+      { kind: 'damage', amount: 10, critBoost: 4 },
+      card('fire'),
+      rng(0.2),
+    );
+    const boostedDealt = 100 - boosted.enemy.hp;
+    expect(boostedDealt).toBeGreaterThan(baseDealt);
+    // Persistent crit stage on the active mon is unchanged — the boost was per-hit only.
+    expect(boosted.team[0]?.stages.crit).toBe(0);
+  });
+
+  it('recoilPercent damages the attacker for percent of damage dealt', () => {
+    const s = state({ team: [mon({ hp: 100 })] });
+    const out = applyEffect(
+      s,
+      { kind: 'damage', amount: 20, recoilPercent: 33 },
+      card('fire'),
+      rng(0.99),
+    );
+    const dealt = 100 - out.enemy.hp;
+    const recoil = 100 - (out.team[0]?.hp ?? 0);
+    expect(recoil).toBe(Math.round(dealt * 0.33));
+  });
+
   it('lifesteal deals damage and heals user for percent of the dealt amount', () => {
     const s = state({ team: [mon({ hp: 50 })] });
     const out = applyEffect(

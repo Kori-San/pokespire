@@ -76,6 +76,20 @@ describe('combatReducer — PLAY_CARD', () => {
     const out = combatReducer(s, { type: 'PLAY_CARD', handIndex: 0 });
     expect(out).toBe(s);
   });
+
+  it('exhausts BALL cards on play (one-shot, not redrawable this combat)', () => {
+    const s = state({ hand: ['pokeBall'] });
+    const out = combatReducer(s, { type: 'PLAY_CARD', handIndex: 0 });
+    expect(out.exhaust).toEqual(['pokeBall']);
+    expect(out.discard).toEqual([]);
+  });
+
+  it('exhausts ITEM cards on play', () => {
+    const s = state({ hand: ['potion'], team: [mon({ hp: 50 })] });
+    const out = combatReducer(s, { type: 'PLAY_CARD', handIndex: 0 });
+    expect(out.exhaust).toEqual(['potion']);
+    expect(out.discard).toEqual([]);
+  });
 });
 
 describe('combatReducer — SWITCH', () => {
@@ -124,6 +138,46 @@ describe('combatReducer — END_TURN', () => {
     });
     const out = combatReducer(s, { type: 'END_TURN' });
     expect(out.outcome).toBe('lose');
+  });
+});
+
+describe('combatReducer — sleep / freeze / paralyze', () => {
+  it('a sleeping enemy skips its intent and the sleep stack decays at end of turn', () => {
+    const s = state({
+      enemy: mon({ name: 'foe', statuses: [{ id: 'sleep', stacks: 2 }] }),
+      enemyIntent: { kind: 'attack', amount: 50 },
+    });
+    const out = combatReducer(s, { type: 'END_TURN' });
+    expect(out.team[0]?.hp).toBe(100);
+    expect(out.enemy.statuses.find((x) => x.id === 'sleep')?.stacks).toBe(1);
+  });
+
+  it('a frozen enemy skips its intent (same lock as sleep)', () => {
+    const s = state({
+      enemy: mon({ name: 'foe', statuses: [{ id: 'freeze', stacks: 1 }] }),
+      enemyIntent: { kind: 'attack', amount: 50 },
+    });
+    const out = combatReducer(s, { type: 'END_TURN' });
+    expect(out.team[0]?.hp).toBe(100);
+  });
+
+  it('paralyze halves the enemy effective speed so the player is faster again', () => {
+    const fastEnemy = mon({
+      name: 'fast',
+      baseStats: { hp: 100, atk: 75, def: 75, spAtk: 75, spDef: 75, spd: 100 },
+      statuses: [{ id: 'paralyze', stacks: 3 }],
+    });
+    const slowerPlayer = mon({
+      baseStats: { hp: 100, atk: 75, def: 75, spAtk: 75, spDef: 75, spd: 60 },
+    });
+    const s = createCombat({
+      team: [slowerPlayer],
+      enemy: fastEnemy,
+      deck: STARTER_DECK,
+      seed: 1,
+    });
+    // Enemy base 100 × paralyze 0.5 = 50, player 60 — player faster, enemy doesn't act first.
+    expect(s.enemyActed).toBe(false);
   });
 });
 

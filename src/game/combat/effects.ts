@@ -27,6 +27,23 @@ function setActive(state: CombatState, next: Combatant): CombatState {
 }
 
 /**
+ * Deal `recoilPercent`% of `dealt` as self-damage to the attacker. No-op when the
+ * percent is missing or 0. Used by Brave Bird, Flare Blitz, Wood Hammer, Wild Charge,
+ * Double-Edge — moves where the trade is "high power for self-cost".
+ */
+function applyRecoil(
+  state: CombatState,
+  attacker: Combatant,
+  dealt: number,
+  recoilPercent: number | undefined,
+): CombatState {
+  if (!recoilPercent || dealt <= 0) return state;
+  const recoil = Math.round((dealt * recoilPercent) / 100);
+  const hp = Math.max(0, attacker.hp - recoil);
+  return setActive(state, { ...attacker, hp });
+}
+
+/**
  * Apply a single card effect to the combat state. Pure — returns a new state. The reducer
  * pays energy, iterates `card.effects`, then resolves discard/turn flow around this.
  */
@@ -47,12 +64,19 @@ export function applyEffect(
         defender: state.enemy,
         weather: state.weather,
       });
-      const crit = rng() < critChance(attacker.stages.crit);
+      // critBoost is a per-hit bump on TOP of the attacker's persistent crit stage —
+      // Stone Edge / Frost Breath / Slash-style move-inherent high-crit moves.
+      const crit = rng() < critChance(attacker.stages.crit + (effect.critBoost ?? 0));
       const dealt = crit ? Math.round(final * CRIT_MULTIPLIER) : final;
       const absorbed = Math.min(state.enemy.block, dealt);
       const hp = Math.max(0, state.enemy.hp - (dealt - absorbed));
       const enemy = { ...state.enemy, block: state.enemy.block - absorbed, hp };
-      return { ...state, enemy, outcome: hp <= 0 ? 'win' : state.outcome };
+      const stepped: CombatState = {
+        ...state,
+        enemy,
+        outcome: hp <= 0 ? 'win' : state.outcome,
+      };
+      return applyRecoil(stepped, attacker, dealt, effect.recoilPercent);
     }
     case 'lifesteal': {
       const attacker = activeOf(state);
@@ -64,7 +88,7 @@ export function applyEffect(
         defender: state.enemy,
         weather: state.weather,
       });
-      const crit = rng() < critChance(attacker.stages.crit);
+      const crit = rng() < critChance(attacker.stages.crit + (effect.critBoost ?? 0));
       const dealt = crit ? Math.round(final * CRIT_MULTIPLIER) : final;
       const absorbed = Math.min(state.enemy.block, dealt);
       const hp = Math.max(0, state.enemy.hp - (dealt - absorbed));
@@ -81,7 +105,8 @@ export function applyEffect(
         enemy,
         outcome: hp <= 0 ? 'win' : state.outcome,
       };
-      return setActive(stepped, healedAttacker);
+      const withHeal = setActive(stepped, healedAttacker);
+      return applyRecoil(withHeal, healedAttacker, dealt, effect.recoilPercent);
     }
     case 'block': {
       const a = activeOf(state);

@@ -38,7 +38,16 @@ export type GrowthRate =
   | 'erratic'
   | 'fluctuating';
 
-export type StatusId = 'burn' | 'weak';
+/**
+ * Status effects that can stick to a Combatant. Stacks behave per status:
+ *   - `burn`, `poison`: tick damage at end of turn proportional to stacks; decay 1/turn.
+ *   - `weak`: ×0.75 multiplier on damage dealt while present; decay 1/turn.
+ *   - `sleep`, `freeze`: the holder skips its action while present; decay 1/turn. Foe-only
+ *     in v0 — player-side card play stays interactive even if the active mon is hit
+ *     by one of these.
+ *   - `paralyze`: halves the holder's effective speed (turn-order). Decay 1/turn. Foe-only.
+ */
+export type StatusId = 'burn' | 'weak' | 'poison' | 'sleep' | 'paralyze' | 'freeze';
 
 export interface StatusInstance {
   id: StatusId;
