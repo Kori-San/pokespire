@@ -53,6 +53,7 @@ export function createCombat(opts: CreateCombatOptions): CombatState {
     rngState: rng.state,
     outcome: 'ongoing',
     enemyActed: false,
+    freeSwitch: false,
     log: [],
   };
   return maybeEnemyGoesFirst(fresh, rng);
@@ -95,12 +96,21 @@ function playCard(state: CombatState, handIndex: number): CombatState {
 function switchTo(state: CombatState, teamIndex: number): CombatState {
   if (teamIndex === state.activeIndex) return state;
   const target = state.team[teamIndex];
-  if (!target || target.hp <= 0 || state.energy < SWITCH_COST) return state;
+  if (!target || target.hp <= 0) return state;
+  // A pending freeSwitch (U-Turn-style) waives the energy cost for this one switch.
+  const cost = state.freeSwitch ? 0 : SWITCH_COST;
+  if (state.energy < cost) return state;
   // Outgoing mon loses block and resets stat-stages (canon: stages don't persist on bench).
   const team = state.team.map((mon, i) =>
     i === state.activeIndex ? { ...mon, block: 0, stages: { ...EMPTY_STAGES } } : mon,
   );
-  return { ...state, team, activeIndex: teamIndex, energy: state.energy - SWITCH_COST };
+  return {
+    ...state,
+    team,
+    activeIndex: teamIndex,
+    energy: state.energy - cost,
+    freeSwitch: false,
+  };
 }
 
 function endTurn(state: CombatState): CombatState {
@@ -179,6 +189,7 @@ function startTurn(state: CombatState, rng: SeededRng): CombatState {
     ...piles,
     turn: state.turn + 1,
     enemyActed: false,
+    freeSwitch: false,
   };
   return maybeEnemyGoesFirst(next, rng);
 }

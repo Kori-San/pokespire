@@ -39,6 +39,7 @@ function state(overrides: Partial<CombatState> = {}): CombatState {
     rngState: 123,
     outcome: 'ongoing',
     enemyActed: false,
+    freeSwitch: false,
     log: [],
     ...overrides,
   };
@@ -105,6 +106,21 @@ describe('combatReducer — SWITCH', () => {
     const s = state({ team: [mon(), mon({ name: 'b', hp: 0 })] });
     const out = combatReducer(s, { type: 'SWITCH', teamIndex: 1 });
     expect(out).toBe(s);
+  });
+
+  it('a pending freeSwitch waives the 1-energy switch cost (consumed once)', () => {
+    const s = state({
+      team: [mon(), mon({ name: 'b' }), mon({ name: 'c' })],
+      energy: 0,
+      freeSwitch: true,
+    });
+    const out = combatReducer(s, { type: 'SWITCH', teamIndex: 1 });
+    expect(out.activeIndex).toBe(1);
+    expect(out.energy).toBe(0);
+    // Bonus consumed — the next switch this turn pays the normal cost.
+    expect(out.freeSwitch).toBe(false);
+    const next = combatReducer(out, { type: 'SWITCH', teamIndex: 2 });
+    expect(next.activeIndex).toBe(1);
   });
 
   it('resets the outgoing mon stat-stages to zero on switch-out', () => {

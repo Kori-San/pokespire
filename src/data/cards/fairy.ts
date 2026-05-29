@@ -28,6 +28,16 @@ export const FAIRY_CARDS: CardDef[] = [
     ],
   },
   {
+    id: 'mistyTerrain',
+    name: 'MISTY TERRAIN',
+    type: 'fairy',
+    cost: 1,
+    kind: 'SKL',
+    category: 'status',
+    rarity: 'epic',
+    effects: [{ kind: 'terrain', terrain: 'misty', turns: 4 }],
+  },
+  {
     id: 'drainingKiss',
     name: 'DRAINING KISS',
     type: 'fairy',

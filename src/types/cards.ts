@@ -1,5 +1,5 @@
 import type { PokeType, StatusId } from './pokemon';
-import type { Stat, WeatherKind } from './combat';
+import type { Stat, TerrainKind, WeatherKind } from './combat';
 
 export type BallTier = 'poke' | 'great' | 'ultra' | 'master';
 
@@ -50,6 +50,18 @@ export type Effect =
   | { kind: 'stat'; target: 'self' | 'foe'; stat: Stat; stages: number }
   | { kind: 'energy'; amount: number; when: 'now' | 'nextTurn' }
   | { kind: 'weather'; weather: WeatherKind; turns: number }
+  /**
+   * Battlefield terrain — Gen-VI canon. Like weather it sets a passive battlefield
+   * state for N turns; full engine implementation lands later. Cards still print
+   * the `Terrain` keyword chip + tooltip describing the effect.
+   */
+  | { kind: 'terrain'; terrain: TerrainKind; turns: number }
+  /**
+   * Marks the next SWITCH this turn as free of its 1-energy cost. Canon U-Turn / Volt
+   * Switch / Flip Turn play after a hit-and-run damage effect and let the player rotate
+   * out without paying the switch tax this turn.
+   */
+  | { kind: 'freeSwitch' }
   | { kind: 'capture'; ballTier: BallTier };
 
 export interface CardDef {
@@ -67,4 +79,13 @@ export interface CardDef {
    * `selectCardLines`.
    */
   effects: Effect[];
+  /**
+   * Single-use for the entire run, not just this combat. When the combat ends, an
+   * ephemeral card that was played leaves the run's deck permanently. Reserved for
+   * legendary tier (Master Ball, Max Potion). Surfaces as the `Ephemeral` keyword chip.
+   *
+   * NOTE: full run-scope removal needs RunState wiring (handled when the post-combat
+   * resolve step lands). Per-combat exhaust already applies via BALL/ITEM routing.
+   */
+  ephemeral?: boolean;
 }

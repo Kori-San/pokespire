@@ -5,7 +5,7 @@
 ```
 final = round(
   card.amount                               // printed damage on the card
-  × stab                                    // 1.25 if card.type ∈ attacker.types else 1.0
+  × stab                                    // 1.5 if card.type ∈ attacker.types else 1.0  (canon Gen-II+)
   × eff                                     // 18×18 type chart; immunity → 0.25 floor
   × weakMod                                 // status modifiers (BURN/WEAK/…)
   × weatherMod                              // sun / rain / sand / hail multipliers
@@ -97,11 +97,11 @@ Card "EMBER LASH" — FIRE, special, prints **10**. Defender neutral baseline (d
 
 | Attacker            | Lvl | Match              | STAB | eff | atkScale | defScale | final |
 | ------------------- | --- | ------------------ | ---- | --- | -------- | -------- | ----- |
-| Charmander (spA 60) | 5   | Rattata (spD 35)   | 1.25 | 1.0 | 0.80     | 1.50     | 9     |
-| Charmander          | 10  | Rattata            | 1.25 | 1.0 | 0.80     | 1.50     | 12    |
-| Charmeleon (spA 80) | 16  | Onix (spD 45)      | 1.25 | 1.0 | 1.07     | 1.50     | 20    |
-| Charizard (spA 109) | 36  | Onix               | 1.25 | 1.0 | 1.45     | 1.50     | 65    |
-| Charmander          | 5   | Bulbasaur (spD 65) | 1.25 | 2.0 | 0.80     | 1.15     | 17    |
+| Charmander (spA 60) | 5   | Rattata (spD 35)   | 1.5  | 1.0 | 0.80     | 1.50     | 11    |
+| Charmander          | 10  | Rattata            | 1.5  | 1.0 | 0.80     | 1.50     | 14    |
+| Charmeleon (spA 80) | 16  | Onix (spD 45)      | 1.5  | 1.0 | 1.07     | 1.50     | 23    |
+| Charizard (spA 109) | 36  | Onix               | 1.5  | 1.0 | 1.45     | 1.50     | 78    |
+| Charmander          | 5   | Bulbasaur (spD 65) | 1.5  | 2.0 | 0.80     | 1.15     | 21    |
 | Mewtwo (spA 154)    | 5   | Rattata            | 1.0  | 1.0 | 1.50     | 1.50     | 17    |
 
 Reads: STAB baseline ≈ printed value at L5; STAB + super-effective stacks fast; Charizard

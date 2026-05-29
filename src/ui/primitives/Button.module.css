@@ -5,12 +5,18 @@
   padding: var(--space-3) var(--space-4);
   border-radius: var(--radius-btn);
   border: 3px solid var(--box-border);
-  transition: transform 0.05s ease;
+  transition:
+    transform 0.05s ease,
+    background-color 0.05s ease,
+    box-shadow 0.05s ease;
   width: 100%;
 }
 
+/* Pressed state — sink into the chunky shadow + shift to a light gray so the button
+ * visibly clicks. Applied to both variants via this base rule + per-variant overrides. */
 .button:not(:disabled):active {
-  transform: translateY(2px);
+  transform: translateY(3px);
+  box-shadow: 0 0 0 var(--box-border-lo);
 }
 
 .button:focus-visible {
@@ -18,11 +24,12 @@
   outline-offset: 2px;
 }
 
+/* Disabled — desaturated and dimmed, never see-through. The button still reads clearly so
+ * the player can tell what it WOULD do. */
 .button:disabled {
-  opacity: 0.5;
+  filter: grayscale(0.85) brightness(0.78);
   cursor: not-allowed;
   box-shadow: none;
-  filter: grayscale(0.4);
 }
 
 .primary {
@@ -32,16 +39,26 @@
 }
 
 .primary:not(:disabled):hover {
-  background: var(--sky-bot);
+  background: #d6dae3;
 }
 
+.primary:not(:disabled):active {
+  background: #b8bcc6;
+}
+
+/* Ghost — solid muted-navy chip with light text. Reads as a secondary button without
+ * looking transparent. */
 .ghost {
-  background: rgba(248, 248, 248, 0.1);
+  background: var(--box-border-hi);
   color: var(--text-light);
-  border-color: var(--box-border-hi);
-  box-shadow: none;
+  border-color: var(--box-border-lo);
+  box-shadow: 0 3px 0 var(--box-border-lo);
 }
 
 .ghost:not(:disabled):hover {
-  background: rgba(248, 248, 248, 0.18);
+  background: var(--box-border);
+}
+
+.ghost:not(:disabled):active {
+  background: #303848;
 }

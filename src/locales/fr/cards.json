@@ -24,7 +24,133 @@
   },
   "status": {
     "burn": "Brûlure",
-    "weak": "Affaibli"
+    "poison": "Poison",
+    "weak": "Affaibli",
+    "sleep": "Sommeil",
+    "paralyze": "Paralysie",
+    "freeze": "Gel"
+  },
+  "keyword": {
+    "exhaust": {
+      "name": "Usage unique",
+      "label": "Usage unique.",
+      "desc": "À l'utilisation, la carte est retirée pour le reste du combat."
+    },
+    "ephemeral": {
+      "name": "Éphémère",
+      "label": "Éphémère.",
+      "desc": "Usage unique pour toute la run. Après usage, la carte quitte le deck définitivement."
+    },
+    "switch": {
+      "name": "Changement",
+      "label": "Changement.",
+      "desc": "Le prochain changement ce tour-ci ne coûte aucune énergie."
+    },
+    "stab": {
+      "name": "STAB",
+      "label": "STAB.",
+      "desc": "Bonus de Type — le type de la carte correspond à celui du Pokémon actif. Dégâts ×1,5."
+    },
+    "super": {
+      "name": "Super efficace",
+      "label": "Super efficace.",
+      "desc": "L'adversaire est faible à ce type — dégâts ×2 (×4 contre double faiblesse)."
+    },
+    "resisted": {
+      "name": "Pas très efficace",
+      "label": "Pas très efficace.",
+      "desc": "L'adversaire résiste à ce type — dégâts ×0,5 (×0,25 contre double résistance)."
+    },
+    "immune": {
+      "name": "Sans effet",
+      "label": "Sans effet.",
+      "desc": "L'adversaire est immunisé — dégâts plafonnés à ×0,25 pour grignoter quand même."
+    },
+    "lifesteal": {
+      "name": "Vamp",
+      "label": "Vamp {{percent}}%.",
+      "desc": "Récupère {{percent}}% des dégâts infligés en PV pour le Pokémon actif."
+    },
+    "crit": {
+      "name": "Crit",
+      "label": "Crit +{{boost}}.",
+      "desc": "Augmente la chance de critique (×1,5) pour cette attaque uniquement."
+    },
+    "recoil": {
+      "name": "Recul",
+      "label": "Recul {{percent}}%.",
+      "desc": "Le Pokémon actif subit {{percent}}% des dégâts infligés en contrecoup."
+    },
+    "burn": {
+      "name": "Brûlure",
+      "label": "Brûlure {{stacks}}.",
+      "desc": "Fin de tour : 2 dégâts par charge, puis perd 1 charge."
+    },
+    "poison": {
+      "name": "Poison",
+      "label": "Poison {{stacks}}.",
+      "desc": "Fin de tour : 3 dégâts par charge, puis perd 1 charge."
+    },
+    "weak": {
+      "name": "Affaibli",
+      "label": "Affaibli {{stacks}}.",
+      "desc": "Les dégâts infligés sont ×0,75 tant que présent. Perd 1 charge par tour."
+    },
+    "sleep": {
+      "name": "Sommeil",
+      "label": "Sommeil {{stacks}}.",
+      "desc_one": "Le porteur passe son tour pendant {{count}} tour. Perd 1 charge par tour.",
+      "desc_other": "Le porteur passe son tour pendant {{count}} tours. Perd 1 charge par tour."
+    },
+    "paralyze": {
+      "name": "Paralysie",
+      "label": "Paralysie {{stacks}}.",
+      "desc": "La vitesse effective du porteur est divisée par 2. Perd 1 charge par tour."
+    },
+    "freeze": {
+      "name": "Gel",
+      "label": "Gel {{stacks}}.",
+      "desc_one": "Le porteur passe son tour pendant {{count}} tour. Perd 1 charge par tour.",
+      "desc_other": "Le porteur passe son tour pendant {{count}} tours. Perd 1 charge par tour."
+    },
+    "weather": {
+      "name": "Météo",
+      "label": "{{name}} ({{turns}}t).",
+      "kind": {
+        "sun": { "name": "Zénith", "desc": "Capacités Feu ×1,5 ; Eau ×0,5." },
+        "rain": { "name": "Pluie", "desc": "Capacités Eau ×1,5 ; Feu ×0,5." },
+        "sand": {
+          "name": "Sable",
+          "desc": "Capacités Roche / Sol / Acier +20 %. Les autres types subissent 5 dégâts en fin de tour."
+        },
+        "hail": {
+          "name": "Grêle",
+          "desc": "Capacités Glace +20 %. Les non-Glace subissent 5 dégâts en fin de tour."
+        }
+      }
+    },
+    "terrain": {
+      "name": "Champ",
+      "label": "{{name}} ({{turns}}t).",
+      "kind": {
+        "electric": {
+          "name": "Électrifié",
+          "desc": "Capacités Électrik +30 %. Les deux Pokémon actifs ne peuvent plus s'endormir."
+        },
+        "grassy": {
+          "name": "Herbu",
+          "desc": "Capacités Plante +30 %. Les deux Pokémon actifs récupèrent 5 PV en fin de tour."
+        },
+        "misty": {
+          "name": "Brumeux",
+          "desc": "Capacités Dragon ×0,5. Les deux Pokémon actifs ne peuvent pas être Brûlés, Empoisonnés, Paralysés, Endormis ou Gelés."
+        },
+        "psychic": {
+          "name": "Psychique",
+          "desc": "Capacités Psy +30 %."
+        }
+      }
+    }
   },
   "stat": {
     "hp": "PV",

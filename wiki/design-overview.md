@@ -18,6 +18,16 @@
 
 Pick a starter (L5) → traverse a branching map → card battles (switch for STAB, whittle + capture wild mons) → earn XP, cards, gold, items → evolve mid-run → beat the boss → run ends, meta updates (Dex, unlocked starters, Ascension). Repeat, climbing Ascensions and completing the Dex.
 
+## Run structure — three acts
+
+Each run spans **three sequential maps**, Slay-the-Spire-style. Each act ends in a boss; beating the act boss unlocks the next map. Acts ramp difficulty (tougher enemies, harder elites, better rewards), evolve the encounter pool (a mid-route Pokémon line shows up only from Act 2 on), and gate progression milestones (e.g. legendary boss only appears as the Act 3 finale). Mechanically:
+
+- **Act 1** — ~12-15 floors, gentle on-ramp, regional starter-tier encounters, one elite minimum, type-uniform routes (a "fire route" or "grass route" leaning hard into one type so type-matchup picking matters).
+- **Act 2** — ~12-15 floors, mid-tier encounters, two elites minimum, mixed types, a guaranteed evolution-stone reward node so stone-evos can fire by end of act.
+- **Act 3** — ~12-15 floors, hard encounters, multiple elites, **legendary/mythical boss** finale (chance-rolled per the legendary unlock rules — see [legendaries.md](legendaries.md)).
+
+Player power scales across the three acts (level / pool / items / stages), so the difficulty ramp matches their growth instead of being a flat curve. Save / resume works at any node boundary across all three acts.
+
 ## Scope
 
 - **v0 (MVP):** Gen 1 (151), full combat + run loop + persistence + items/weather/shops + special-mon solo mode + Ascension ladder + FR/EN + PWA.

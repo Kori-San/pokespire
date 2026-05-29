@@ -32,23 +32,141 @@
   outline-offset: 3px;
 }
 
+/* Unaffordable cards stay fully opaque — they read as "unavailable" via desaturation and
+ * a slight dim, not transparency. Helps the player still recognise the card. */
 .disabled {
-  opacity: 0.5;
-  filter: grayscale(0.5);
+  filter: grayscale(0.85) brightness(0.78);
   cursor: not-allowed;
 }
 
-/* Type-colored title banner — name centered */
+/* Each keyword chip is one flex row — icon + label vertically centered together, one
+ * chip per line. Cleaner alignment than the inline-block flow when the label fits. */
+.keywords {
+  display: flex;
+  flex-direction: column;
+  margin-top: 4px;
+}
+
+.keyword {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: bold;
+}
+
+/* Icon sizes itself to the surrounding text (em-based) so it stays visually balanced
+ * across density buckets (14 / 12 / 10 px body font). `flex-shrink: 0` keeps the icon
+ * from squeezing when the label is long. */
+.kwIcon {
+  width: 1.1em;
+  height: 1.1em;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+}
+
+/* STAB chips get a subtle pulse on their sparkle icon — readable celebration when the
+ * matchup is favourable, no library dependency. */
+.kw_stab .kwIcon {
+  animation: stab-sparkle 2.4s ease-in-out infinite;
+}
+
+@keyframes stab-sparkle {
+  0%,
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.18);
+    filter: brightness(1.25);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kw_stab .kwIcon {
+    animation: none;
+  }
+}
+
+/* Glossary tooltip — appears beside the card on hover, lists every keyword on the card
+ * with its full definition. `pointer-events: none` so the tooltip never steals hover. */
+.tooltip {
+  position: absolute;
+  left: calc(100% + 8px);
+  top: 0;
+  width: 180px;
+  padding: 8px 10px;
+  background: var(--box-bg);
+  color: var(--text-dark);
+  border: 2px solid var(--box-border-lo);
+  border-radius: 4px;
+  font-size: 10px;
+  line-height: 1.35;
+  text-align: start;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  z-index: 100;
+  transition:
+    opacity 0.12s ease,
+    visibility 0.12s ease;
+}
+
+.card:hover .tooltip {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Horizontal rule between tooltip entries — clear separation when a card has several
+ * keywords stacked (e.g. a STAB super-effective lifesteal crit). */
+.tooltipDivider {
+  margin: 6px 0;
+  border: none;
+  border-top: 1px solid var(--box-border-lo);
+  opacity: 0.4;
+}
+
+.tooltipLabel {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: bold;
+  margin-bottom: 2px;
+}
+
+.tooltipDesc {
+  font-weight: normal;
+}
+
+/* Type-colored title banner — fixed 24px height + flex centering so every card has
+ * the same chrome. Font shrinks per `data-density` (set in Card.tsx from the title's
+ * length) so long names like ELECTRIC TERRAIN fit on one line. */
 .banner {
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: var(--card-type);
   color: #fff;
-  padding: 5px 2px;
+  padding: 0 6px;
   font-family: var(--font-display);
-  font-size: 9px;
+  font-size: 10px;
+  line-height: 1;
   letter-spacing: 0.5px;
   text-align: center;
   text-shadow: 1px 1px 0 var(--card-shade);
   border-radius: 2px;
+  overflow: hidden;
+}
+
+.banner[data-density='mid'] {
+  font-size: 8px;
+  letter-spacing: 0.4px;
+}
+
+.banner[data-density='dense'] {
+  font-size: 7px;
+  letter-spacing: 0.3px;
 }
 
 /* Description fills the middle. Font scales DOWN as effect count grows so the card never
@@ -62,6 +180,15 @@
   font-size: 14px;
   line-height: 1.3;
   overflow: hidden;
+}
+
+/* Each effect line as its own block — Close Combat reads
+ *   Deal 26 damage.
+ *   Lower own Defense by 1.
+ *   Lower own Sp. Def by 1.
+ * instead of running all three together on a wrapped line. */
+.bodyLine {
+  display: block;
 }
 
 .body[data-density='mid'] {

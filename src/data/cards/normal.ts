@@ -49,7 +49,7 @@ export const NORMAL_CARDS: CardDef[] = [
     kind: 'ATK',
     category: 'physical',
     rarity: 'rare',
-    effects: [{ kind: 'damage', amount: 26 }],
+    effects: [{ kind: 'damage', amount: 26, recoilPercent: 33 }],
   },
   {
     id: 'hyperBeam',

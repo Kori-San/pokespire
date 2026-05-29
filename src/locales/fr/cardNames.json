@@ -14,6 +14,7 @@
 
   "ember": "FLAMMÈCHE",
   "flamethrower": "LANCE-FLAMMES",
+  "flareBlitz": "BOUTEFEU",
   "willOWisp": "FEU FOLLET",
   "flameCharge": "NITROCHARGE",
   "sunnyDay": "ZÉNITH",
@@ -29,10 +30,18 @@
   "energyBall": "ÉCO-SPHÈRE",
   "leafBlade": "LAME-FEUILLE",
   "gigaDrain": "GIGA-SANGSUE",
+  "grassyTerrain": "CHAMP HERBU",
+  "sleepPowder": "POUDRE DODO",
+  "spore": "SPORE",
+  "woodHammer": "MARTEAU-BOIS",
   "growth": "CROISSANCE",
 
   "thunderShock": "ÉCLAIR",
   "thunderbolt": "TONNERRE",
+  "voltSwitch": "ÉCHANGE ÉCLAIR",
+  "electricTerrain": "CHAMP ÉLECTRIFIÉ",
+  "thunderWave": "CAGE-ÉCLAIR",
+  "wildCharge": "ÉCLAIR FOU",
   "chargeBeam": "RAYON CHARGE",
   "parabolicCharge": "PARABOCHARGE",
 
@@ -47,20 +56,25 @@
 
   "sludgeBomb": "BOMBE-BEURK",
   "poisonJab": "DIRECT TOXIK",
+  "toxic": "TOXIK",
   "coil": "ENROULEMENT",
 
   "earthquake": "SÉISME",
   "earthPower": "TELLURIFORCE",
 
   "gust": "TORNADE",
+  "braveBird": "RAPACE",
   "aerialAce": "AILE D'ACIER",
   "tailwind": "VENT ARRIÈRE",
 
   "confusion": "CHOC MENTAL",
   "psychic": "PSYKO",
   "zenHeadbutt": "PSYKOUD'BOUL",
+  "psychicTerrain": "CHAMP PSYCHIQUE",
+  "hypnosis": "HYPNOSE",
   "calmMind": "PLÉNITUDE",
 
+  "uTurn": "DEMI-TOUR",
   "bugBuzz": "BOURDON",
   "xScissor": "PLAIE CROIX",
   "leechLife": "VAMPIRISME",
@@ -89,6 +103,7 @@
 
   "moonblast": "LUMI-ÉCLAT",
   "playRough": "CÂLINERIE",
+  "mistyTerrain": "CHAMP BRUMEUX",
   "drainingKiss": "VAMPIBAISER",
 
   "pokeBall": "POKÉ BALL",

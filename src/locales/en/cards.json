@@ -24,7 +24,133 @@
   },
   "status": {
     "burn": "Burn",
-    "weak": "Weak"
+    "poison": "Poison",
+    "weak": "Weak",
+    "sleep": "Sleep",
+    "paralyze": "Paralyze",
+    "freeze": "Freeze"
+  },
+  "keyword": {
+    "exhaust": {
+      "name": "Exhaust",
+      "label": "Exhaust.",
+      "desc": "When played, this card is removed for the rest of combat."
+    },
+    "ephemeral": {
+      "name": "Ephemeral",
+      "label": "Ephemeral.",
+      "desc": "Single-use for the entire run. After this card is played, it leaves your deck permanently."
+    },
+    "switch": {
+      "name": "Switch",
+      "label": "Switch.",
+      "desc": "Your next switch this turn costs no energy."
+    },
+    "stab": {
+      "name": "STAB",
+      "label": "STAB.",
+      "desc": "Same-Type Attack Bonus. Your card type matches your active Pokémon — damage ×1.5."
+    },
+    "super": {
+      "name": "Super effective",
+      "label": "Super effective.",
+      "desc": "Foe is weak to this type — damage ×2 (or ×4 against a double weakness)."
+    },
+    "resisted": {
+      "name": "Resisted",
+      "label": "Resisted.",
+      "desc": "Foe resists this type — damage ×0.5 (or ×0.25 against a double resist)."
+    },
+    "immune": {
+      "name": "No effect",
+      "label": "No effect.",
+      "desc": "Foe is immune to this type — damage clamped to ×0.25 so the card still does something."
+    },
+    "lifesteal": {
+      "name": "Vamp",
+      "label": "Vamp {{percent}}%.",
+      "desc": "Recover {{percent}}% of the damage this card deals as HP for the active Pokémon."
+    },
+    "crit": {
+      "name": "Crit",
+      "label": "Crit +{{boost}}.",
+      "desc": "Higher chance to crit (×1.5) for this attack only."
+    },
+    "recoil": {
+      "name": "Recoil",
+      "label": "Recoil {{percent}}%.",
+      "desc": "Take {{percent}}% of the damage dealt as self-cost."
+    },
+    "burn": {
+      "name": "Burn",
+      "label": "Burn {{stacks}}.",
+      "desc": "End of turn: 2 damage per stack, then decay 1 stack."
+    },
+    "poison": {
+      "name": "Poison",
+      "label": "Poison {{stacks}}.",
+      "desc": "End of turn: 3 damage per stack, then decay 1 stack."
+    },
+    "weak": {
+      "name": "Weak",
+      "label": "Weak {{stacks}}.",
+      "desc": "Damage dealt is reduced ×0.75 while present. Decay 1 stack per turn."
+    },
+    "sleep": {
+      "name": "Sleep",
+      "label": "Sleep {{stacks}}.",
+      "desc_one": "Skip the holder's action for {{count}} turn. Decay 1 stack per turn.",
+      "desc_other": "Skip the holder's action for {{count}} turns. Decay 1 stack per turn."
+    },
+    "paralyze": {
+      "name": "Paralyze",
+      "label": "Paralyze {{stacks}}.",
+      "desc": "Holder's effective speed is halved. Decay 1 stack per turn."
+    },
+    "freeze": {
+      "name": "Freeze",
+      "label": "Freeze {{stacks}}.",
+      "desc_one": "Skip the holder's action for {{count}} turn. Decay 1 stack per turn.",
+      "desc_other": "Skip the holder's action for {{count}} turns. Decay 1 stack per turn."
+    },
+    "weather": {
+      "name": "Weather",
+      "label": "{{name}} ({{turns}}t).",
+      "kind": {
+        "sun": { "name": "Sun", "desc": "Fire moves ×1.5; Water moves ×0.5." },
+        "rain": { "name": "Rain", "desc": "Water moves ×1.5; Fire moves ×0.5." },
+        "sand": {
+          "name": "Sand",
+          "desc": "Rock / Ground / Steel moves +20%. Non-Rock/Ground/Steel take 5 damage at end of turn."
+        },
+        "hail": {
+          "name": "Hail",
+          "desc": "Ice moves +20%. Non-Ice take 5 damage at end of turn."
+        }
+      }
+    },
+    "terrain": {
+      "name": "Terrain",
+      "label": "{{name}} ({{turns}}t).",
+      "kind": {
+        "electric": {
+          "name": "Electric",
+          "desc": "Electric moves +30%. Both active Pokémon can't fall asleep."
+        },
+        "grassy": {
+          "name": "Grassy",
+          "desc": "Grass moves +30%. Both active Pokémon heal 5 HP at end of turn."
+        },
+        "misty": {
+          "name": "Misty",
+          "desc": "Dragon moves ×0.5. Both active Pokémon can't be Burned, Poisoned, Paralyzed, put to Sleep, or Frozen."
+        },
+        "psychic": {
+          "name": "Psychic",
+          "desc": "Psychic moves +30%."
+        }
+      }
+    }
   },
   "stat": {
     "hp": "HP",

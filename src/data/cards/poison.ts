@@ -22,6 +22,16 @@ export const POISON_CARDS: CardDef[] = [
     effects: [{ kind: 'damage', amount: 16 }],
   },
   {
+    id: 'toxic',
+    name: 'TOXIC',
+    type: 'poison',
+    cost: 1,
+    kind: 'SKL',
+    category: 'status',
+    rarity: 'rare',
+    effects: [{ kind: 'applyStatus', target: 'foe', status: 'poison', stacks: 3 }],
+  },
+  {
     id: 'coil',
     name: 'COIL',
     type: 'poison',

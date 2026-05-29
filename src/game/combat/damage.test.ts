@@ -43,8 +43,9 @@ describe('calcDamage', () => {
       attacker: mon(['fire'], 5, stats(52, 43)),
       defender: mon(['normal'], 5, stats(56, 35)),
     });
-    expect(r.stab).toBe(1.25);
-    expect(r.final).toBe(10);
+    expect(r.stab).toBe(1.5);
+    // STAB at 1.5× nudges a printed-10 fire hit a notch above the baseline at L5.
+    expect(r.final).toBe(12);
   });
 
   it('scales up with level', () => {
@@ -55,7 +56,7 @@ describe('calcDamage', () => {
       attacker: mon(['fire'], 10, stats(52, 43)),
       defender: mon(['normal'], 10, stats(56, 35)),
     });
-    expect(r.final).toBe(13);
+    expect(r.final).toBe(16);
   });
 
   it('stacks STAB and super-effective', () => {
@@ -67,7 +68,8 @@ describe('calcDamage', () => {
       defender: mon(['grass', 'poison'], 5, stats(49, 49)),
     });
     expect(r.rawEff).toBe(2);
-    expect(r.final).toBe(20);
+    // STAB ×1.5 × super-effective ×2 stacks to ~×3 the baseline.
+    expect(r.final).toBe(24);
   });
 
   it('a high-attack legendary out-hits a starter without STAB', () => {

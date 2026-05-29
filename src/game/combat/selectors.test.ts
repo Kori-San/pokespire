@@ -38,6 +38,7 @@ function state(overrides: Partial<CombatState> = {}): CombatState {
     rngState: 1,
     outcome: 'ongoing',
     enemyActed: false,
+    freeSwitch: false,
     log: [],
     ...overrides,
   };

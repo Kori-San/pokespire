@@ -31,7 +31,7 @@ export const BALL_CARDS: CardDef[] = [
     id: 'ultraBall',
     name: 'ULTRA BALL',
     type: 'normal',
-    cost: 2,
+    cost: 3,
     kind: 'BALL',
     category: 'status',
     rarity: 'rare',
@@ -45,6 +45,7 @@ export const BALL_CARDS: CardDef[] = [
     kind: 'BALL',
     category: 'status',
     rarity: 'epic',
+    ephemeral: true,
     effects: [{ kind: 'capture', ballTier: 'master' }],
   },
 ];

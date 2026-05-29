@@ -160,6 +160,14 @@ export function applyEffect(
     case 'weather': {
       return { ...state, weather: { kind: effect.weather, turnsLeft: effect.turns } };
     }
+    case 'terrain': {
+      // Terrain has no state-side field yet — full engine implementation comes later.
+      // The card still surfaces its Terrain keyword chip via `keywordsOf`.
+      return state;
+    }
+    case 'freeSwitch': {
+      return { ...state, freeSwitch: true };
+    }
     case 'capture': {
       const chance = calcCaptureChance({
         hp: state.enemy.hp,

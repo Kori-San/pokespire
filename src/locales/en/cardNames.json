@@ -14,6 +14,7 @@
 
   "ember": "EMBER",
   "flamethrower": "FLAMETHROWER",
+  "flareBlitz": "FLARE BLITZ",
   "willOWisp": "WILL-O-WISP",
   "flameCharge": "FLAME CHARGE",
   "sunnyDay": "SUNNY DAY",
@@ -29,10 +30,18 @@
   "energyBall": "ENERGY BALL",
   "leafBlade": "LEAF BLADE",
   "gigaDrain": "GIGA DRAIN",
+  "grassyTerrain": "GRASSY TERRAIN",
+  "sleepPowder": "SLEEP POWDER",
+  "spore": "SPORE",
+  "woodHammer": "WOOD HAMMER",
   "growth": "GROWTH",
 
   "thunderShock": "THUNDER SHOCK",
   "thunderbolt": "THUNDERBOLT",
+  "voltSwitch": "VOLT SWITCH",
+  "electricTerrain": "ELECTRIC TERRAIN",
+  "thunderWave": "THUNDER WAVE",
+  "wildCharge": "WILD CHARGE",
   "chargeBeam": "CHARGE BEAM",
   "parabolicCharge": "PARABOLIC CHARGE",
 
@@ -47,20 +56,25 @@
 
   "sludgeBomb": "SLUDGE BOMB",
   "poisonJab": "POISON JAB",
+  "toxic": "TOXIC",
   "coil": "COIL",
 
   "earthquake": "EARTHQUAKE",
   "earthPower": "EARTH POWER",
 
   "gust": "GUST",
+  "braveBird": "BRAVE BIRD",
   "aerialAce": "AERIAL ACE",
   "tailwind": "TAILWIND",
 
   "confusion": "CONFUSION",
   "psychic": "PSYCHIC",
   "zenHeadbutt": "ZEN HEADBUTT",
+  "psychicTerrain": "PSYCHIC TERRAIN",
+  "hypnosis": "HYPNOSIS",
   "calmMind": "CALM MIND",
 
+  "uTurn": "U-TURN",
   "bugBuzz": "BUG BUZZ",
   "xScissor": "X-SCISSOR",
   "leechLife": "LEECH LIFE",
@@ -89,6 +103,7 @@
 
   "moonblast": "MOONBLAST",
   "playRough": "PLAY ROUGH",
+  "mistyTerrain": "MISTY TERRAIN",
   "drainingKiss": "DRAINING KISS",
 
   "pokeBall": "POKÉ BALL",

@@ -25,6 +25,16 @@ export const BUG_CARDS: CardDef[] = [
     effects: [{ kind: 'damage', amount: 16 }],
   },
   {
+    id: 'uTurn',
+    name: 'U-TURN',
+    type: 'bug',
+    cost: 2,
+    kind: 'ATK',
+    category: 'physical',
+    rarity: 'rare',
+    effects: [{ kind: 'damage', amount: 14 }, { kind: 'freeSwitch' }],
+  },
+  {
     id: 'leechLife',
     name: 'LEECH LIFE',
     type: 'bug',

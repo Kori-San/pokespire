@@ -38,6 +38,19 @@ export const FIRE_CARDS: CardDef[] = [
     effects: [{ kind: 'applyStatus', target: 'foe', status: 'burn', stacks: 2 }],
   },
   {
+    id: 'flareBlitz',
+    name: 'FLARE BLITZ',
+    type: 'fire',
+    cost: 3,
+    kind: 'ATK',
+    category: 'physical',
+    rarity: 'rare',
+    effects: [
+      { kind: 'damage', amount: 26, recoilPercent: 33 },
+      { kind: 'applyStatus', target: 'foe', status: 'burn', stacks: 1 },
+    ],
+  },
+  {
     id: 'flameCharge',
     name: 'FLAME CHARGE',
     type: 'fire',

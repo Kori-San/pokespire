@@ -3,6 +3,14 @@ import type { BaseStats, PokeType, StatusInstance } from './pokemon';
 export type WeatherKind = 'sun' | 'rain' | 'sand' | 'hail';
 
 /**
+ * Battle terrains — Gen-VI canon. Like weather, each kind boosts moves of its matching
+ * type and applies a passive effect (Electric Terrain blocks sleep, Grassy heals grounded
+ * mons, Misty blocks status, Psychic blocks priority). Surface only for now: full engine
+ * implementation lands when the effect kind goes beyond `weather`-style state.
+ */
+export type TerrainKind = 'electric' | 'grassy' | 'misty' | 'psychic';
+
+/**
  * Anything a stat-stage card can target. The five real species stats from `BaseStats`
  * plus `'crit'` — Pokespire's only non-species stage, used by crit-rate cards (Focus
  * Energy-flavored). `hp` is included via `keyof BaseStats` for shape-symmetry but no
@@ -110,6 +118,12 @@ export interface CombatState {
    * then skips the enemy phase so the enemy still acts exactly once per turn.
    */
   enemyActed: boolean;
+  /**
+   * When true, the NEXT SWITCH this turn skips its 1-energy cost. Set by `freeSwitch`
+   * effect cards (U-Turn, Volt Switch, …); consumed by the reducer's switch path. Resets
+   * at end of turn — the bonus never carries into the next turn.
+   */
+  freeSwitch: boolean;
   log: string[];
 }
 

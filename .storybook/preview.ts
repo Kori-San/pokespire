@@ -2,6 +2,7 @@ import type { Preview } from '@storybook/react-vite';
 import '../src/styles/global.css';
 import './preview.css';
 import '../src/i18n';
+import '../src/ui/icons';
 
 const preview: Preview = {
   parameters: {

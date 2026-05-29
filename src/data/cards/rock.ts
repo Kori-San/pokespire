@@ -19,10 +19,9 @@ export const ROCK_CARDS: CardDef[] = [
     kind: 'ATK',
     category: 'physical',
     rarity: 'rare',
-    effects: [
-      { kind: 'damage', amount: 22 },
-      { kind: 'stat', target: 'self', stat: 'crit', stages: 1 },
-    ],
+    // High-crit canon: the boost is move-inherent, applied only to THIS hit's crit roll —
+    // it never touches the attacker's persistent crit stage.
+    effects: [{ kind: 'damage', amount: 22, critBoost: 1 }],
   },
   {
     id: 'sandstorm',

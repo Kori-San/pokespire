@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { App } from './App';
 import { registerServiceWorker } from './services/pwa';
 import './i18n';
+import './ui/icons';
 import './styles/global.css';
 
 registerServiceWorker();

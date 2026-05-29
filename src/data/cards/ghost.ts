@@ -22,9 +22,6 @@ export const GHOST_CARDS: CardDef[] = [
     kind: 'ATK',
     category: 'physical',
     rarity: 'rare',
-    effects: [
-      { kind: 'damage', amount: 12 },
-      { kind: 'stat', target: 'self', stat: 'crit', stages: 1 },
-    ],
+    effects: [{ kind: 'damage', amount: 12, critBoost: 1 }],
   },
 ];

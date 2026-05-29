@@ -2,7 +2,7 @@ import type { Combatant, MoveCategory, PokeType, Weather } from '@/types';
 import { stageMultiplier } from '@/types';
 import { typeEffectiveness } from '@/data/typeChart';
 
-export const STAB_MULTIPLIER = 1.25;
+export const STAB_MULTIPLIER = 1.5;
 export const IMMUNITY_FLOOR = 0.25;
 export const WEAK_MULTIPLIER = 0.75;
 const STAT_BASELINE = 75;

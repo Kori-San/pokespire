@@ -12,6 +12,16 @@ export const FLYING_CARDS: CardDef[] = [
     effects: [{ kind: 'damage', amount: 8 }],
   },
   {
+    id: 'braveBird',
+    name: 'BRAVE BIRD',
+    type: 'flying',
+    cost: 3,
+    kind: 'ATK',
+    category: 'physical',
+    rarity: 'rare',
+    effects: [{ kind: 'damage', amount: 26, recoilPercent: 33 }],
+  },
+  {
     id: 'aerialAce',
     name: 'AERIAL ACE',
     type: 'flying',
