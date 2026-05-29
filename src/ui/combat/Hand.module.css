@@ -1,0 +1,26 @@
+/* StS-style hand: each slot rotates around its own bottom-center and drops along a
+ * parabolic arc, both inputs computed in JS and threaded in as CSS variables. Small
+ * negative side-margin gives the held-cards overlap; the focused card pops out of the
+ * fan straight up and scaled, with z-index lifting it above its neighbors.
+ *
+ * `overflow: visible` is explicit so the hovered card can extend above the container
+ * without being clipped by any parent that defaults to hidden (story frames do). */
+.hand {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding: 80px 16px 16px;
+  overflow: visible;
+}
+
+.slot {
+  margin: 0 -12px;
+  transform-origin: 50% 100%;
+  transform: rotate(var(--rot, 0deg)) translateY(var(--drop, 0px));
+  transition: transform 0.12s ease;
+}
+
+.slot:hover {
+  transform: rotate(0deg) translateY(-28px) scale(1.12);
+  z-index: 50 !important;
+}
