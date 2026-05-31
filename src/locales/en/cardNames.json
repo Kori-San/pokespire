@@ -6,6 +6,7 @@
   "doubleEdge": "DOUBLE-EDGE",
   "hyperBeam": "HYPER BEAM",
   "harden": "HARDEN",
+  "protect": "PROTECT",
   "growl": "GROWL",
   "focusEnergy": "FOCUS ENERGY",
   "recover": "RECOVER",
@@ -20,6 +21,7 @@
   "sunnyDay": "SUNNY DAY",
 
   "waterGun": "WATER GUN",
+  "aquaJet": "AQUA JET",
   "surf": "SURF",
   "scald": "SCALD",
   "withdraw": "WITHDRAW",
@@ -48,8 +50,10 @@
   "iceBeam": "ICE BEAM",
   "icicleCrash": "ICICLE CRASH",
   "snowscape": "SNOWSCAPE",
+  "iceShard": "ICE SHARD",
 
   "doubleKick": "DOUBLE KICK",
+  "machPunch": "MACH PUNCH",
   "closeCombat": "CLOSE COMBAT",
   "drainPunch": "DRAIN PUNCH",
   "bulkUp": "BULK UP",
@@ -84,9 +88,11 @@
   "stoneEdge": "STONE EDGE",
   "sandstorm": "SANDSTORM",
   "rockPolish": "ROCK POLISH",
+  "wideGuard": "WIDE GUARD",
 
   "shadowBall": "SHADOW BALL",
   "shadowClaw": "SHADOW CLAW",
+  "shadowSneak": "SHADOW SNEAK",
 
   "dragonPulse": "DRAGON PULSE",
   "dragonClaw": "DRAGON CLAW",
@@ -100,6 +106,7 @@
   "flashCannon": "FLASH CANNON",
   "ironHead": "IRON HEAD",
   "ironDefense": "IRON DEFENSE",
+  "bulletPunch": "BULLET PUNCH",
 
   "moonblast": "MOONBLAST",
   "playRough": "PLAY ROUGH",

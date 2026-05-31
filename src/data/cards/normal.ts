@@ -19,6 +19,8 @@ export const NORMAL_CARDS: CardDef[] = [
     kind: 'ATK',
     category: 'physical',
     rarity: 'common',
+    // Canon priority +1 — resolves before non-priority moves regardless of Speed.
+    priority: 1,
     effects: [{ kind: 'damage', amount: 5 }],
   },
   {
@@ -29,6 +31,8 @@ export const NORMAL_CARDS: CardDef[] = [
     kind: 'ATK',
     category: 'physical',
     rarity: 'rare',
+    // Canon priority +2 — outruns even other priority +1 moves.
+    priority: 2,
     effects: [{ kind: 'damage', amount: 9 }],
   },
   {
@@ -59,7 +63,11 @@ export const NORMAL_CARDS: CardDef[] = [
     kind: 'ATK',
     category: 'special',
     rarity: 'epic',
-    effects: [{ kind: 'damage', amount: 30 }],
+    // Canon Recharge: ATKs on this Pokémon are locked until the end of the next
+    // turn. `recharge: 2` covers the rest of THIS turn + all of NEXT turn (the
+    // counter ticks once at end of this turn). Status / Ball / Item plays remain
+    // available throughout — only attack cards are blocked.
+    effects: [{ kind: 'damage', amount: 30, recharge: 2 }],
   },
   {
     id: 'harden',
@@ -69,7 +77,20 @@ export const NORMAL_CARDS: CardDef[] = [
     kind: 'SKL',
     category: 'status',
     rarity: 'common',
-    effects: [{ kind: 'block', amount: 6 }],
+    // Canon Harden raises Defense by 1 stage — block belongs to Protect-family moves.
+    effects: [{ kind: 'stat', target: 'self', stat: 'def', stages: 1 }],
+  },
+  {
+    id: 'protect',
+    name: 'PROTECT',
+    type: 'normal',
+    cost: 1,
+    kind: 'SKL',
+    category: 'status',
+    rarity: 'uncommon',
+    // Canon Protect: full immunity for one turn. Mapped here to a thick one-turn shield
+    // — block absorbs the next incoming damage instance just like Bouclier in StS.
+    effects: [{ kind: 'block', amount: 10 }],
   },
   {
     id: 'growl',

@@ -24,4 +24,15 @@ export const GHOST_CARDS: CardDef[] = [
     rarity: 'rare',
     effects: [{ kind: 'damage', amount: 12, critBoost: 1 }],
   },
+  {
+    id: 'shadowSneak',
+    name: 'SHADOW SNEAK',
+    type: 'ghost',
+    cost: 0,
+    kind: 'ATK',
+    category: 'physical',
+    rarity: 'common',
+    priority: 1,
+    effects: [{ kind: 'damage', amount: 5 }],
+  },
 ];

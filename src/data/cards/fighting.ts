@@ -9,7 +9,21 @@ export const FIGHTING_CARDS: CardDef[] = [
     kind: 'ATK',
     category: 'physical',
     rarity: 'common',
-    effects: [{ kind: 'damage', amount: 14 }],
+    // Canon Double Kick = 2 hits. Each hit rolls crit independently — high crit chains
+    // can spike the total. Per-hit base is halved so the average damage stays close to
+    // the previous single-hit balance.
+    effects: [{ kind: 'damage', amount: 7, hits: 2 }],
+  },
+  {
+    id: 'machPunch',
+    name: 'MACH PUNCH',
+    type: 'fighting',
+    cost: 0,
+    kind: 'ATK',
+    category: 'physical',
+    rarity: 'common',
+    priority: 1,
+    effects: [{ kind: 'damage', amount: 5 }],
   },
   {
     id: 'closeCombat',

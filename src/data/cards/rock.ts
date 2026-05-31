@@ -43,4 +43,17 @@ export const ROCK_CARDS: CardDef[] = [
     rarity: 'rare',
     effects: [{ kind: 'stat', target: 'self', stat: 'spd', stages: 2 }],
   },
+  {
+    id: 'wideGuard',
+    name: 'WIDE GUARD',
+    type: 'rock',
+    cost: 2,
+    kind: 'SKL',
+    category: 'status',
+    rarity: 'rare',
+    // Canon Wide Guard: protects every ally from multi-target moves for one turn.
+    // Mapped to block on every ally in the active mon's column — front column shields
+    // the lead row, back column shields the bench reserve.
+    effects: [{ kind: 'block', amount: 8, scope: 'column' }],
+  },
 ];

@@ -34,4 +34,15 @@ export const STEEL_CARDS: CardDef[] = [
     rarity: 'rare',
     effects: [{ kind: 'stat', target: 'self', stat: 'def', stages: 2 }],
   },
+  {
+    id: 'bulletPunch',
+    name: 'BULLET PUNCH',
+    type: 'steel',
+    cost: 0,
+    kind: 'ATK',
+    category: 'physical',
+    rarity: 'common',
+    priority: 1,
+    effects: [{ kind: 'damage', amount: 5 }],
+  },
 ];

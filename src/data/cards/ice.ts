@@ -31,4 +31,15 @@ export const ICE_CARDS: CardDef[] = [
     rarity: 'epic',
     effects: [{ kind: 'weather', weather: 'hail', turns: 4 }],
   },
+  {
+    id: 'iceShard',
+    name: 'ICE SHARD',
+    type: 'ice',
+    cost: 0,
+    kind: 'ATK',
+    category: 'physical',
+    rarity: 'common',
+    priority: 1,
+    effects: [{ kind: 'damage', amount: 5 }],
+  },
 ];

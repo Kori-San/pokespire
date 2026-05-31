@@ -46,25 +46,30 @@
       "label": "Changement.",
       "desc": "Le prochain changement ce tour-ci ne coûte aucune énergie."
     },
+    "priority": {
+      "name": "Priorité",
+      "label": "Priorité +{{level}}.",
+      "desc": "S'exécute avant les attaques sans priorité ce tour-ci. À priorité égale, c'est le Pokémon le plus rapide qui frappe en premier."
+    },
     "stab": {
       "name": "STAB",
       "label": "STAB.",
-      "desc": "Bonus de Type — le type de la carte correspond à celui du Pokémon actif. Dégâts ×1,5."
+      "desc": "Le type de votre carte correspond à celui de votre Pokémon actif, augmentant ses dégâts de ×1,5."
     },
     "super": {
       "name": "Super efficace",
       "label": "Super efficace.",
-      "desc": "L'adversaire est faible à ce type — dégâts ×2 (×4 contre double faiblesse)."
+      "desc": "L'adversaire est faible à votre type de carte, augmentant ses dégâts de ×2 (×4 contre double faiblesse)."
     },
     "resisted": {
       "name": "Pas très efficace",
       "label": "Pas très efficace.",
-      "desc": "L'adversaire résiste à ce type — dégâts ×0,5 (×0,25 contre double résistance)."
+      "desc": "L'adversaire résiste à votre type de carte, réduisant ses dégâts à ×0,5 (×0,25 contre double résistance)."
     },
     "immune": {
       "name": "Sans effet",
       "label": "Sans effet.",
-      "desc": "L'adversaire est immunisé — dégâts plafonnés à ×0,25 pour grignoter quand même."
+      "desc": "L'adversaire est immunisé à ce type de carte."
     },
     "lifesteal": {
       "name": "Vamp",
@@ -80,6 +85,18 @@
       "name": "Recul",
       "label": "Recul {{percent}}%.",
       "desc": "Le Pokémon actif subit {{percent}}% des dégâts infligés en contrecoup."
+    },
+    "recharge": {
+      "name": "Récupération",
+      "label": "Récupération.",
+      "desc": "Jusqu'à la fin du prochain tour, ce Pokémon ne peut plus jouer de cartes Attaque."
+    },
+    "multihit": {
+      "name": "Multi-coup",
+      "label_one": "{{count}} frappe.",
+      "label_other": "{{count}} frappes.",
+      "desc_one": "Frappe {{count}} fois. Chaque coup vérifie le critique séparément.",
+      "desc_other": "Frappe {{count}} fois. Chaque coup vérifie le critique séparément."
     },
     "burn": {
       "name": "Brûlure",

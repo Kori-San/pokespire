@@ -12,6 +12,17 @@ export const WATER_CARDS: CardDef[] = [
     effects: [{ kind: 'damage', amount: 9 }],
   },
   {
+    id: 'aquaJet',
+    name: 'AQUA JET',
+    type: 'water',
+    cost: 0,
+    kind: 'ATK',
+    category: 'physical',
+    rarity: 'common',
+    priority: 1,
+    effects: [{ kind: 'damage', amount: 5 }],
+  },
+  {
     id: 'surf',
     name: 'SURF',
     type: 'water',
@@ -42,7 +53,8 @@ export const WATER_CARDS: CardDef[] = [
     kind: 'SKL',
     category: 'status',
     rarity: 'common',
-    effects: [{ kind: 'block', amount: 9 }],
+    // Canon Withdraw raises Defense by 1 stage — block is reserved for Protect-family.
+    effects: [{ kind: 'stat', target: 'self', stat: 'def', stages: 1 }],
   },
   {
     id: 'shellSmash',

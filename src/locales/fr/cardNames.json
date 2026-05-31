@@ -6,6 +6,7 @@
   "doubleEdge": "DAMOCLÈS",
   "hyperBeam": "ULTRALASER",
   "harden": "ARMURE",
+  "protect": "ABRI",
   "growl": "RUGISSEMENT",
   "focusEnergy": "PUISSANCE",
   "recover": "SOIN",
@@ -20,6 +21,7 @@
   "sunnyDay": "ZÉNITH",
 
   "waterGun": "PISTOLET À O",
+  "aquaJet": "AQUA-JET",
   "surf": "SURF",
   "scald": "ÉBULLITION",
   "withdraw": "REPLI",
@@ -48,8 +50,10 @@
   "iceBeam": "LASER GLACE",
   "icicleCrash": "ÉBOUL-GLACE",
   "snowscape": "NEIGE",
+  "iceShard": "ÉCLATS GLACE",
 
   "doubleKick": "DOUBLE PIED",
+  "machPunch": "POING MACH",
   "closeCombat": "CLOSE COMBAT",
   "drainPunch": "POING DRAIN",
   "bulkUp": "GONFLETTE",
@@ -84,9 +88,11 @@
   "stoneEdge": "LAME DE ROC",
   "sandstorm": "TEMPÊTE DE SABLE",
   "rockPolish": "POLI-LUSTRE",
+  "wideGuard": "GARDE LARGE",
 
   "shadowBall": "BALL'OMBRE",
   "shadowClaw": "GRIFFE OMBRE",
+  "shadowSneak": "OMBRE PORTÉE",
 
   "dragonPulse": "DRACO-CHOC",
   "dragonClaw": "DRACO-GRIFFE",
@@ -100,6 +106,7 @@
   "flashCannon": "LUMI-CANON",
   "ironHead": "TÊTE DE FER",
   "ironDefense": "MUR DE FER",
+  "bulletPunch": "PISTOLET",
 
   "moonblast": "LUMI-ÉCLAT",
   "playRough": "CÂLINERIE",

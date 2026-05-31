@@ -46,25 +46,30 @@
       "label": "Switch.",
       "desc": "Your next switch this turn costs no energy."
     },
+    "priority": {
+      "name": "Priority",
+      "label": "Priority +{{level}}.",
+      "desc": "Resolves before non-priority moves this round. Ties between priority moves break on Speed — the faster Pokémon strikes first."
+    },
     "stab": {
       "name": "STAB",
       "label": "STAB.",
-      "desc": "Same-Type Attack Bonus. Your card type matches your active Pokémon — damage ×1.5."
+      "desc": "Your card type matches your active Pokémon, increasing its damage by ×1.5."
     },
     "super": {
       "name": "Super effective",
       "label": "Super effective.",
-      "desc": "Foe is weak to this type — damage ×2 (or ×4 against a double weakness)."
+      "desc": "The foe is weak to your card type, increasing its damage by ×2 (or ×4 against a double weakness)."
     },
     "resisted": {
       "name": "Resisted",
       "label": "Resisted.",
-      "desc": "Foe resists this type — damage ×0.5 (or ×0.25 against a double resist)."
+      "desc": "The foe resists your card type, reducing its damage to ×0.5 (or ×0.25 against a double resist)."
     },
     "immune": {
       "name": "No effect",
       "label": "No effect.",
-      "desc": "Foe is immune to this type — damage clamped to ×0.25 so the card still does something."
+      "desc": "The foe is immune to this card type."
     },
     "lifesteal": {
       "name": "Vamp",
@@ -80,6 +85,18 @@
       "name": "Recoil",
       "label": "Recoil {{percent}}%.",
       "desc": "Take {{percent}}% of the damage dealt as self-cost."
+    },
+    "recharge": {
+      "name": "Recharge",
+      "label": "Recharge.",
+      "desc": "Until the end of the next turn, this Pokémon can't play Attack cards."
+    },
+    "multihit": {
+      "name": "Multi-hit",
+      "label_one": "Hits {{count}}.",
+      "label_other": "Hits {{count}}.",
+      "desc_one": "Strikes {{count}} time. Each hit rolls crit independently.",
+      "desc_other": "Strikes {{count}} times. Each hit rolls crit independently."
     },
     "burn": {
       "name": "Burn",

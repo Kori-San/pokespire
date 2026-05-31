@@ -39,6 +39,9 @@ export const FLYING_CARDS: CardDef[] = [
     kind: 'SKL',
     category: 'status',
     rarity: 'rare',
-    effects: [{ kind: 'stat', target: 'self', stat: 'spd', stages: 2 }],
+    // Canon: a tailwind buff covers your side of the field — every ally on the active
+    // mon's column gets +1 SPD. We give a single stage (not +2) because the buff now
+    // spreads across up to 3 mons instead of stacking on one.
+    effects: [{ kind: 'stat', target: 'self', stat: 'spd', stages: 1, scope: 'column' }],
   },
 ];

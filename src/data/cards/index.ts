@@ -87,9 +87,12 @@ export type Keyword =
   | { id: 'super' }
   | { id: 'resisted' }
   | { id: 'immune' }
+  | { id: 'priority'; level: number }
   | { id: 'lifesteal'; percent: number }
   | { id: 'crit'; boost: number }
   | { id: 'recoil'; percent: number }
+  | { id: 'recharge' }
+  | { id: 'multihit'; hits: number }
   | { id: 'burn'; stacks: number; self: boolean }
   | { id: 'poison'; stacks: number; self: boolean }
   | { id: 'weak'; stacks: number; self: boolean }
@@ -118,6 +121,10 @@ export function keywordsOf(card: CardDef, ctx: KeywordContext = {}): Keyword[] {
   if (isEphemeral(card)) k.push({ id: 'ephemeral' });
   else if (exhaustsOnPlay(card)) k.push({ id: 'exhaust' });
 
+  // Canon move priority — surfaces a chip on every card that breaks the default
+  // speed-based turn order. Engine-side enforcement lands with C3 (initiative).
+  if (card.priority && card.priority !== 0) k.push({ id: 'priority', level: card.priority });
+
   if (ctx.stab) k.push({ id: 'stab' });
   if (ctx.effectiveness === 'super') k.push({ id: 'super' });
   else if (ctx.effectiveness === 'resisted') k.push({ id: 'resisted' });
@@ -129,6 +136,15 @@ export function keywordsOf(card: CardDef, ctx: KeywordContext = {}): Keyword[] {
     }
     if ((e.kind === 'damage' || e.kind === 'lifesteal') && e.recoilPercent) {
       k.push({ id: 'recoil', percent: e.recoilPercent });
+    }
+    // Multi-hit canon moves (Double Kick = 2, Triple Axel = 3, Bullet Seed = 3 …) and
+    // Recharge (Hyper Beam / Giga Impact / Blast Burn) are damage-effect riders, so
+    // their chips only surface on `damage` effects.
+    if (e.kind === 'damage' && e.hits && e.hits > 1) {
+      k.push({ id: 'multihit', hits: e.hits });
+    }
+    if (e.kind === 'damage' && e.recharge && e.recharge > 0) {
+      k.push({ id: 'recharge' });
     }
     if (e.kind === 'lifesteal') k.push({ id: 'lifesteal', percent: e.percent });
     if (e.kind === 'freeSwitch') k.push({ id: 'switch' });
