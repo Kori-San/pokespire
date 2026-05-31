@@ -1,7 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
-    "defaultMode": "plan",
     "allow": [
       "Bash(npm test)",
       "Bash(npm run test:*)",
@@ -32,7 +31,8 @@
       "Bash(find *)",
       "Bash(node *)",
       "Bash(mkdir *)",
-      "Bash(echo *)"
+      "Bash(echo *)",
+      "Bash(curl -s \"https://play.pokemonshowdown.com/*\")"
     ],
     "deny": [
       "Bash(git push)",
@@ -65,6 +65,7 @@
       "Read(./.env.*)",
       "Read(./**/*.pem)",
       "Read(./**/*.key)"
-    ]
+    ],
+    "defaultMode": "plan"
   }
 }
