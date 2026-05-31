@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { Combatant } from '@/types';
 import { EMPTY_STAGES } from '@/types';
-import { MonSprite } from './MonSprite';
+import { PokemonSprite } from './PokemonSprite';
 
-function fakeMon(overrides: Partial<Combatant> = {}): Combatant {
+function fakePokemon(overrides: Partial<Combatant> = {}): Combatant {
   return {
     speciesId: 4,
     name: 'Charmander',
@@ -17,27 +17,28 @@ function fakeMon(overrides: Partial<Combatant> = {}): Combatant {
     block: 0,
     statuses: [],
     stages: { ...EMPTY_STAGES },
+    recharge: 0,
     ...overrides,
   };
 }
 
 const meta = {
-  title: 'Primitives/MonSprite',
-  component: MonSprite,
-  args: { mon: fakeMon() },
+  title: 'Primitives/PokemonSprite',
+  component: PokemonSprite,
+  args: { pokemon: fakePokemon() },
   parameters: { backgrounds: { value: 'grass' } },
-} satisfies Meta<typeof MonSprite>;
+} satisfies Meta<typeof PokemonSprite>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 export const Back: Story = { args: { facing: 'back' } };
-export const Shiny: Story = { args: { mon: fakeMon({ shiny: true }) } };
-export const HighLevel: Story = { args: { mon: fakeMon({ level: 50 }) } };
+export const Shiny: Story = { args: { pokemon: fakePokemon({ shiny: true }) } };
+export const HighLevel: Story = { args: { pokemon: fakePokemon({ level: 50 }) } };
 export const Legendary: Story = {
   args: {
-    mon: fakeMon({
+    pokemon: fakePokemon({
       speciesId: 150,
       name: 'Mewtwo',
       types: ['psychic'],
@@ -48,5 +49,5 @@ export const Legendary: Story = {
   },
 };
 export const MissingnoFallback: Story = {
-  args: { mon: fakeMon({ name: 'NotASpecies' }) },
+  args: { pokemon: fakePokemon({ name: 'NotASpecies' }) },
 };
