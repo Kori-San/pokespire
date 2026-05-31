@@ -1,0 +1,88 @@
+/* Outer letterbox — fixed to the iframe viewport so its dimensions are real
+ * pixels regardless of how the body resolves height. Storybook's preview.css
+ * sets `body { height: auto !important }` which makes plain vh/dvh unreliable
+ * if the letterbox uses % of body; `position: fixed; inset: 0` sidesteps that
+ * by anchoring directly to the iframe's viewport. */
+.letterbox {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--box-border-lo);
+  overflow: hidden;
+}
+
+/* Inner 16:9 frame. With the letterbox now `position: fixed`, `vw` and `vh`
+ * inside it are reliable — they reference the iframe's viewport. `min()` picks
+ * the largest 16:9 box that fits, and the result is a definite pixel value so
+ * percentage-height children resolve normally. */
+.frame {
+  position: relative;
+  width: min(100vw, calc(100vh * 16 / 9));
+  height: min(100vh, calc(100vw * 9 / 16));
+  background: var(--box-bg);
+  overflow: hidden;
+}
+
+/* Rotate-device prompt — shown only when the real viewport is portrait AND too
+ * narrow to landscape-letterbox usefully. Above 900px wide we trust the user has
+ * a real screen and just letterbox. */
+.rotatePrompt {
+  display: none;
+}
+
+@media (orientation: portrait) and (max-width: 900px) {
+  .frame {
+    /* Hide the game itself — the overlay takes over. */
+    visibility: hidden;
+  }
+
+  .rotatePrompt {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    padding: 32px;
+    background: var(--box-border-lo);
+    color: var(--text-light);
+    text-align: center;
+    font-family: var(--font-body);
+    z-index: 9999;
+  }
+}
+
+.rotateIcon {
+  width: 96px;
+  height: 96px;
+  color: var(--sky-top);
+  animation: rotate-hint 2.4s ease-in-out infinite;
+}
+
+@keyframes rotate-hint {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  40%,
+  60% {
+    transform: rotate(-90deg);
+  }
+}
+
+.rotateTitle {
+  font-family: var(--font-display);
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--text-light);
+}
+
+.rotateBody {
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--text-light);
+  max-width: 320px;
+}
