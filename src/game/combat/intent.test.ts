@@ -16,6 +16,7 @@ const enemy: Combatant = {
   block: 0,
   statuses: [],
   stages: { ...EMPTY_STAGES },
+  recharge: 0,
 };
 
 describe('rollIntent', () => {

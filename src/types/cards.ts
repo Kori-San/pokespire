@@ -26,11 +26,26 @@ export type MoveCategory = 'physical' | 'special' | 'status';
 
 export type Effect =
   /**
-   * Plain damage. `critBoost` (move-inherent +N crit stage for this hit only) and
-   * `recoilPercent` (self-damage % of dealt) are optional move modifiers — see the
-   * `Crit +N` / `Recoil N%` keywords.
+   * Plain damage. Optional move modifiers:
+   *   - `critBoost`: move-inherent +N crit stage for this hit only (`Crit +N` chip).
+   *   - `recoilPercent`: self-damage as % of total dealt (`Recoil N%` chip).
+   *   - `hits`: canon multi-hit moves (Double Kick = 2, Bullet Seed = 2–5 modeled as 3).
+   *     The damage formula runs `hits` times, each rolling crit independently; STAB /
+   *     effectiveness multipliers carry once per hit (they don't change between hits).
+   *   - `recharge`: turns the attacker is locked out of attack cards AFTER this hit
+   *     resolves. Canon: every recharge move (Hyper Beam, Giga Impact, Frenzy Plant,
+   *     Blast Burn, Hydro Cannon, Roar of Time) is exactly 1 turn — the keyword chip
+   *     is therefore label-only, the number lives on the data so we can vary it later
+   *     if a future epoch ever introduces a multi-turn recharge.
    */
-  | { kind: 'damage'; amount: number; critBoost?: number; recoilPercent?: number }
+  | {
+      kind: 'damage';
+      amount: number;
+      critBoost?: number;
+      recoilPercent?: number;
+      hits?: number;
+      recharge?: number;
+    }
   /**
    * Damage + percent-of-damage heal in one effect. The full damage formula runs (STAB,
    * type-eff, stat-stages, crit roll), then the attacker heals `percent`% of the final
@@ -43,11 +58,29 @@ export type Effect =
       critBoost?: number;
       recoilPercent?: number;
     }
-  | { kind: 'block'; amount: number }
+  /**
+   * Block (Bouclier). `scope` defaults to `self` — only the active mon shields up.
+   * `column` extends the block to every ally sharing the active mon's cluster column
+   * (front column = team[0..2], back column = team[3..5]). Used by Wide-Guard-style
+   * canon moves that protect more than just the lead.
+   */
+  | { kind: 'block'; amount: number; scope?: 'self' | 'column' }
   | { kind: 'heal'; amount: number }
   | { kind: 'draw'; count: number }
   | { kind: 'applyStatus'; target: 'self' | 'foe'; status: StatusId; stacks: number }
-  | { kind: 'stat'; target: 'self' | 'foe'; stat: Stat; stages: number }
+  /**
+   * Bump a stat by N stages, on either side. `scope` is only meaningful when
+   * `target: 'self'` — `column` extends the bump to every ally on the active mon's
+   * cluster column (canonical Tailwind-style team buffs). Default scope = `self`
+   * (just the active mon).
+   */
+  | {
+      kind: 'stat';
+      target: 'self' | 'foe';
+      stat: Stat;
+      stages: number;
+      scope?: 'self' | 'column';
+    }
   | { kind: 'energy'; amount: number; when: 'now' | 'nextTurn' }
   | { kind: 'weather'; weather: WeatherKind; turns: number }
   /**
@@ -79,6 +112,14 @@ export interface CardDef {
    * `selectCardLines`.
    */
   effects: Effect[];
+  /**
+   * Canon move priority — `+1` (Quick Attack, Aqua Jet, Bullet Punch …), `+2` (Extreme
+   * Speed), `+3` (Fake Out), down to `-6` (Trick Room). In the speed-based initiative
+   * system priority is the primary sort key: higher priority resolves first regardless
+   * of the user's Speed; ties fall back to Speed. Omitted = priority 0 (default canon).
+   * Surfaces as the `Priority +N` keyword chip.
+   */
+  priority?: number;
   /**
    * Single-use for the entire run, not just this combat. When the combat ends, an
    * ephemeral card that was played leaves the run's deck permanently. Reserved for

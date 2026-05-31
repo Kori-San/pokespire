@@ -1,4 +1,5 @@
 import type { CardDef, CombatState, Stat, StatusId, WeatherKind } from '@/types';
+import { activeEnemyOf } from '@/types';
 import { CARDS } from '@/data/cards';
 import { calcCaptureChance } from './capture';
 import { calcDamage, type DamageBreakdown } from './damage';
@@ -56,11 +57,19 @@ export function selectComputedCardView(
   const attacker = state.team[state.activeIndex];
   if (!card || !attacker) return null;
 
+  // Recharge (Hyper-Beam-style): per-mon counter locks ATK cards while > 0. Status /
+  // Ball / Item plays still work. Folds into `affordable: false` so the UI greys ATK
+  // cards out the same way an unpayable cost would.
+  const rechargeBlocksAttack = attacker.recharge > 0 && card.kind === 'ATK';
   const view: ComputedCardView = {
     cardId: id,
     cost: card.cost,
-    affordable: state.energy >= card.cost,
+    affordable: state.energy >= card.cost && !rechargeBlocksAttack,
   };
+
+  // Default target for live preview: the foe currently in front. C5 will let cards target
+  // other foes explicitly; for now the preview always reflects the active enemy.
+  const defender = activeEnemyOf(state);
 
   // Both `damage` and `lifesteal` go through the same formula for live display — find
   // either, pick the first one (cards in our pool only ever have one damage-shaped effect).
@@ -71,7 +80,7 @@ export function selectComputedCardView(
       cardType: card.type,
       category: card.category,
       attacker,
-      defender: state.enemy,
+      defender,
       weather: state.weather,
     });
     view.damage = {
@@ -86,11 +95,11 @@ export function selectComputedCardView(
   if (cap?.kind === 'capture') {
     view.capturePercent = Math.round(
       calcCaptureChance({
-        hp: state.enemy.hp,
-        maxHp: state.enemy.maxHp,
+        hp: defender.hp,
+        maxHp: defender.maxHp,
         ballTier: cap.ballTier,
-        catchRate: state.enemy.catchRate,
-        shiny: state.enemy.shiny,
+        catchRate: defender.catchRate,
+        shiny: defender.shiny,
       }) * 100,
     );
   }

@@ -17,6 +17,7 @@ function mon(types: PokeType[], overrides: Partial<Combatant> = {}): Combatant {
     block: 0,
     statuses: [],
     stages: { ...EMPTY_STAGES },
+    recharge: 0,
     ...overrides,
   };
 }
@@ -25,8 +26,9 @@ function state(overrides: Partial<CombatState> = {}): CombatState {
   return {
     team: [mon(['fire']), mon(['water'])],
     activeIndex: 0,
-    enemy: mon(['grass'], { name: 'foe' }),
-    enemyIntent: { kind: 'attack', amount: 5 },
+    enemies: [mon(['grass'], { name: 'foe' })],
+    enemyActiveIndex: 0,
+    enemyIntent: { kind: 'attack', amount: 5, targetIndex: 0 },
     energy: 3,
     maxEnergy: 3,
     hand: ['ember'],
@@ -64,7 +66,7 @@ describe('selectComputedCardView', () => {
   it('flags immunity', () => {
     const s = state({
       team: [mon(['normal'])],
-      enemy: mon(['ghost'], { name: 'foe' }),
+      enemies: [mon(['ghost'], { name: 'foe' })],
       hand: ['tackle'],
     });
     const view = selectComputedCardView(s, 0);
@@ -72,7 +74,7 @@ describe('selectComputedCardView', () => {
   });
 
   it('computes capture % for ball cards', () => {
-    const s = state({ hand: ['pokeBall'], enemy: mon(['grass'], { name: 'foe', hp: 10 }) });
+    const s = state({ hand: ['pokeBall'], enemies: [mon(['grass'], { name: 'foe', hp: 10 })] });
     const view = selectComputedCardView(s, 0);
     expect(view?.capturePercent).toBeGreaterThan(0);
     expect(view?.damage).toBeUndefined();

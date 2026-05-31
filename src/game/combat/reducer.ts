@@ -1,5 +1,11 @@
 import type { CombatAction, Combatant, CombatState } from '@/types';
-import { EMPTY_STAGES, effectiveSpeed, isIncapacitated } from '@/types';
+import {
+  EMPTY_STAGES,
+  activeEnemyOf,
+  effectiveSpeed,
+  isIncapacitated,
+  withActiveEnemy,
+} from '@/types';
 import { CARDS, exhaustsOnPlay } from '@/data/cards';
 import { applyStatus } from '@/data/statuses';
 import { rngFrom, type SeededRng } from '@/game/run/rng';
@@ -32,7 +38,9 @@ export interface CreateCombatOptions {
   seed: number;
 }
 
-/** Build a fresh combat: shuffle the deck, draw the opening hand, roll the first intent. */
+/** Build a fresh combat: shuffle the deck, draw the opening hand, roll the first intent.
+ *  The `enemy` input is wrapped into a single-element `enemies[]` — single-enemy fights
+ *  stay the v0 default until multi-foe content lands. */
 export function createCombat(opts: CreateCombatOptions): CombatState {
   const rng = rngFrom(opts.seed);
   const shuffled = shuffle(opts.deck, rng.next);
@@ -40,7 +48,8 @@ export function createCombat(opts: CreateCombatOptions): CombatState {
   const fresh: CombatState = {
     team: opts.team,
     activeIndex: 0,
-    enemy: opts.enemy,
+    enemies: [opts.enemy],
+    enemyActiveIndex: 0,
     enemyIntent: rollIntent(opts.enemy, rng.next),
     energy: START_ENERGY,
     maxEnergy: START_ENERGY,
@@ -76,6 +85,10 @@ function playCard(state: CombatState, handIndex: number): CombatState {
   if (id === undefined) return state;
   const card = CARDS[id];
   if (!card || state.energy < card.cost) return state;
+  // Recharge: per-mon counter locks ATK cards while > 0. Hyper Beam sets it to 2 so
+  // the lockout covers the rest of this turn + all of next turn (ticks at end of turn).
+  const attacker = state.team[state.activeIndex];
+  if (attacker && attacker.recharge > 0 && card.kind === 'ATK') return state;
 
   const exhausts = exhaustsOnPlay(card);
   const rng = rngFrom(state.rngState);
@@ -117,6 +130,13 @@ function endTurn(state: CombatState): CombatState {
   const rng = rngFrom(state.rngState);
   // Discard the remaining hand, then tick the active mon's statuses (e.g. BURN).
   let s: CombatState = { ...state, discard: [...state.discard, ...state.hand], hand: [] };
+  // Recharge tick — every team mon that's recharging loses 1 turn (clamped at 0). Bench
+  // mons tick too: canon-faithful since the recharge is tied to the Pokémon, not the
+  // slot. Hyper Beam → 1 turn of "no attacks" the turn after the hit lands.
+  s = {
+    ...s,
+    team: s.team.map((mon) => ({ ...mon, recharge: Math.max(0, mon.recharge - 1) })),
+  };
   s = tickActiveStatuses(s);
   s = resolveFaints(s);
   if (s.outcome !== 'ongoing') return { ...s, rngState: rng.state };
@@ -128,9 +148,9 @@ function endTurn(state: CombatState): CombatState {
     if (s.outcome !== 'ongoing') return { ...s, rngState: rng.state };
   }
 
-  const enemyTick = tickStatuses(s.enemy);
-  s = { ...s, enemy: enemyTick.combatant };
-  if (s.enemy.hp <= 0) return { ...s, outcome: 'win', rngState: rng.state };
+  const enemyTick = tickStatuses(activeEnemyOf(s));
+  s = withActiveEnemy(s, () => enemyTick.combatant);
+  if (activeEnemyOf(s).hp <= 0) return { ...s, outcome: 'win', rngState: rng.state };
 
   // Start the player's next turn.
   s = startTurn(s, rng);
@@ -145,23 +165,49 @@ function tickActiveStatuses(state: CombatState): CombatState {
 function enemyAct(state: CombatState): CombatState {
   // Sleep / freeze lock the action this turn — intent is wasted, status still ticks at
   // end of turn so the duration counts down even on skipped turns.
-  if (isIncapacitated(state.enemy)) return state;
+  const enemy = activeEnemyOf(state);
+  if (isIncapacitated(enemy)) return state;
   const intent = state.enemyIntent;
   switch (intent.kind) {
     case 'attack': {
-      const a = activeOf(state);
-      const absorbed = Math.min(a.block, intent.amount);
-      const hp = Math.max(0, a.hp - (intent.amount - absorbed));
-      return setActiveMon(state, { ...a, block: a.block - absorbed, hp });
+      // Route damage to the targeted ally. `targetIndex` falls back to the active
+      // mon if the targeted slot is fainted (canon: hit lands on whoever's in front).
+      const idx =
+        state.team[intent.targetIndex] && (state.team[intent.targetIndex]?.hp ?? 0) > 0
+          ? intent.targetIndex
+          : state.activeIndex;
+      const target = state.team[idx];
+      if (!target) return state;
+      const absorbed = Math.min(target.block, intent.amount);
+      const hp = Math.max(0, target.hp - (intent.amount - absorbed));
+      return {
+        ...state,
+        team: state.team.map((mon, i) =>
+          i === idx ? { ...mon, block: mon.block - absorbed, hp } : mon,
+        ),
+      };
     }
     case 'defend':
-      return { ...state, enemy: { ...state.enemy, block: state.enemy.block + intent.amount } };
+      return withActiveEnemy(state, (e) => ({ ...e, block: e.block + intent.amount }));
     case 'status': {
-      const a = activeOf(state);
-      return setActiveMon(state, {
-        ...a,
-        statuses: applyStatus(a.statuses, intent.status.id, intent.status.stacks),
-      });
+      // Same targeting fallback as attack — fainted slot routes to the active mon.
+      const idx =
+        state.team[intent.targetIndex] && (state.team[intent.targetIndex]?.hp ?? 0) > 0
+          ? intent.targetIndex
+          : state.activeIndex;
+      const target = state.team[idx];
+      if (!target) return state;
+      return {
+        ...state,
+        team: state.team.map((mon, i) =>
+          i === idx
+            ? {
+                ...mon,
+                statuses: applyStatus(mon.statuses, intent.status.id, intent.status.stacks),
+              }
+            : mon,
+        ),
+      };
     }
   }
 }
@@ -185,7 +231,7 @@ function startTurn(state: CombatState, rng: SeededRng): CombatState {
     ...state,
     team,
     energy: state.maxEnergy,
-    enemyIntent: rollIntent(state.enemy, rng.next),
+    enemyIntent: rollIntent(activeEnemyOf(state), rng.next),
     ...piles,
     turn: state.turn + 1,
     enemyActed: false,
@@ -200,7 +246,7 @@ function startTurn(state: CombatState, rng: SeededRng): CombatState {
  * so the end-of-turn flow skips its enemy phase. Ties go to the player.
  */
 function maybeEnemyGoesFirst(state: CombatState, rng: SeededRng): CombatState {
-  if (effectiveSpeed(state.enemy) <= effectiveSpeed(activeOf(state))) {
+  if (effectiveSpeed(activeEnemyOf(state)) <= effectiveSpeed(activeOf(state))) {
     return { ...state, rngState: rng.state, enemyActed: false };
   }
   let s = enemyAct(state);

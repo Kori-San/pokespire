@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Combatant, CombatState, PokeType } from '@/types';
-import { EMPTY_STAGES } from '@/types';
+import { EMPTY_STAGES, activeEnemyOf } from '@/types';
 import { STARTER_DECK } from '@/data/cards';
 import { combatReducer, createCombat, HAND_SIZE, START_ENERGY } from './reducer';
 
@@ -18,6 +18,7 @@ function mon(overrides: Partial<Combatant> = {}): Combatant {
     block: 0,
     statuses: [],
     stages: { ...EMPTY_STAGES },
+    recharge: 0,
     ...overrides,
   };
 }
@@ -26,8 +27,9 @@ function state(overrides: Partial<CombatState> = {}): CombatState {
   return {
     team: [mon()],
     activeIndex: 0,
-    enemy: mon({ name: 'foe', speciesId: 2 }),
-    enemyIntent: { kind: 'attack', amount: 10 },
+    enemies: [mon({ name: 'foe', speciesId: 2 })],
+    enemyActiveIndex: 0,
+    enemyIntent: { kind: 'attack', amount: 10, targetIndex: 0 },
     energy: START_ENERGY,
     maxEnergy: START_ENERGY,
     hand: [],
@@ -67,7 +69,7 @@ describe('combatReducer — PLAY_CARD', () => {
     const s = state({ hand: ['tackle'] });
     const out = combatReducer(s, { type: 'PLAY_CARD', handIndex: 0 });
     expect(out.energy).toBe(START_ENERGY - 1);
-    expect(out.enemy.hp).toBeLessThan(100);
+    expect(activeEnemyOf(out).hp).toBeLessThan(100);
     expect(out.hand).toEqual([]);
     expect(out.discard).toEqual(['tackle']);
   });
@@ -138,7 +140,7 @@ describe('combatReducer — END_TURN', () => {
       hand: ['tackle'],
       draw: Array<string>(10).fill('tackle'),
       energy: 0,
-      enemyIntent: { kind: 'attack', amount: 12 },
+      enemyIntent: { kind: 'attack', amount: 12, targetIndex: 0 },
     });
     const out = combatReducer(s, { type: 'END_TURN' });
     expect(out.team[0]?.hp).toBeLessThan(100);
@@ -150,7 +152,7 @@ describe('combatReducer — END_TURN', () => {
   it('ends in a loss when the last mon faints', () => {
     const s = state({
       team: [mon({ hp: 5 })],
-      enemyIntent: { kind: 'attack', amount: 50 },
+      enemyIntent: { kind: 'attack', amount: 50, targetIndex: 0 },
     });
     const out = combatReducer(s, { type: 'END_TURN' });
     expect(out.outcome).toBe('lose');
@@ -160,18 +162,18 @@ describe('combatReducer — END_TURN', () => {
 describe('combatReducer — sleep / freeze / paralyze', () => {
   it('a sleeping enemy skips its intent and the sleep stack decays at end of turn', () => {
     const s = state({
-      enemy: mon({ name: 'foe', statuses: [{ id: 'sleep', stacks: 2 }] }),
-      enemyIntent: { kind: 'attack', amount: 50 },
+      enemies: [mon({ name: 'foe', statuses: [{ id: 'sleep', stacks: 2 }] })],
+      enemyIntent: { kind: 'attack', amount: 50, targetIndex: 0 },
     });
     const out = combatReducer(s, { type: 'END_TURN' });
     expect(out.team[0]?.hp).toBe(100);
-    expect(out.enemy.statuses.find((x) => x.id === 'sleep')?.stacks).toBe(1);
+    expect(activeEnemyOf(out).statuses.find((x) => x.id === 'sleep')?.stacks).toBe(1);
   });
 
   it('a frozen enemy skips its intent (same lock as sleep)', () => {
     const s = state({
-      enemy: mon({ name: 'foe', statuses: [{ id: 'freeze', stacks: 1 }] }),
-      enemyIntent: { kind: 'attack', amount: 50 },
+      enemies: [mon({ name: 'foe', statuses: [{ id: 'freeze', stacks: 1 }] })],
+      enemyIntent: { kind: 'attack', amount: 50, targetIndex: 0 },
     });
     const out = combatReducer(s, { type: 'END_TURN' });
     expect(out.team[0]?.hp).toBe(100);
@@ -217,7 +219,9 @@ describe('combatReducer — speed turn-order', () => {
     // Faster enemy has already done SOMETHING — either chipped the player, raised its block, or
     // applied a status — depending on the seeded intent roll.
     const acted =
-      (s.team[0]?.hp ?? 0) < 100 || s.enemy.block > 0 || (s.team[0]?.statuses.length ?? 0) > 0;
+      (s.team[0]?.hp ?? 0) < 100 ||
+      activeEnemyOf(s).block > 0 ||
+      (s.team[0]?.statuses.length ?? 0) > 0;
     expect(acted).toBe(true);
   });
 
@@ -229,9 +233,9 @@ describe('combatReducer — speed turn-order', () => {
     });
     const s = state({
       team: [slow],
-      enemy: fast,
+      enemies: [fast],
       enemyActed: true,
-      enemyIntent: { kind: 'attack', amount: 50 },
+      enemyIntent: { kind: 'attack', amount: 50, targetIndex: 0 },
     });
     const out = combatReducer(s, { type: 'END_TURN' });
     // Without the skip, a 50-damage hit would land here; with it, the player only takes the

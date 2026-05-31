@@ -18,6 +18,7 @@ function mon(statuses: StatusInstance[], hp = 100): Combatant {
     block: 0,
     statuses,
     stages: { ...EMPTY_STAGES },
+    recharge: 0,
   };
 }
 

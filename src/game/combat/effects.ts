@@ -1,5 +1,5 @@
 import type { CardDef, Combatant, CombatState, Effect, StatStages } from '@/types';
-import { critChance, CRIT_MULTIPLIER } from '@/types';
+import { activeEnemyOf, columnOf, critChance, CRIT_MULTIPLIER, withActiveEnemy } from '@/types';
 import { applyStatus } from '@/data/statuses';
 import { calcCaptureChance, rollCapture } from './capture';
 import { calcDamage } from './damage';
@@ -56,43 +56,67 @@ export function applyEffect(
   switch (effect.kind) {
     case 'damage': {
       const attacker = activeOf(state);
+      // Multi-hit canon moves (Double Kick = 2, Triple Axel = 3, …): the damage formula
+      // resolves once per hit, each rolling crit independently. STAB / type-eff don't
+      // change between hits (same attacker × defender × card type), so we compute the
+      // base `final` once. Defender HP / block tick down per hit, so a KO mid-flurry
+      // ends the loop early via the `hp <= 0` exit.
+      const hits = Math.max(1, effect.hits ?? 1);
       const { final } = calcDamage({
         amount: effect.amount,
         cardType: card.type,
         category: card.category,
         attacker,
-        defender: state.enemy,
+        defender: activeEnemyOf(state),
         weather: state.weather,
       });
-      // critBoost is a per-hit bump on TOP of the attacker's persistent crit stage —
-      // Stone Edge / Frost Breath / Slash-style move-inherent high-crit moves.
-      const crit = rng() < critChance(attacker.stages.crit + (effect.critBoost ?? 0));
-      const dealt = crit ? Math.round(final * CRIT_MULTIPLIER) : final;
-      const absorbed = Math.min(state.enemy.block, dealt);
-      const hp = Math.max(0, state.enemy.hp - (dealt - absorbed));
-      const enemy = { ...state.enemy, block: state.enemy.block - absorbed, hp };
-      const stepped: CombatState = {
-        ...state,
-        enemy,
-        outcome: hp <= 0 ? 'win' : state.outcome,
-      };
-      return applyRecoil(stepped, attacker, dealt, effect.recoilPercent);
+      let s = state;
+      let totalDealt = 0;
+      for (let i = 0; i < hits; i++) {
+        const defender = activeEnemyOf(s);
+        if (defender.hp <= 0) break;
+        // critBoost is a per-hit bump on TOP of the attacker's persistent crit stage —
+        // Stone Edge / Frost Breath / Slash-style move-inherent high-crit moves.
+        const crit = rng() < critChance(attacker.stages.crit + (effect.critBoost ?? 0));
+        const dealt = crit ? Math.round(final * CRIT_MULTIPLIER) : final;
+        const absorbed = Math.min(defender.block, dealt);
+        const hp = Math.max(0, defender.hp - (dealt - absorbed));
+        totalDealt += dealt;
+        s = withActiveEnemy({ ...s, outcome: hp <= 0 ? 'win' : s.outcome }, (e) => ({
+          ...e,
+          block: e.block - absorbed,
+          hp,
+        }));
+      }
+      const afterRecoil = applyRecoil(s, attacker, totalDealt, effect.recoilPercent);
+      // Recharge (Hyper Beam / Giga Impact / Blast Burn …): lock ATK cards on this
+      // Pokémon until the end of the next turn. `effect.recharge` is the number of
+      // turn windows to lock — Hyper Beam = 2 (rest of THIS turn + all of NEXT turn,
+      // since the counter ticks once at end of this turn). Tied to the Pokémon, not
+      // the slot — survives a switch.
+      if (effect.recharge && effect.recharge > 0) {
+        const updated = afterRecoil.team[afterRecoil.activeIndex];
+        if (updated) {
+          return setActive(afterRecoil, { ...updated, recharge: effect.recharge });
+        }
+      }
+      return afterRecoil;
     }
     case 'lifesteal': {
       const attacker = activeOf(state);
+      const defender = activeEnemyOf(state);
       const { final } = calcDamage({
         amount: effect.amount,
         cardType: card.type,
         category: card.category,
         attacker,
-        defender: state.enemy,
+        defender,
         weather: state.weather,
       });
       const crit = rng() < critChance(attacker.stages.crit + (effect.critBoost ?? 0));
       const dealt = crit ? Math.round(final * CRIT_MULTIPLIER) : final;
-      const absorbed = Math.min(state.enemy.block, dealt);
-      const hp = Math.max(0, state.enemy.hp - (dealt - absorbed));
-      const enemy = { ...state.enemy, block: state.enemy.block - absorbed, hp };
+      const absorbed = Math.min(defender.block, dealt);
+      const hp = Math.max(0, defender.hp - (dealt - absorbed));
       // Heal scales with the rolled `dealt` so STAB / super-effective / crit all amplify the
       // restoration too. Block still trims HP damage but not the heal, by design.
       const healed = Math.round((dealt * effect.percent) / 100);
@@ -100,15 +124,25 @@ export function applyEffect(
         ...attacker,
         hp: Math.min(attacker.maxHp, attacker.hp + healed),
       };
-      const stepped: CombatState = {
-        ...state,
-        enemy,
-        outcome: hp <= 0 ? 'win' : state.outcome,
-      };
+      const stepped: CombatState = withActiveEnemy(
+        { ...state, outcome: hp <= 0 ? 'win' : state.outcome },
+        (e) => ({ ...e, block: e.block - absorbed, hp }),
+      );
       const withHeal = setActive(stepped, healedAttacker);
       return applyRecoil(withHeal, healedAttacker, dealt, effect.recoilPercent);
     }
     case 'block': {
+      // `column` (Wide-Guard-style) shields every ally on the active mon's column;
+      // `self` (default) shields only the active mon.
+      if (effect.scope === 'column') {
+        const activeCol = columnOf(state.activeIndex);
+        return {
+          ...state,
+          team: state.team.map((mon, i) =>
+            columnOf(i) === activeCol ? { ...mon, block: mon.block + effect.amount } : mon,
+          ),
+        };
+      }
       const a = activeOf(state);
       return setActive(state, { ...a, block: a.block + effect.amount });
     }
@@ -132,26 +166,33 @@ export function applyEffect(
           statuses: applyStatus(a.statuses, effect.status, effect.stacks),
         });
       }
-      return {
-        ...state,
-        enemy: {
-          ...state.enemy,
-          statuses: applyStatus(state.enemy.statuses, effect.status, effect.stacks),
-        },
-      };
+      return withActiveEnemy(state, (e) => ({
+        ...e,
+        statuses: applyStatus(e.statuses, effect.status, effect.stacks),
+      }));
     }
     case 'stat': {
       if (effect.target === 'self') {
+        // `column` (Tailwind-style team buff) bumps the stat on every ally in the
+        // active mon's column; default `self` only touches the active mon.
+        if (effect.scope === 'column') {
+          const activeCol = columnOf(state.activeIndex);
+          return {
+            ...state,
+            team: state.team.map((mon, i) =>
+              columnOf(i) === activeCol
+                ? { ...mon, stages: bumpStage(mon.stages, effect.stat, effect.stages) }
+                : mon,
+            ),
+          };
+        }
         const a = activeOf(state);
         return setActive(state, { ...a, stages: bumpStage(a.stages, effect.stat, effect.stages) });
       }
-      return {
-        ...state,
-        enemy: {
-          ...state.enemy,
-          stages: bumpStage(state.enemy.stages, effect.stat, effect.stages),
-        },
-      };
+      return withActiveEnemy(state, (e) => ({
+        ...e,
+        stages: bumpStage(e.stages, effect.stat, effect.stages),
+      }));
     }
     case 'energy': {
       if (effect.when === 'now') return { ...state, energy: state.energy + effect.amount };
@@ -169,12 +210,13 @@ export function applyEffect(
       return { ...state, freeSwitch: true };
     }
     case 'capture': {
+      const target = activeEnemyOf(state);
       const chance = calcCaptureChance({
-        hp: state.enemy.hp,
-        maxHp: state.enemy.maxHp,
+        hp: target.hp,
+        maxHp: target.maxHp,
         ballTier: effect.ballTier,
-        catchRate: state.enemy.catchRate,
-        shiny: state.enemy.shiny,
+        catchRate: target.catchRate,
+        shiny: target.shiny,
       });
       return rollCapture(chance, rng) ? { ...state, outcome: 'captured' } : state;
     }

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { CardDef, Combatant, CombatState, Effect, PokeType } from '@/types';
-import { EMPTY_STAGES } from '@/types';
+import { EMPTY_STAGES, activeEnemyOf } from '@/types';
 import { applyEffect } from './effects';
 
 function mon(overrides: Partial<Combatant> = {}): Combatant {
@@ -17,6 +17,7 @@ function mon(overrides: Partial<Combatant> = {}): Combatant {
     block: 0,
     statuses: [],
     stages: { ...EMPTY_STAGES },
+    recharge: 0,
     ...overrides,
   };
 }
@@ -25,8 +26,9 @@ function state(overrides: Partial<CombatState> = {}): CombatState {
   return {
     team: [mon()],
     activeIndex: 0,
-    enemy: mon({ name: 'foe', speciesId: 2 }),
-    enemyIntent: { kind: 'attack', amount: 5 },
+    enemies: [mon({ name: 'foe', speciesId: 2 })],
+    enemyActiveIndex: 0,
+    enemyIntent: { kind: 'attack', amount: 5, targetIndex: 0 },
     energy: 3,
     maxEnergy: 3,
     hand: [],
@@ -59,17 +61,17 @@ const rng = (v: number) => () => v;
 
 describe('applyEffect', () => {
   it('damage reduces enemy HP after block absorption', () => {
-    const s = state({ enemy: mon({ name: 'foe', block: 5 }) });
+    const s = state({ enemies: [mon({ name: 'foe', block: 5 })] });
     const out = applyEffect(s, { kind: 'damage', amount: 10 }, card('fire'), rng(0));
-    expect(out.enemy.block).toBe(0);
-    expect(out.enemy.hp).toBeLessThan(100);
+    expect(activeEnemyOf(out).block).toBe(0);
+    expect(activeEnemyOf(out).hp).toBeLessThan(100);
     expect(out.outcome).toBe('ongoing');
   });
 
   it('damage that drops enemy to 0 sets outcome win', () => {
-    const s = state({ enemy: mon({ name: 'foe', hp: 1 }) });
+    const s = state({ enemies: [mon({ name: 'foe', hp: 1 })] });
     const out = applyEffect(s, { kind: 'damage', amount: 50 }, card('fire'), rng(0));
-    expect(out.enemy.hp).toBe(0);
+    expect(activeEnemyOf(out).hp).toBe(0);
     expect(out.outcome).toBe('win');
   });
 
@@ -97,7 +99,7 @@ describe('applyEffect', () => {
       card('fire'),
       rng(0),
     );
-    expect(foe.enemy.statuses).toEqual([{ id: 'burn', stacks: 2 }]);
+    expect(activeEnemyOf(foe).statuses).toEqual([{ id: 'burn', stacks: 2 }]);
 
     const self = applyEffect(
       state(),
@@ -151,13 +153,13 @@ describe('applyEffect', () => {
       card('normal'),
       rng(0),
     );
-    expect(down.enemy.stages.def).toBe(-1);
+    expect(activeEnemyOf(down).stages.def).toBe(-1);
   });
 
   it('damage rolls a crit at the active mon stages.crit chance', () => {
     // rng(0.99) sits above the default 1/16 crit chance — base case lands without a crit.
     const base = applyEffect(state(), { kind: 'damage', amount: 10 }, card('fire'), rng(0.99));
-    const baseDealt = 100 - base.enemy.hp;
+    const baseDealt = 100 - base.enemies[0]!.hp;
 
     // Boost crit to +4 → guaranteed crit at any roll.
     const buffed = state({
@@ -168,14 +170,14 @@ describe('applyEffect', () => {
       ],
     });
     const critted = applyEffect(buffed, { kind: 'damage', amount: 10 }, card('fire'), rng(0.99));
-    const critDealt = 100 - critted.enemy.hp;
+    const critDealt = 100 - critted.enemies[0]!.hp;
     expect(critDealt).toBeGreaterThan(baseDealt);
   });
 
   it('move-inherent critBoost adds to the active mon stages.crit just for this hit', () => {
     // Base case: rng above 1/16 → no crit, no critBoost.
     const base = applyEffect(state(), { kind: 'damage', amount: 10 }, card('fire'), rng(0.2));
-    const baseDealt = 100 - base.enemy.hp;
+    const baseDealt = 100 - base.enemies[0]!.hp;
     // Same roll, but critBoost +4 → always crits.
     const boosted = applyEffect(
       state(),
@@ -183,7 +185,7 @@ describe('applyEffect', () => {
       card('fire'),
       rng(0.2),
     );
-    const boostedDealt = 100 - boosted.enemy.hp;
+    const boostedDealt = 100 - boosted.enemies[0]!.hp;
     expect(boostedDealt).toBeGreaterThan(baseDealt);
     // Persistent crit stage on the active mon is unchanged — the boost was per-hit only.
     expect(boosted.team[0]?.stages.crit).toBe(0);
@@ -197,7 +199,7 @@ describe('applyEffect', () => {
       card('fire'),
       rng(0.99),
     );
-    const dealt = 100 - out.enemy.hp;
+    const dealt = 100 - out.enemies[0]!.hp;
     const recoil = 100 - (out.team[0]?.hp ?? 0);
     expect(recoil).toBe(Math.round(dealt * 0.33));
   });
@@ -210,7 +212,7 @@ describe('applyEffect', () => {
       card('normal'),
       rng(0.99),
     );
-    const dealt = 100 - out.enemy.hp;
+    const dealt = 100 - out.enemies[0]!.hp;
     const healed = (out.team[0]?.hp ?? 0) - 50;
     // 50% of dealt damage, rounded.
     expect(healed).toBe(Math.round(dealt * 0.5));
@@ -218,7 +220,7 @@ describe('applyEffect', () => {
   });
 
   it('capture succeeds or fails based on the roll', () => {
-    const s = state({ enemy: mon({ name: 'foe', hp: 5 }) });
+    const s = state({ enemies: [mon({ name: 'foe', hp: 5 })] });
     const caught = applyEffect(s, { kind: 'capture', ballTier: 'ultra' }, card('normal'), rng(0));
     expect(caught.outcome).toBe('captured');
 

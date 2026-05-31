@@ -88,19 +88,42 @@ export interface Combatant {
   statuses: StatusInstance[];
   /** Active-mon stat stages. Reset to all-zero on switch-out and at combat end (canon). */
   stages: StatStages;
+  /**
+   * Turns left where this Pokémon CANNOT play attack cards — canon Recharge state
+   * triggered by Hyper Beam / Giga Impact / Blast Burn. Tied to the Pokémon, not the
+   * slot: switching out doesn't reset it. Decrements at end of turn. `0` = free to
+   * attack. Status-kind cards (SKL/PWR/BALL/ITEM) play normally during Recharge.
+   */
+  recharge: number;
 }
 
+/**
+ * Telegraphed enemy action for the next turn.
+ *
+ * `attack` and `status` MUST carry a `targetIndex` — an action that hits or
+ * applies a condition can't exist without something to hit or condition. The
+ * index refers to `state.team[targetIndex]` (the ally being targeted).
+ *
+ * `defend` self-applies — the enemy is buffing its own block, so no target.
+ */
 export type Intent =
-  | { kind: 'attack'; amount: number }
+  | { kind: 'attack'; amount: number; targetIndex: number }
   | { kind: 'defend'; amount: number }
-  | { kind: 'status'; status: StatusInstance };
+  | { kind: 'status'; status: StatusInstance; targetIndex: number };
 
 export type CombatOutcome = 'ongoing' | 'win' | 'lose' | 'captured';
 
 export interface CombatState {
   team: Combatant[];
   activeIndex: number;
-  enemy: Combatant;
+  /**
+   * Foe team — 1–6 mons. Single-enemy fights still ship as `enemies: [foo]` until the
+   * multi-enemy content lands. `enemyActiveIndex` is the foe that's "in front" for default
+   * card targeting (Pokémon-canon: the visible opponent). Cards/intents can target other
+   * foes via explicit index (C2 of the combat-rework plan).
+   */
+  enemies: Combatant[];
+  enemyActiveIndex: number;
   enemyIntent: Intent;
   energy: number;
   maxEnergy: number;
@@ -131,3 +154,34 @@ export type CombatAction =
   | { type: 'PLAY_CARD'; handIndex: number }
   | { type: 'SWITCH'; teamIndex: number }
   | { type: 'END_TURN' };
+
+/** The foe currently in front — the default target for cards and intents. Throws if the
+ *  enemy team is empty, which only ever happens once `outcome` is already `'win'` and the
+ *  state is no longer being acted on. */
+export function activeEnemyOf(state: CombatState): Combatant {
+  const enemy = state.enemies[state.enemyActiveIndex];
+  if (!enemy) throw new Error('No active enemy');
+  return enemy;
+}
+
+/**
+ * The cluster column of a given team index. Matches PartyCluster's slot map: team[0..2]
+ * sit on the front (mid/top/bot of col 1), team[3..5] on the back (col 0). Wide-Guard-
+ * style column effects iterate every ally with the same column as the active mon.
+ */
+export type Column = 'front' | 'back';
+export function columnOf(teamIndex: number): Column {
+  return teamIndex < 3 ? 'front' : 'back';
+}
+
+/** Return a new state with the active enemy replaced by `mutator(activeEnemy)`. Centralised
+ *  so callers don't have to remember the immutable-array splice each time. */
+export function withActiveEnemy(
+  state: CombatState,
+  mutator: (enemy: Combatant) => Combatant,
+): CombatState {
+  return {
+    ...state,
+    enemies: state.enemies.map((e, i) => (i === state.enemyActiveIndex ? mutator(e) : e)),
+  };
+}
