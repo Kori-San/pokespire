@@ -1,0 +1,26 @@
+/* The cluster is a fixed-size relative container; slots inside are absolutely
+ * positioned via inline styles so each one lands on its diagonal-staircase coordinate
+ * (see PartyCluster.tsx for the position tables).
+ *
+ * Cluster size accommodates the widest slot footprint (col 1 max x + slot width)
+ * and the tallest stack (3 rows × stride). Width / height are stable so the parent
+ * (BattleStage scene) can anchor it predictably. */
+.cluster {
+  position: relative;
+  width: 260px;
+  height: 230px;
+}
+
+.slotWrap {
+  position: absolute;
+}
+
+/* Left cluster (player) — front sprites mirrored horizontally so the mons face right
+ * toward the enemy. Right cluster (enemy) keeps the sprite native (faces left). */
+.cluster[data-side='left'] img {
+  transform: scaleX(-1);
+}
+
+/* Intent badges live inside each PokemonSlot now (see PokemonSlot.module.css `.intentSlot`)
+ * — every enemy slot self-renders its own badge above its sprite. No cluster-level
+ * anchor needed. */

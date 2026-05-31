@@ -3,43 +3,20 @@ import type { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { Icon } from '@iconify/react';
 import type { CardDef, CardKind, PokeType } from '@/types';
-import { keywordsOf, type Keyword } from '@/data/cards';
+import { keywordsOf } from '@/data/cards';
 import { selectCardLines, type ComputedCardView, type EffectLine } from '@/game/combat/selectors';
-import { EnergyBar } from '@/ui/primitives/EnergyBar';
 import { cx } from '@/ui/cx';
+import {
+  KEYWORD_VISUAL,
+  chipKey,
+  keywordLabel,
+  keywordTooltipDesc,
+  keywordTooltipName,
+} from './keywords';
 import styles from './Card.module.css';
 
 /** Energy ceiling visualised on every card; the deck cannot print costs above this. */
 const ENERGY_SLOTS = 3;
-
-/**
- * Per-keyword glyph + tint. Icons resolve through the global registry loaded once at
- * startup via `src/ui/icons.ts` — Dinkie Icons for expressive pixel art (fire / blood /
- * biohazard / sparkles / sleeping-face / hourglass), pixelarticons for neutral chips,
- * streamline-pixel for weather glyphs.
- *
- * Colors are picked to clear WCAG AA contrast (≥ 4.5:1) against the white card body.
- */
-const KEYWORD_VISUAL: Record<Keyword['id'], { icon: string; color: string }> = {
-  exhaust: { icon: 'dinkie-icons:hourglass-with-flowing-sand', color: '#b45309' },
-  ephemeral: { icon: 'dinkie-icons:ghost', color: '#6366f1' },
-  switch: { icon: 'pixelarticons:switch', color: '#1f2937' },
-  stab: { icon: 'dinkie-icons:sparkles', color: '#2563eb' },
-  super: { icon: 'pixelarticons:chevron-up', color: '#16a34a' },
-  resisted: { icon: 'pixelarticons:shield', color: '#475569' },
-  immune: { icon: 'pixelarticons:shield-off', color: '#991b1b' },
-  lifesteal: { icon: 'dinkie-icons:drop-of-blood', color: '#991b1b' },
-  crit: { icon: 'pixelarticons:bullseye', color: '#b45309' },
-  recoil: { icon: 'pixelarticons:undo', color: '#1f2937' },
-  burn: { icon: 'dinkie-icons:fire', color: '#e0500f' },
-  poison: { icon: 'dinkie-icons:biohazard', color: '#7c3aed' },
-  weak: { icon: 'pixelarticons:trending-down', color: '#475569' },
-  sleep: { icon: 'dinkie-icons:sleeping-face', color: '#1d4ed8' },
-  paralyze: { icon: 'pixelarticons:zap', color: '#a16207' },
-  freeze: { icon: 'pixelarticons:cloud', color: '#0e7490' },
-  weather: { icon: 'streamline-pixel:weather-cloud-sun-fine', color: '#374151' },
-  terrain: { icon: 'dinkie-icons:snow-capped-mountain', color: '#374151' },
-};
 
 /**
  * The card's accent color. BALL and ITEM sit outside the 18-type palette (red / amber)
@@ -79,55 +56,79 @@ export function Card({ card, view, onPlay }: CardProps) {
     ...(view.damage?.stab !== undefined && { stab: view.damage.stab }),
     ...(view.damage?.effectiveness && { effectiveness: view.damage.effectiveness }),
   });
-  // Density bucket — shrinks font so chip-heavy cards still fit the locked height.
+  // Density bucket — shrinks the body font so chip-heavy cards still fit the locked
+  // height. Mid kicks in for mildly busy cards (Shell Smash's 5 stat-changes fit
+  // comfortably here); dense is reserved for truly stuffed effect+keyword stacks.
   const totalLines = lines.length + keywords.length;
-  const density = totalLines >= 5 ? 'dense' : totalLines >= 3 ? 'mid' : 'normal';
+  const density = totalLines >= 7 ? 'dense' : totalLines >= 4 ? 'mid' : 'normal';
   // Banner density follows title length — long move names (ELECTRIC TERRAIN) drop a step.
   const bannerDensity = name.length >= 14 ? 'dense' : name.length >= 11 ? 'mid' : 'normal';
 
+  // Tooltip is a SIBLING of the card button (not a child) so the disabled card's
+  // `filter: grayscale(...)` can't cascade onto it — CSS filters affect every
+  // descendant and can't be "undone" on a child. The thin `.cardWrap` span gives
+  // the tooltip a positioning context the card itself can't provide (the disabled
+  // filter would still cascade if the tooltip were inside the button), and works
+  // identically inside the Hand's `.slot` or in standalone stories.
   return (
-    <button
-      type="button"
-      className={cx(styles.card, !view.affordable && styles.disabled)}
-      style={{ '--card-type': tintVar(card.kind, card.type) } as CSSProperties}
-      disabled={!view.affordable}
-      onClick={onPlay}
-    >
-      <span className={styles.banner} data-density={bannerDensity}>
-        {name}
-      </span>
-      <div className={styles.body} data-density={density}>
-        {renderedLines.map((line, i) => (
-          <span key={`line-${String(i)}`} className={styles.bodyLine}>
-            {line}
-          </span>
-        ))}
-        {keywords.length > 0 && (
-          <span className={styles.keywords}>
-            {keywords.map((k) => {
-              const v = KEYWORD_VISUAL[k.id];
-              return (
-                <span key={chipKey(k)} className={cx(styles.keyword, styles[`kw_${k.id}`])}>
-                  <Icon icon={v.icon} className={styles.kwIcon} style={{ color: v.color }} />
-                  {keywordLabel(k, t)}
-                </span>
-              );
-            })}
-          </span>
-        )}
-      </div>
-      <span className={styles.footer}>
-        <EnergyBar
-          current={card.cost}
-          max={ENERGY_SLOTS}
-          ariaLabel={`Cost ${String(card.cost)} of ${String(ENERGY_SLOTS)}`}
-        />
-        <img
-          className={styles.categoryIcon}
-          src={`/sprites/move-category/${card.category}.png`}
-          alt={card.category}
-        />
-      </span>
+    <span className={styles.cardWrap}>
+      <button
+        type="button"
+        className={cx(styles.card, !view.affordable && styles.disabled)}
+        style={{ '--card-type': tintVar(card.kind, card.type) } as CSSProperties}
+        disabled={!view.affordable}
+        onClick={onPlay}
+      >
+        <span className={styles.banner} data-density={bannerDensity}>
+          {name}
+        </span>
+        {/* Cost sits directly under the banner — it's the first decision-info
+         *  ("can I afford this?"), so adjacency to the title cuts scanning time
+         *  in half. Pips are inlined (not the EnergyBar primitive) so each one
+         *  can `flex: 1` and fill the full card width — the cost reads at a glance
+         *  from across the screen instead of squinting at three tiny chips. */}
+        <span
+          className={styles.cost}
+          role="img"
+          aria-label={`Cost ${String(card.cost)} of ${String(ENERGY_SLOTS)}`}
+        >
+          {Array.from({ length: ENERGY_SLOTS }, (_, i) => (
+            <span
+              key={i}
+              className={cx(styles.costPip, i < card.cost && styles.costPipLit)}
+              aria-hidden
+            />
+          ))}
+        </span>
+        <div className={styles.body} data-density={density}>
+          {renderedLines.map((line, i) => (
+            <span key={`line-${String(i)}`} className={styles.bodyLine}>
+              {line}
+            </span>
+          ))}
+          {keywords.length > 0 && (
+            <span className={styles.keywords}>
+              {keywords.map((k) => {
+                const v = KEYWORD_VISUAL[k.id];
+                return (
+                  <span key={chipKey(k)} className={cx(styles.keyword, styles[`kw_${k.id}`])}>
+                    <Icon icon={v.icon} className={styles.kwIcon} style={{ color: v.color }} />
+                    {keywordLabel(k, t)}
+                  </span>
+                );
+              })}
+            </span>
+          )}
+        </div>
+        <hr className={styles.footerDivider} />
+        <span className={styles.footer}>
+          <img
+            className={styles.categoryIcon}
+            src={`/sprites/move-category/${card.category}.png`}
+            alt={card.category}
+          />
+        </span>
+      </button>
       {keywords.length > 0 && (
         <span className={styles.tooltip} role="tooltip">
           {keywords.map((k, i) => {
@@ -147,79 +148,8 @@ export function Card({ card, view, onPlay }: CardProps) {
           })}
         </span>
       )}
-    </button>
+    </span>
   );
-}
-
-/** Stable React key per keyword instance (some chips can repeat — e.g. self+foe statuses). */
-function chipKey(k: Keyword): string {
-  switch (k.id) {
-    case 'burn':
-    case 'poison':
-    case 'weak':
-    case 'sleep':
-    case 'paralyze':
-    case 'freeze':
-      return `${k.id}-${k.self ? 'self' : 'foe'}`;
-    default:
-      return k.id;
-  }
-}
-
-/**
- * Interpolation params for both the chip label and the tooltip desc lookup. Status
- * keywords also pass `count` so i18next can switch `_one` vs `_other` plural forms
- * (e.g. "1 turn" vs "3 turns" on Sleep).
- */
-function keywordParams(k: Keyword): Record<string, number> {
-  switch (k.id) {
-    case 'lifesteal':
-      return { percent: k.percent };
-    case 'crit':
-      return { boost: k.boost };
-    case 'recoil':
-      return { percent: k.percent };
-    case 'burn':
-    case 'poison':
-    case 'weak':
-    case 'sleep':
-    case 'paralyze':
-    case 'freeze':
-      return { stacks: k.stacks, count: k.stacks };
-    case 'weather':
-    case 'terrain':
-      return { turns: k.turns };
-    default:
-      return {};
-  }
-}
-
-function keywordLabel(k: Keyword, t: TFunction): string {
-  // Weather + terrain pick a nested sub-key from the kind (sun/rain/sand/hail or
-  // electric/grassy/misty/psychic) — one chip per variant, distinct prose per variant.
-  if (k.id === 'weather') {
-    const name = t(`cards:keyword.weather.kind.${k.weather}.name`);
-    return t('cards:keyword.weather.label', { name, turns: k.turns });
-  }
-  if (k.id === 'terrain') {
-    const name = t(`cards:keyword.terrain.kind.${k.terrain}.name`);
-    return t('cards:keyword.terrain.label', { name, turns: k.turns });
-  }
-  return t(`cards:keyword.${k.id}.label`, keywordParams(k));
-}
-
-/** Tooltip heading per keyword — weather/terrain show the active kind's specific name. */
-function keywordTooltipName(k: Keyword, t: TFunction): string {
-  if (k.id === 'weather') return t(`cards:keyword.weather.kind.${k.weather}.name`);
-  if (k.id === 'terrain') return t(`cards:keyword.terrain.kind.${k.terrain}.name`);
-  return t(`cards:keyword.${k.id}.name`);
-}
-
-/** Tooltip body per keyword — weather/terrain show only the active kind's rule. */
-function keywordTooltipDesc(k: Keyword, t: TFunction): string {
-  if (k.id === 'weather') return t(`cards:keyword.weather.kind.${k.weather}.desc`);
-  if (k.id === 'terrain') return t(`cards:keyword.terrain.kind.${k.terrain}.desc`);
-  return t(`cards:keyword.${k.id}.desc`, keywordParams(k));
 }
 
 function renderLine(line: EffectLine, t: TFunction): string {

@@ -15,6 +15,63 @@
   },
   "common": {
     "language": "Langue",
-    "back": "Retour"
+    "back": "Retour",
+    "settings": "Options"
+  },
+  "combat": {
+    "turn": "Tour {{n}}",
+    "endTurn": "Fin du tour",
+    "energy": "Énergie {{current}} sur {{max}}",
+    "drawPile": "Pioche",
+    "discardPile": "Défausse",
+    "exhaustPile": "Consumés : {{count}}",
+    "emptyPotion": "Emplacement de potion vide",
+    "emptyRelic": "Emplacement de relique vide"
+  },
+  "rotate": {
+    "title": "Tournez l'appareil",
+    "body": "Pokespire est conçu en mode paysage. Tournez votre appareil pour jouer."
+  },
+  "type": {
+    "normal": "Normal",
+    "fire": "Feu",
+    "water": "Eau",
+    "electric": "Électrik",
+    "grass": "Plante",
+    "ice": "Glace",
+    "fighting": "Combat",
+    "poison": "Poison",
+    "ground": "Sol",
+    "flying": "Vol",
+    "psychic": "Psy",
+    "bug": "Insecte",
+    "rock": "Roche",
+    "ghost": "Spectre",
+    "dragon": "Dragon",
+    "dark": "Ténèbres",
+    "steel": "Acier",
+    "fairy": "Fée"
+  },
+  "status": {
+    "burn": { "name": "Brûlure" },
+    "poison": { "name": "Poison" },
+    "weak": { "name": "Affaibli" },
+    "sleep": { "name": "Sommeil" },
+    "paralyze": { "name": "Paralysie" },
+    "freeze": { "name": "Gel" }
+  },
+  "heldItem": {
+    "leftovers": {
+      "name": "Restes",
+      "desc": "À la fin de chaque tour, le Pokémon actif récupère un peu de PV."
+    },
+    "flamePlate": {
+      "name": "Plaque Flamme",
+      "desc": "Les capacités de type Feu infligent 1,2× de dégâts."
+    },
+    "choiceBand": {
+      "name": "Bandeau Choix",
+      "desc": "Attaque augmentée de 50%. Après avoir joué une carte, vous ne pouvez plus jouer que des copies de cette même carte jusqu'au prochain changement. Changer de Pokémon réinitialise le verrouillage."
+    }
   }
 }

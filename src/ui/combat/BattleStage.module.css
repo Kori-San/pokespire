@@ -1,0 +1,134 @@
+/* ── Stage ─────────────────────────────────────────────────────────────────────
+ * One container, one coordinate system. The bg image lives on `.stage` so it
+ * fills the entire frame; the topbar paints its own opaque panel over the top
+ * slice, and `.scene` below it holds every other widget — clusters, relics,
+ * hand, piles, energy, end-turn. Grid rows: topbar `auto`, scene `1fr`.
+ * `position: absolute; inset: 0` gives the stage a definite size so the 1fr
+ * row resolves to real pixels regardless of how the parent computes height. */
+.stage {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  background-color: var(--box-border-lo);
+  background-size: cover;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+  overflow: hidden;
+}
+
+/* Transparent weather PNG layered over the biome bg. Sits *under* every widget
+ * (z-index 0 vs HUD widgets that establish their own stacking contexts), so rain
+ * sheets / sand haze / hail flakes drift over the field without obscuring the
+ * cards, slots, or topbar. `pointer-events: none` keeps the overlay inert. */
+.weatherOverlay {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Flex row for the two combatant columns. `justify-content: space-between`
+ * spreads them to the cluster's left/right edges; each cluster's own
+ * `align-self: center` (with a small translateY nudge) handles vertical
+ * positioning. HUD widgets (hand, piles, energy, end-turn) are absolutely
+ * positioned over this scene — they're separate from the flex flow. */
+.scene {
+  position: relative;
+  min-height: 0;
+  container-type: inline-size;
+  display: flex;
+  justify-content: space-between;
+  padding: 10%;
+}
+
+.relicStripWrap {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 3;
+}
+
+/* Both clusters vertically centred, then nudged 32 px apart along Y: player
+ * sinks a little toward the hand, enemy lifts a little toward the topbar.
+ * Keeps a subtle diagonal read without the strong flex-end / flex-start split
+ * the earlier layout used. */
+.playerSide {
+  align-self: center;
+  transform: translateY(32px);
+}
+
+.enemySide {
+  align-self: center;
+  transform: translateY(-32px);
+}
+
+/* ── HUD widgets — float over the lower half of the scene, no panel behind ──
+ * Each widget carries its own drop-shadow so it stays legible on any biome. */
+
+.leftCluster {
+  position: absolute;
+  bottom: 16px;
+  left: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.55));
+}
+
+.leftCluster > button {
+  width: 56px;
+  height: 56px;
+}
+
+.handArea {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.55));
+}
+
+.rightCluster {
+  position: absolute;
+  bottom: 16px;
+  right: 24px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  gap: 4px 12px;
+  align-items: center;
+  justify-items: center;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.55));
+}
+
+.endTurnButton {
+  width: 100%;
+  min-width: 130px;
+}
+
+/* Turn badge — same shape and weight as the End Turn button but solid dark-blue,
+ * non-interactive. Sits in the top-right cell of the right cluster. */
+.turnBadge {
+  display: block;
+  width: 100%;
+  min-width: 130px;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 12px;
+  line-height: 1.4;
+  padding: var(--space-3) var(--space-4);
+  background: var(--box-border);
+  color: var(--text-light);
+  border: 3px solid var(--box-border-lo);
+  border-radius: var(--radius-btn);
+  letter-spacing: 0.04em;
+  box-shadow: 0 3px 0 var(--box-border-lo);
+  cursor: default;
+}

@@ -5,11 +5,16 @@
  *
  * `overflow: visible` is explicit so the hovered card can extend above the container
  * without being clipped by any parent that defaults to hidden (story frames do). */
+/* Padding kept tight on top — the original 80px was reserving layout space for
+ * the rotated card tops, but `overflow: visible` already lets them paint above
+ * the container without taking layout space. The dead space was extending the
+ * hand's hit-test box up into the cluster area and eating hovers on the lower
+ * player Pokémon. */
 .hand {
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  padding: 80px 16px 16px;
+  padding: 0 16px 16px;
   overflow: visible;
 }
 

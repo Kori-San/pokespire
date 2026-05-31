@@ -1,0 +1,70 @@
+/* Reusable keyword chip — matches the card-body keyword chip but standalone so
+ * any caller (PokemonSlot status row, future relic-mod UI, etc.) can drop one in.
+ * Chip = icon + label inline; hovering shows a nested Tooltip with the keyword's
+ * full definition (name + desc) from the cards: i18n keys. */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: bold;
+  color: var(--text-dark);
+  cursor: default;
+  white-space: nowrap;
+}
+
+.icon {
+  width: 1.1em;
+  height: 1.1em;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+}
+
+/* STAB chips get the same sparkle pulse as the card chip. */
+.chip[data-kind='stab'] .icon {
+  animation: stab-sparkle 2.4s ease-in-out infinite;
+}
+
+@keyframes stab-sparkle {
+  0%,
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.18);
+    filter: brightness(1.25);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chip[data-kind='stab'] .icon {
+    animation: none;
+  }
+}
+
+/* ── Nested tooltip content ─────────────────────────────────────────────────── */
+.tooltipEntry {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 180px;
+}
+
+.tooltipLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-display);
+  font-size: 9px;
+  text-transform: uppercase;
+  color: var(--text-dark);
+}
+
+.tooltipDesc {
+  font-family: var(--font-body);
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--text-mid);
+}

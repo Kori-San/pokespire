@@ -1,3 +1,13 @@
+/* Thin positioning wrapper around the card+tooltip pair. Sized to the card so
+ * the tooltip's `left: calc(100% + 8px)` anchors against the card's right edge
+ * whether we're inside the Hand (with its rotated `.slot`) or in a standalone
+ * Storybook render. */
+.cardWrap {
+  position: relative;
+  display: inline-block;
+  width: 134px;
+}
+
 .card {
   /* Local shades of the card's tint. Named --card-* to avoid colliding with the global
    * --type-dark / --type-light (DARK is a real Pokémon type — the collision blanks the
@@ -106,13 +116,17 @@
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  z-index: 100;
+  z-index: 999;
   transition:
     opacity 0.12s ease,
     visibility 0.12s ease;
 }
 
-.card:hover .tooltip {
+/* Tooltip is now an adjacent SIBLING of the card (rendered alongside it in a
+ * fragment) so the disabled card's grayscale filter can't cascade to it.
+ * `.card:hover + .tooltip` reveals the tooltip on hover via the adjacent
+ * sibling selector — same UX, vivid color preserved on unaffordable cards. */
+.card:hover + .tooltip {
   opacity: 1;
   visibility: visible;
 }
@@ -169,16 +183,16 @@
   letter-spacing: 0.3px;
 }
 
-/* Description fills the middle. Font scales DOWN as effect count grows so the card never
- * outgrows its locked height — see Card.tsx where `data-density` is computed from the
- * number of effect lines. */
+/* Description fills the middle. 12px / 1.2 is the base for every card; chip-heavy
+ * cards shrink one or two ticks further so they still fit the locked card height
+ * (see Card.tsx where `data-density` is computed from the number of effect lines). */
 .body {
   flex: 1;
   margin: 0;
   padding: 6px 2px;
   text-align: start;
-  font-size: 14px;
-  line-height: 1.3;
+  font-size: 12px;
+  line-height: 1.2;
   overflow: hidden;
 }
 
@@ -192,21 +206,53 @@
 }
 
 .body[data-density='mid'] {
-  font-size: 12px;
+  font-size: 10px;
   line-height: 1.2;
 }
 
 .body[data-density='dense'] {
-  font-size: 10px;
+  font-size: 8px;
   line-height: 1.15;
 }
 
-/* Footer — cost pips on the left, kind badge on the right */
+/* Cost row — three flex-1 pips fill the full card width so the cost reads at a
+ * glance ("can I afford this?" is the first decision-info, so it should be
+ * impossible to miss). Inlined here instead of using the EnergyBar primitive
+ * because the bottom-bar EnergyBar is fixed-width-pips by design — the cards
+ * want a stretchy variant. */
+.cost {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 4px 0;
+}
+
+.costPip {
+  flex: 1;
+  height: 8px;
+  background: #b0b6c3;
+  border: 1px solid var(--box-border-lo);
+  transform: skewX(-22deg);
+}
+
+.costPipLit {
+  background: var(--type-electric);
+}
+
+/* Subtle separator between description+keywords and the category badge below. */
+.footerDivider {
+  margin: 4px 6px 2px;
+  border: none;
+  border-top: 1px solid var(--box-border-lo);
+  opacity: 0.3;
+}
+
+/* Footer — now just the move-category badge, centered. */
 .footer {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  padding: 2px 2px 0;
+  padding: 2px 2px;
 }
 
 .categoryIcon {

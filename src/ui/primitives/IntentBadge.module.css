@@ -35,6 +35,17 @@
   font-size: 11px;
 }
 
+/* Target sprite — small mini portrait next to the value, so multi-enemy intents
+ * read "ATQ 7 [Charmander]" in one chip. Sprite uses pixelated rendering to keep
+ * the BW animated GIF crisp at the small size. */
+.target {
+  width: 20px;
+  height: 20px;
+  image-rendering: pixelated;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
 /* Attack — red bar above the box so the player sees danger first. */
 .attack {
   box-shadow: inset 0 4px 0 var(--type-fire);

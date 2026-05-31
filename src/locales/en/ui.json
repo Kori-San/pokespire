@@ -15,6 +15,63 @@
   },
   "common": {
     "language": "Language",
-    "back": "Back"
+    "back": "Back",
+    "settings": "Settings"
+  },
+  "combat": {
+    "turn": "Turn {{n}}",
+    "endTurn": "End Turn",
+    "energy": "Energy {{current}} of {{max}}",
+    "drawPile": "Draw pile",
+    "discardPile": "Discard pile",
+    "exhaustPile": "Exhausted: {{count}}",
+    "emptyPotion": "Empty potion slot",
+    "emptyRelic": "Empty relic slot"
+  },
+  "rotate": {
+    "title": "Rotate Your Device",
+    "body": "Pokespire is designed for landscape. Turn your device sideways to play."
+  },
+  "type": {
+    "normal": "Normal",
+    "fire": "Fire",
+    "water": "Water",
+    "electric": "Electric",
+    "grass": "Grass",
+    "ice": "Ice",
+    "fighting": "Fighting",
+    "poison": "Poison",
+    "ground": "Ground",
+    "flying": "Flying",
+    "psychic": "Psychic",
+    "bug": "Bug",
+    "rock": "Rock",
+    "ghost": "Ghost",
+    "dragon": "Dragon",
+    "dark": "Dark",
+    "steel": "Steel",
+    "fairy": "Fairy"
+  },
+  "status": {
+    "burn": { "name": "Burn" },
+    "poison": { "name": "Poison" },
+    "weak": { "name": "Weak" },
+    "sleep": { "name": "Sleep" },
+    "paralyze": { "name": "Paralyze" },
+    "freeze": { "name": "Freeze" }
+  },
+  "heldItem": {
+    "leftovers": {
+      "name": "Leftovers",
+      "desc": "At the end of each turn, the active Pokémon restores a small amount of HP."
+    },
+    "flamePlate": {
+      "name": "Flame Plate",
+      "desc": "Fire-type moves deal 1.2× damage."
+    },
+    "choiceBand": {
+      "name": "Choice Band",
+      "desc": "Attack boosted by 50%. After playing a card, you can only play copies of that same card until you switch out. Switching cleanses the lock."
+    }
   }
 }
