@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "storybook-pokespire": {
+      "url": "http://localhost:6006/mcp",
+      "type": "http"
+    }
+  }
+}
