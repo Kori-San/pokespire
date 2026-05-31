@@ -1,11 +1,12 @@
 /*
  * Storybook overrides — the app's global.css locks the body so the GBA-era layout doesn't
- * scroll. Stories aren't the app: relax that so long galleries (e.g. the full card pool)
- * are reachable.
+ * scroll. Stories aren't the app: pin the body to the iframe height so `position: fixed`
+ * elements (the ViewportFrame letterbox) anchor predictably and `layout: 'centered'`
+ * centres against the viewport, and allow scroll so long galleries stay reachable.
  */
 html,
 body,
 #storybook-root {
-  height: auto !important;
-  overflow: auto !important;
+  height: 100% !important;
+  overflow: scroll !important;
 }

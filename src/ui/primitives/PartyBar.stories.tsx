@@ -18,6 +18,7 @@ function fakeMon(overrides: Partial<Combatant> = {}): Combatant {
     block: 0,
     statuses: [],
     stages: { ...EMPTY_STAGES },
+    recharge: 0,
     ...overrides,
   };
 }

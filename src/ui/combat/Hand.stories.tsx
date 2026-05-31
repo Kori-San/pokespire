@@ -26,31 +26,38 @@ function viewFor(cardId: string, opts: { affordable?: boolean } = {}): ComputedC
 }
 
 const openingHand = STARTER_DECK.slice(0, 5);
-const openingViews = openingHand.map((id) => viewFor(id));
 
 const meta = {
   title: 'Combat/Hand',
   component: Hand,
-  args: { hand: openingHand, views: openingViews, onPlay: fn() },
-  parameters: { backgrounds: { value: 'grass' } },
+  args: {
+    hand: openingHand,
+    views: openingHand.map((id) => viewFor(id)),
+    onPlay: fn(),
+  },
+  // Hand is intrinsically a fan: rotated cards at the edges extend ~80px above
+  // the component's own box, and hover lifts the active card another 28px. In the
+  // real scene `.handArea` is anchored to `.scene`'s bottom edge and the fan
+  // breathes upward into the play field. Here we replicate that headroom with a
+  // story-only decorator so the rotated tops + hover lift aren't clipped — the
+  // padding is the *story environment*, not part of the component contract.
+  decorators: [
+    (Story) => (
+      <div style={{ paddingTop: 140, paddingBottom: 16 }}>
+        <Story />
+      </div>
+    ),
+  ],
 } satisfies Meta<typeof Hand>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Opening: Story = {};
+/** Canonical opening hand — five mixed-type cards, all affordable. */
+export const Default: Story = {};
 
-export const SingleCard: Story = {
-  args: { hand: ['ember'], views: [viewFor('ember')] },
-};
-
-export const FiveTypes: Story = {
-  args: {
-    hand: ['ember', 'waterGun', 'vineWhip', 'thunderShock', 'pokeBall'],
-    views: ['ember', 'waterGun', 'vineWhip', 'thunderShock', 'pokeBall'].map((id) => viewFor(id)),
-  },
-};
-
+/** Mid-turn after spending energy — some cards become unaffordable (grayscaled,
+ *  un-hoverable lift). Distinct visual state, kept as its own story. */
 export const SomeUnaffordable: Story = {
   args: {
     hand: ['tackle', 'doubleKick', 'greatBall', 'hyperBeam'],
@@ -61,8 +68,4 @@ export const SomeUnaffordable: Story = {
       viewFor('hyperBeam', { affordable: false }),
     ],
   },
-};
-
-export const ReadOnly: StoryObj<typeof Hand> = {
-  args: { hand: openingHand, views: openingViews },
 };

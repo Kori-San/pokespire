@@ -30,17 +30,6 @@ const ember: CardDef = {
   ],
 };
 
-const pokeBall: CardDef = {
-  id: 'pokeBall',
-  name: 'POKÉ BALL',
-  type: 'normal',
-  cost: 1,
-  kind: 'BALL',
-  category: 'status',
-  rarity: 'common',
-  effects: [{ kind: 'capture', ballTier: 'poke' }],
-};
-
 const damageView: ComputedCardView = {
   cardId: 'ember',
   cost: 1,
@@ -58,19 +47,20 @@ const meta = {
   component: Card,
   args: { card: ember, view: damageView },
   parameters: { backgrounds: { value: 'grass' } },
+  // Card hover lifts -8 px and the keyword glossary tooltip flies ~200 px to the
+  // right. Story-environment padding lets both render in full — never bake this
+  // into Card itself; in Hand the card is wrapped in the fan slot, in BattleStage
+  // the scene supplies the room.
+  decorators: [
+    (Story) => (
+      <div style={{ padding: '32px 240px 32px 32px' }}>
+        <Story />
+      </div>
+    ),
+  ],
 } satisfies Meta<typeof Card>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
-
-export const Attack: Story = {};
-export const Unaffordable: Story = { args: { view: { ...damageView, affordable: false } } };
-export const CaptureBall: Story = {
-  args: {
-    card: pokeBall,
-    view: { cardId: 'pokeBall', cost: 1, affordable: true, capturePercent: 42 },
-  },
-};
 
 const CARD_KINDS = ['ATK', 'SKL', 'PWR', 'BALL', 'ITEM'] as const satisfies readonly CardKind[];
 const CATEGORIES = ['physical', 'special', 'status'] as const satisfies readonly MoveCategory[];
@@ -266,297 +256,6 @@ function buildEffect(a: PlaygroundArgs): Effect {
       return { kind: 'capture', ballTier: a.ballTier };
   }
 }
-
-/**
- * Side-by-side scenarios that exercise every keyword chip the system can render — and
- * combinations players will actually meet in combat. Each card here is constructed inline
- * so the story stays decoupled from the live pool (renaming Ember tomorrow can't break it).
- */
-export const KeywordShowcase: StoryObj = {
-  parameters: { controls: { disable: true } },
-  render: () => {
-    interface Scenario {
-      title: string;
-      card: CardDef;
-      view: ComputedCardView;
-    }
-
-    function scenario(title: string, card: CardDef, view: ComputedCardView): Scenario {
-      return { title, card, view };
-    }
-
-    function dmgView(
-      base: number,
-      eff: Effectiveness,
-      stab: boolean,
-      multiplier: number,
-    ): ComputedCardView {
-      const value = Math.max(1, Math.round(base * multiplier));
-      return {
-        cardId: 'demo',
-        cost: 1,
-        affordable: true,
-        damage: { value, effectiveness: eff, stab, tooltip: `${String(base)} base` },
-      };
-    }
-
-    const base = (overrides: Partial<CardDef>): CardDef => ({
-      id: 'demo',
-      name: 'DEMO',
-      type: 'fire',
-      cost: 1,
-      kind: 'ATK',
-      category: 'special',
-      rarity: 'uncommon',
-      effects: [{ kind: 'damage', amount: 10 }],
-      ...overrides,
-    });
-
-    const scenarios: Scenario[] = [
-      // ── Effectiveness tiers ───────────────────────────────────────────────────────
-      scenario(
-        'STAB only',
-        base({ id: 'ember', name: 'EMBER', effects: [{ kind: 'damage', amount: 10 }] }),
-        dmgView(10, 'neutral', true, 1.5),
-      ),
-      scenario(
-        'STAB + SUPER',
-        base({ id: 'ember', name: 'EMBER', effects: [{ kind: 'damage', amount: 10 }] }),
-        dmgView(10, 'super', true, 1.5 * 2),
-      ),
-      scenario(
-        'STAB + RESISTED',
-        base({ id: 'ember', name: 'EMBER', effects: [{ kind: 'damage', amount: 10 }] }),
-        dmgView(10, 'resisted', true, 1.5 * 0.5),
-      ),
-      scenario(
-        'STAB + IMMUNE',
-        base({ id: 'ember', name: 'EMBER', effects: [{ kind: 'damage', amount: 10 }] }),
-        dmgView(10, 'immune', true, 1.5 * 0.25),
-      ),
-      scenario(
-        'No STAB, SUPER',
-        base({ id: 'demo', name: 'WRONG TYPE', effects: [{ kind: 'damage', amount: 10 }] }),
-        dmgView(10, 'super', false, 2),
-      ),
-
-      // ── Single-keyword examples ──────────────────────────────────────────────────
-      scenario(
-        'Burn rider',
-        base({
-          id: 'ember',
-          name: 'EMBER',
-          effects: [
-            { kind: 'damage', amount: 8 },
-            { kind: 'applyStatus', target: 'foe', status: 'burn', stacks: 1 },
-          ],
-        }),
-        dmgView(8, 'neutral', true, 1.5),
-      ),
-      scenario(
-        'Poison rider',
-        base({
-          id: 'poisonJab',
-          name: 'POISON JAB',
-          type: 'poison',
-          category: 'physical',
-          effects: [
-            { kind: 'damage', amount: 12 },
-            { kind: 'applyStatus', target: 'foe', status: 'poison', stacks: 2 },
-          ],
-        }),
-        dmgView(12, 'neutral', false, 1),
-      ),
-      scenario(
-        'Crit +1',
-        base({
-          id: 'stoneEdge',
-          name: 'STONE EDGE',
-          type: 'rock',
-          category: 'physical',
-          cost: 3,
-          rarity: 'rare',
-          effects: [{ kind: 'damage', amount: 22, critBoost: 1 }],
-        }),
-        dmgView(22, 'neutral', false, 1),
-      ),
-      scenario(
-        'Recoil 33%',
-        base({
-          id: 'braveBird',
-          name: 'BRAVE BIRD',
-          type: 'flying',
-          category: 'physical',
-          cost: 3,
-          rarity: 'rare',
-          effects: [{ kind: 'damage', amount: 26, recoilPercent: 33 }],
-        }),
-        dmgView(26, 'neutral', false, 1),
-      ),
-      scenario(
-        'Lifesteal 75%',
-        base({
-          id: 'drainingKiss',
-          name: 'DRAINING KISS',
-          type: 'fairy',
-          rarity: 'rare',
-          effects: [{ kind: 'lifesteal', amount: 10, percent: 75 }],
-        }),
-        dmgView(10, 'neutral', false, 1),
-      ),
-      scenario(
-        'Switch',
-        base({
-          id: 'uTurn',
-          name: 'U-TURN',
-          type: 'bug',
-          category: 'physical',
-          cost: 2,
-          rarity: 'rare',
-          effects: [{ kind: 'damage', amount: 14 }, { kind: 'freeSwitch' }],
-        }),
-        dmgView(14, 'neutral', false, 1),
-      ),
-      scenario(
-        'Sleep status',
-        base({
-          id: 'spore',
-          name: 'SPORE',
-          type: 'grass',
-          kind: 'SKL',
-          category: 'status',
-          cost: 2,
-          rarity: 'epic',
-          effects: [{ kind: 'applyStatus', target: 'foe', status: 'sleep', stacks: 3 }],
-        }),
-        { cardId: 'spore', cost: 2, affordable: true },
-      ),
-      scenario(
-        'Paralyze status',
-        base({
-          id: 'thunderWave',
-          name: 'THUNDER WAVE',
-          type: 'electric',
-          kind: 'SKL',
-          category: 'status',
-          rarity: 'rare',
-          effects: [{ kind: 'applyStatus', target: 'foe', status: 'paralyze', stacks: 3 }],
-        }),
-        { cardId: 'thunderWave', cost: 1, affordable: true },
-      ),
-
-      // ── Stacked keywords ─────────────────────────────────────────────────────────
-      scenario(
-        'STAB + Crit + Recoil',
-        base({
-          id: 'flareBlitz',
-          name: 'FLARE BLITZ',
-          category: 'physical',
-          cost: 3,
-          rarity: 'rare',
-          effects: [
-            { kind: 'damage', amount: 26, critBoost: 1, recoilPercent: 33 },
-            { kind: 'applyStatus', target: 'foe', status: 'burn', stacks: 1 },
-          ],
-        }),
-        dmgView(26, 'neutral', true, 1.5),
-      ),
-      scenario(
-        'STAB + SUPER + Lifesteal',
-        base({
-          id: 'gigaDrain',
-          name: 'GIGA DRAIN',
-          type: 'grass',
-          cost: 2,
-          rarity: 'rare',
-          effects: [{ kind: 'lifesteal', amount: 16, percent: 50 }],
-        }),
-        dmgView(16, 'super', true, 1.5 * 2),
-      ),
-      scenario(
-        'Quad-stack chaos',
-        base({
-          id: 'demo',
-          name: 'CHAOS PUNCH',
-          type: 'fighting',
-          category: 'physical',
-          cost: 3,
-          rarity: 'epic',
-          effects: [
-            { kind: 'lifesteal', amount: 20, percent: 50, critBoost: 2, recoilPercent: 25 },
-            { kind: 'applyStatus', target: 'foe', status: 'burn', stacks: 2 },
-          ],
-        }),
-        dmgView(20, 'super', true, 1.5 * 2),
-      ),
-
-      // ── Card-kind aura: Exhaust ──────────────────────────────────────────────────
-      scenario(
-        'Exhaust (BALL)',
-        base({
-          id: 'ultraBall',
-          name: 'ULTRA BALL',
-          type: 'normal',
-          kind: 'BALL',
-          category: 'status',
-          cost: 2,
-          rarity: 'rare',
-          effects: [{ kind: 'capture', ballTier: 'ultra' }],
-        }),
-        { cardId: 'ultraBall', cost: 2, affordable: true, capturePercent: 62 },
-      ),
-      scenario(
-        'Exhaust (ITEM)',
-        base({
-          id: 'hyperPotion',
-          name: 'HYPER POTION',
-          type: 'normal',
-          kind: 'ITEM',
-          category: 'status',
-          cost: 2,
-          rarity: 'rare',
-          effects: [{ kind: 'heal', amount: 60 }],
-        }),
-        { cardId: 'hyperPotion', cost: 2, affordable: true },
-      ),
-
-      // ── Unaffordable + disabled treatment ────────────────────────────────────────
-      scenario(
-        'Unaffordable',
-        base({ id: 'doubleKick', name: 'DOUBLE KICK', cost: 2, category: 'physical' }),
-        { ...dmgView(14, 'neutral', false, 1), affordable: false },
-      ),
-    ];
-
-    return (
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
-          gap: 24,
-          padding: 16,
-        }}
-      >
-        {scenarios.map((s) => (
-          <div key={s.title} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-            <div
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: 8,
-                color: 'var(--text-light)',
-                textAlign: 'center',
-                letterSpacing: '0.5px',
-              }}
-            >
-              {s.title}
-            </div>
-            <Card card={s.card} view={s.view} />
-          </div>
-        ))}
-      </div>
-    );
-  },
-};
 
 /**
  * The full starter pool from `src/data/cards.ts`, side-by-side. Useful for spotting layout
