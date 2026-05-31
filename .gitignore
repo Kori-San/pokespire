@@ -48,3 +48,11 @@ npm-debug.log*
 # 🔑 Local-only scratch (e.g. the design-reference bundle)
 # ─────────────────────────────────────────────────────────────
 tmp/
+
+# ─────────────────────────────────────────────────────────────
+# 🐉 Pokémon sprite cache — ~33 MB of Gen-5 BW animated PNGs
+# fetched at runtime from PokéAPI / Showdown CDN. Don't bloat the
+# repo: each contributor's `npm run fetch-pokedex` populates this
+# locally, the service worker caches them per user.
+# ─────────────────────────────────────────────────────────────
+public/sprites/pokemon/
