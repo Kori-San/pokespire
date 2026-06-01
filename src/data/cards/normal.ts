@@ -27,13 +27,15 @@ export const NORMAL_CARDS: CardDef[] = [
     id: 'extremeSpeed',
     name: 'EXTREME SPEED',
     type: 'normal',
-    cost: 0,
+    cost: 1,
     kind: 'ATK',
     category: 'physical',
     rarity: 'rare',
-    // Canon priority +2 — outruns even other priority +1 moves.
+    // Canon priority +2 — outruns even other priority +1 moves. Canon power 80 (vs
+    // Quick Attack's 40) → we mirror with double Quick Attack's damage + a 1-energy
+    // cost so priority +2 isn't a free auto-include.
     priority: 2,
-    effects: [{ kind: 'damage', amount: 9 }],
+    effects: [{ kind: 'damage', amount: 12 }],
   },
   {
     id: 'hyperVoice',
