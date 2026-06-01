@@ -328,6 +328,9 @@
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
@@ -398,6 +401,9 @@
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
@@ -464,7 +470,8 @@
   padding: 3px;
   /* Six-stop conic with HARD breakpoints (each 60° wedge is a single colour)
    * — reads as hexagonal-cut gem facets. The light / mid / deep mix is built
-   * off `--card-type` so the chrome stays type-coherent. */
+   * off `--card-type` so the chrome stays type-coherent. Static angle — the
+   * shine effect lives on `::after` so the facet structure doesn't spin. */
   background: conic-gradient(
     from 30deg,
     color-mix(in srgb, var(--card-type) 30%, white) 0deg 60deg,
@@ -477,10 +484,58 @@
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
+  /* Brightness pulse — the facets periodically catch the light. */
   animation: tera-twinkle 3.6s ease-in-out infinite;
+}
+
+/* Diagonal shine streak — a bright band sweeps top-left → bottom-right across the
+ * card every 4 s. `::after` overlay so it lives ABOVE the conic border + body and
+ * inherits the card's `border-radius: 8px` clipping. `background-size: 250% 250%`
+ * positions the band off-canvas at start and end, with `background-position`
+ * animating the diagonal travel — no rotation, no transform, just the streak
+ * sliding through. */
+.card[data-theme='tera']::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  background: linear-gradient(
+    115deg,
+    transparent 38%,
+    rgba(255, 255, 255, 0.5) 50%,
+    transparent 62%
+  );
+  background-size: 250% 250%;
+  /* `background-repeat` defaults to `repeat`, which tiles the gradient and
+   * shows multiple bright streaks as the position animates — `no-repeat` keeps
+   * exactly one streak visible per cycle. */
+  background-repeat: no-repeat;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  animation: tera-shine 6s ease-in-out infinite;
+}
+
+@keyframes tera-shine {
+  /* One slow sweep over the first ~62 % of the 4 s cycle (~2.5 s travel), then
+   * parks off-screen for the remaining ~1.5 s. Reads as a deliberate gleam
+   * traveling across the gem, not a flash. Entry biased slightly upward (Y
+   * starts at 150 % instead of 200 %, exits at -150 %) — gives a gentle
+   * diagonal tilt without lifting the streak off the visible card area. */
+  0% {
+    background-position: 200% 150%;
+  }
+  62% {
+    background-position: -100% -150%;
+  }
+  100% {
+    background-position: -100% -150%;
+  }
 }
 
 @keyframes tera-twinkle {
@@ -494,7 +549,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .card[data-theme='tera']::before {
+  .card[data-theme='tera']::before,
+  .card[data-theme='tera']::after {
     animation: none;
   }
 }
