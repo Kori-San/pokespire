@@ -27,31 +27,49 @@ function pokemon(overrides: Partial<Combatant> = {}): Combatant {
   };
 }
 
-// Canonical 6v6 opening — six allies, six foes, a real intent on the active foe.
-// Stories drive bg/weather via controls instead of duplicating the state per variant.
-const charmander = pokemon({
+// Canonical 6v6 opening — six allies that span gens + form variants to exercise
+// sprite resolution + i18n: Gen-5 starter, Gen-1 mid-evo, Gen-6 Mega form, Gen-3
+// single-type, Gen-6 dual-type, and a Rotom appliance form (Gen-4).
+const tepig = pokemon({
+  speciesId: 498,
+  name: 'Tepig',
+  speciesSlug: 'tepig',
+  types: ['fire'],
   statuses: [
     { id: 'burn', stacks: 1 },
     { id: 'weak', stacks: 1 },
   ],
 });
-const squirtle = pokemon({
-  speciesId: 7,
-  name: 'Squirtle',
-  speciesSlug: 'squirtle',
-  types: ['water'],
-  baseStats: { hp: 44, atk: 48, def: 65, spAtk: 50, spDef: 64, spd: 43 },
+const pidgeotto = pokemon({
+  speciesId: 17,
+  name: 'Pidgeotto',
+  speciesSlug: 'pidgeotto',
+  types: ['normal', 'flying'],
 });
-const bulbasaur = pokemon({
-  speciesId: 1,
-  name: 'Bulbasaur',
-  speciesSlug: 'bulbasaur',
-  types: ['grass', 'poison'],
-  baseStats: { hp: 45, atk: 49, def: 49, spAtk: 65, spDef: 65, spd: 45 },
+const mawileMega = pokemon({
+  speciesId: 303,
+  name: 'Mawile-Mega',
+  speciesSlug: 'mawile-mega',
+  types: ['steel', 'fairy'],
 });
-const pikachu = pokemon({ speciesId: 25, name: 'Pikachu', types: ['electric'] });
-const eevee = pokemon({ speciesId: 133, name: 'Eevee', types: ['normal'] });
-const pidgey = pokemon({ speciesId: 16, name: 'Pidgey', types: ['normal', 'flying'] });
+const absol = pokemon({
+  speciesId: 359,
+  name: 'Absol',
+  speciesSlug: 'absol',
+  types: ['dark'],
+});
+const greninja = pokemon({
+  speciesId: 658,
+  name: 'Greninja',
+  speciesSlug: 'greninja',
+  types: ['water', 'dark'],
+});
+const rotomFrost = pokemon({
+  speciesId: 479,
+  name: 'Rotom-Frost',
+  speciesSlug: 'rotom-frost',
+  types: ['electric', 'ice'],
+});
 
 const rattata = pokemon({
   speciesId: 19,
@@ -111,7 +129,7 @@ const machop = pokemon({
 
 const canonical: CombatState = {
   ...createCombat({
-    team: [charmander, squirtle, bulbasaur, pikachu, eevee, pidgey],
+    team: [tepig, pidgeotto, mawileMega, absol, greninja, rotomFrost],
     enemy: rattata,
     deck: STARTER_DECK,
     seed: 7,
@@ -176,7 +194,7 @@ export const Defeat: Story = {
 export const LegendaryFoe: Story = {
   args: {
     state: createCombat({
-      team: [charmander, squirtle, bulbasaur, pikachu, eevee, pidgey],
+      team: [tepig, pidgeotto, mawileMega, absol, greninja, rotomFrost],
       enemy: pokemon({
         speciesId: 150,
         name: 'Mewtwo',

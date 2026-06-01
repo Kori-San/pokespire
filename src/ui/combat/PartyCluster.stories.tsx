@@ -24,12 +24,46 @@ function pokemon(overrides: Partial<Combatant> = {}): Combatant {
   };
 }
 
-const charmander = pokemon({ statuses: [{ id: 'burn', stacks: 1 }] });
-const squirtle = pokemon({ speciesId: 7, name: 'Squirtle', types: ['water'] });
-const bulbasaur = pokemon({ speciesId: 1, name: 'Bulbasaur', types: ['grass', 'poison'] });
-const pikachu = pokemon({ speciesId: 25, name: 'Pikachu', types: ['electric'] });
-const eevee = pokemon({ speciesId: 133, name: 'Eevee', types: ['normal'] });
-const pidgey = pokemon({ speciesId: 16, name: 'Pidgey', types: ['normal', 'flying'] });
+// Diverse ally roster to exercise sprite resolution + i18n across gens and form
+// variants: a Gen-5 starter, a Gen-1 mid-evo, a Gen-6 Mega form, a single-type Gen-3
+// mon, a Gen-6 dual-type, and a Rotom appliance form (Gen-4).
+const tepig = pokemon({
+  speciesId: 498,
+  name: 'Tepig',
+  speciesSlug: 'tepig',
+  types: ['fire'],
+  statuses: [{ id: 'burn', stacks: 1 }],
+});
+const pidgeotto = pokemon({
+  speciesId: 17,
+  name: 'Pidgeotto',
+  speciesSlug: 'pidgeotto',
+  types: ['normal', 'flying'],
+});
+const mawileMega = pokemon({
+  speciesId: 303,
+  name: 'Mawile-Mega',
+  speciesSlug: 'mawile-mega',
+  types: ['steel', 'fairy'],
+});
+const absol = pokemon({
+  speciesId: 359,
+  name: 'Absol',
+  speciesSlug: 'absol',
+  types: ['dark'],
+});
+const greninja = pokemon({
+  speciesId: 658,
+  name: 'Greninja',
+  speciesSlug: 'greninja',
+  types: ['water', 'dark'],
+});
+const rotomFrost = pokemon({
+  speciesId: 479,
+  name: 'Rotom-Frost',
+  speciesSlug: 'rotom-frost',
+  types: ['electric', 'ice'],
+});
 
 const rattata = pokemon({
   speciesId: 19,
@@ -47,7 +81,12 @@ const spearow = pokemon({
   maxHp: 26,
   hp: 26,
 });
-const zubat = pokemon({ speciesId: 41, name: 'Zubat', types: ['poison', 'flying'] });
+const zubat = pokemon({
+  speciesId: 41,
+  name: 'Zubat',
+  speciesSlug: 'zubat',
+  types: ['poison', 'flying'],
+});
 const ekans = pokemon({
   speciesId: 23,
   name: 'Ekans',
@@ -55,10 +94,20 @@ const ekans = pokemon({
   types: ['poison'],
   statuses: [{ id: 'paralyze', stacks: 1 }],
 });
-const sandshrew = pokemon({ speciesId: 27, name: 'Sandshrew', types: ['ground'] });
-const machop = pokemon({ speciesId: 66, name: 'Machop', types: ['fighting'] });
+const sandshrew = pokemon({
+  speciesId: 27,
+  name: 'Sandshrew',
+  speciesSlug: 'sandshrew',
+  types: ['ground'],
+});
+const machop = pokemon({
+  speciesId: 66,
+  name: 'Machop',
+  speciesSlug: 'machop',
+  types: ['fighting'],
+});
 
-const allyTeam = [charmander, squirtle, bulbasaur, pikachu, eevee, pidgey];
+const allyTeam = [tepig, pidgeotto, mawileMega, absol, greninja, rotomFrost];
 const foeTeam = [rattata, spearow, zubat, ekans, sandshrew, machop];
 
 const meta = {
@@ -113,6 +162,6 @@ export const Enemy: Story = {
       { kind: 'attack', amount: 12, targetIndex: 2 },
       { kind: 'attack', amount: 6, targetIndex: 0 },
     ],
-    intentTargets: [charmander, undefined, squirtle, charmander, bulbasaur, charmander],
+    intentTargets: [tepig, undefined, pidgeotto, tepig, mawileMega, tepig],
   },
 };

@@ -64,8 +64,12 @@
 
 .spriteWrap {
   position: relative;
+  /* Canonical BW battle-slot footprint — sized for the largest mons (Mega forms,
+   * legendaries, Greninja-class) at their native resolution. Smaller mons (Pidgey,
+   * Tepig, etc.) anchor to the bottom via `align-items: flex-end` and naturally
+   * read as small, matching their in-game silhouette. */
   width: 96px;
-  height: 64px;
+  height: 96px;
   display: flex;
   align-items: flex-end;
   justify-content: center;

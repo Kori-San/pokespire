@@ -48,9 +48,12 @@ interface PartyClusterProps {
  * "their first row is most forwarded, third is 2nd most forwarded".
  */
 
-// Compact slot footprint — just sprite + thin HP bar (name/level live in the topbar).
+// Slot footprint — sprite (96 sq) + HP bar (~14) + room for an enemy intent
+// badge floating above (~22) on enemy clusters. Width is the slot width's
+// natural footprint; height is what we need to clear so neighbouring rows'
+// intent badges + HP bars don't crash into each other.
 const SLOT_W = 100;
-const SLOT_H = 80;
+const SLOT_H = 130;
 
 // Within-row gap between col 0 and col 1.
 const COL_GAP = 20;
@@ -58,9 +61,9 @@ const COL0_X = 0;
 const COL1_X = SLOT_W + COL_GAP; // 120
 
 // Row Y positions — rows breathe apart so adjacent sprites don't visually glue
-// together. Row 1 sits at the cluster's top, row 3 is 150 px down (was 110 — the
-// spread adds 20 px between row 1↔2 and another 20 px between row 2↔3).
-const ROW_Y = [0, 75, 150] as const;
+// together. Stride matches SLOT_H so a row's HP bar / intent badge sits cleanly
+// above the next row's sprite.
+const ROW_Y = [0, 130, 260] as const;
 
 // Per-row "forward" shift (toward the enemy for player; mirrored for enemy).
 //   row 1 (top): slight forward
@@ -89,7 +92,7 @@ const PLAYER_POSITIONS: readonly { x: number; y: number }[] = [
 
 // Cluster bounds — widest x + slot, tallest y + slot.
 export const CLUSTER_W = COL1_X + ROW_SHIFT[2] + SLOT_W; // 260
-export const CLUSTER_H = ROW_Y[2] + SLOT_H; // 205
+export const CLUSTER_H = ROW_Y[2] + SLOT_H; // 390
 
 // Enemy slots = 180° rotation of player slots about the cluster centre. This
 // automatically lifts the "most forward" row from bottom to top of the cluster
