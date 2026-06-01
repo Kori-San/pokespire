@@ -207,7 +207,11 @@ export function applyEffect(
       return state;
     }
     case 'freeSwitch': {
-      return { ...state, freeSwitch: true };
+      // Effect kind keeps its data-side name (`freeSwitch`) for now — touching every
+      // card data file gets folded into a later phase. The runtime behaviour now
+      // arms the switch-combo discount state machine instead of waiving a switch
+      // energy cost (switching is always free).
+      return { ...state, comboDiscount: 'pending' };
     }
     case 'capture': {
       const target = activeEnemyOf(state);

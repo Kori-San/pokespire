@@ -153,11 +153,20 @@ export interface CombatState {
    */
   enemyActed: boolean;
   /**
-   * When true, the NEXT SWITCH this turn skips its 1-energy cost. Set by `freeSwitch`
-   * effect cards (U-Turn, Volt Switch, …); consumed by the reducer's switch path. Resets
-   * at end of turn — the bonus never carries into the next turn.
+   * Switch-combo discount state machine. Switching is now always free; this flag
+   * tracks the U-Turn-class "hit and run" payoff instead.
+   *
+   *   - `'inactive'` (default) — nothing in flight.
+   *   - `'pending'`            — a comboDiscount-flagged card just resolved
+   *                              (U-Turn / Volt Switch / Flip Turn). Waiting for the
+   *                              player to switch active mons this turn.
+   *   - `'armed-for-next-card'`— the player switched while `'pending'`. The next
+   *                              card played this turn costs 1 less energy
+   *                              (floor 0). Consumed on first paid play.
+   *
+   * Reset to `'inactive'` at end of turn — combo never carries between turns.
    */
-  freeSwitch: boolean;
+  comboDiscount: 'inactive' | 'pending' | 'armed-for-next-card';
   log: string[];
 }
 

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { Combatant, CombatState, PokeType } from '@/types';
 import { EMPTY_STAGES, activeEnemyOf } from '@/types';
 import { STARTER_DECK } from '@/data/cards';
-import { combatReducer, createCombat, HAND_SIZE, START_ENERGY } from './reducer';
+import { combatReducer, createCombat, handSizeFor, maxEnergyFor } from './reducer';
 
 function mon(overrides: Partial<Combatant> = {}): Combatant {
   return {
@@ -24,6 +24,12 @@ function mon(overrides: Partial<Combatant> = {}): Combatant {
   };
 }
 
+// Default fixture uses a 1-mon team so legacy switch / energy assertions stay
+// readable. Tests that need a bigger team override `team` explicitly + dial
+// energy/maxEnergy from `maxEnergyFor(teamSize)`.
+const SOLO_ENERGY = maxEnergyFor(1);
+const SOLO_HAND = handSizeFor(1);
+
 function state(overrides: Partial<CombatState> = {}): CombatState {
   return {
     team: [mon()],
@@ -31,8 +37,8 @@ function state(overrides: Partial<CombatState> = {}): CombatState {
     enemies: [mon({ name: 'foe', speciesId: 2 })],
     enemyActiveIndex: 0,
     enemyIntent: { kind: 'attack', amount: 10, targetIndex: 0 },
-    energy: START_ENERGY,
-    maxEnergy: START_ENERGY,
+    energy: SOLO_ENERGY,
+    maxEnergy: SOLO_ENERGY,
     hand: [],
     draw: [],
     discard: [],
@@ -42,7 +48,7 @@ function state(overrides: Partial<CombatState> = {}): CombatState {
     rngState: 123,
     outcome: 'ongoing',
     enemyActed: false,
-    freeSwitch: false,
+    comboDiscount: 'inactive',
     log: [],
     ...overrides,
   };
@@ -51,11 +57,19 @@ function state(overrides: Partial<CombatState> = {}): CombatState {
 describe('createCombat', () => {
   it('deals an opening hand and sets up the turn', () => {
     const s = createCombat({ team: [mon()], enemy: mon(), deck: STARTER_DECK, seed: 7 });
-    expect(s.hand).toHaveLength(HAND_SIZE);
-    expect(s.energy).toBe(START_ENERGY);
+    expect(s.hand).toHaveLength(SOLO_HAND);
+    expect(s.energy).toBe(SOLO_ENERGY);
     expect(s.outcome).toBe('ongoing');
     expect(s.enemyIntent).toBeDefined();
     expect(s.turn).toBe(1);
+  });
+
+  it('scales hand size + max energy with team size', () => {
+    const sixMon = Array.from({ length: 6 }, (_, i) => mon({ name: `m${String(i)}` }));
+    const s = createCombat({ team: sixMon, enemy: mon(), deck: STARTER_DECK, seed: 7 });
+    expect(s.hand).toHaveLength(8); // 5 + ⌊6/2⌋
+    expect(s.energy).toBe(8); // min(8, 2 + 6)
+    expect(s.maxEnergy).toBe(8);
   });
 
   it('is deterministic for the same seed', () => {
@@ -69,7 +83,7 @@ describe('combatReducer — PLAY_CARD', () => {
   it('plays a damage card, paying energy and hurting the enemy', () => {
     const s = state({ hand: ['tackle'] });
     const out = combatReducer(s, { type: 'PLAY_CARD', handIndex: 0 });
-    expect(out.energy).toBe(START_ENERGY - 1);
+    expect(out.energy).toBe(SOLO_ENERGY - 1);
     expect(activeEnemyOf(out).hp).toBeLessThan(100);
     expect(out.hand).toEqual([]);
     expect(out.discard).toEqual(['tackle']);
@@ -97,11 +111,12 @@ describe('combatReducer — PLAY_CARD', () => {
 });
 
 describe('combatReducer — SWITCH', () => {
-  it('switches active, pays energy, and resets the outgoing block', () => {
+  it('switches active, never costs energy, and resets the outgoing block', () => {
     const s = state({ team: [mon({ block: 6 }), mon({ name: 'b' })] });
     const out = combatReducer(s, { type: 'SWITCH', teamIndex: 1 });
     expect(out.activeIndex).toBe(1);
-    expect(out.energy).toBe(START_ENERGY - 1);
+    // Switch is free — energy unchanged.
+    expect(out.energy).toBe(SOLO_ENERGY);
     expect(out.team[0]?.block).toBe(0);
   });
 
@@ -111,19 +126,27 @@ describe('combatReducer — SWITCH', () => {
     expect(out).toBe(s);
   });
 
-  it('a pending freeSwitch waives the 1-energy switch cost (consumed once)', () => {
+  it('arms the next-card discount when switching after a comboDiscount card resolved', () => {
+    // Pretend U-Turn just resolved → comboDiscount === 'pending'. Switch → armed.
     const s = state({
       team: [mon(), mon({ name: 'b' }), mon({ name: 'c' })],
-      energy: 0,
-      freeSwitch: true,
+      comboDiscount: 'pending',
+      hand: ['tackle'], // tackle costs 1
     });
+    const switched = combatReducer(s, { type: 'SWITCH', teamIndex: 1 });
+    expect(switched.activeIndex).toBe(1);
+    expect(switched.comboDiscount).toBe('armed-for-next-card');
+    // Now play tackle — should pay 0 energy (1 base - 1 discount).
+    const played = combatReducer(switched, { type: 'PLAY_CARD', handIndex: 0 });
+    expect(played.energy).toBe(switched.energy); // no energy spent
+    expect(played.comboDiscount).toBe('inactive'); // discount consumed
+  });
+
+  it('switch alone (no pending discount) leaves the combo machine unchanged', () => {
+    const s = state({ team: [mon(), mon({ name: 'b' })] });
+    expect(s.comboDiscount).toBe('inactive');
     const out = combatReducer(s, { type: 'SWITCH', teamIndex: 1 });
-    expect(out.activeIndex).toBe(1);
-    expect(out.energy).toBe(0);
-    // Bonus consumed — the next switch this turn pays the normal cost.
-    expect(out.freeSwitch).toBe(false);
-    const next = combatReducer(out, { type: 'SWITCH', teamIndex: 2 });
-    expect(next.activeIndex).toBe(1);
+    expect(out.comboDiscount).toBe('inactive');
   });
 
   it('resets the outgoing mon stat-stages to zero on switch-out', () => {
@@ -145,8 +168,8 @@ describe('combatReducer — END_TURN', () => {
     });
     const out = combatReducer(s, { type: 'END_TURN' });
     expect(out.team[0]?.hp).toBeLessThan(100);
-    expect(out.hand).toHaveLength(HAND_SIZE);
-    expect(out.energy).toBe(START_ENERGY);
+    expect(out.hand).toHaveLength(SOLO_HAND);
+    expect(out.energy).toBe(SOLO_ENERGY);
     expect(out.turn).toBe(2);
   });
 

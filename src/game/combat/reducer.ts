@@ -14,9 +14,19 @@ import { drawCards, shuffle } from './deck';
 import { rollIntent } from './intent';
 import { tickStatuses } from './statusTick';
 
-export const HAND_SIZE = 5;
-export const START_ENERGY = 3;
-export const SWITCH_COST = 1;
+const BASE_HAND_SIZE = 5;
+const BASE_MAX_ENERGY = 2; // teamSize 1 → 3; teamSize 6 → 8 (capped by MAX_ENERGY_CEILING)
+const MAX_ENERGY_CEILING = 8;
+
+/** Hand size scales with team — 5 base, +1 every 2 mons. Solo=5, full party=8. */
+export function handSizeFor(teamSize: number): number {
+  return BASE_HAND_SIZE + Math.floor(teamSize / 2);
+}
+
+/** Max energy scales with team — +1 per mon, capped at 8. Solo=3, full party=8. */
+export function maxEnergyFor(teamSize: number): number {
+  return Math.min(MAX_ENERGY_CEILING, BASE_MAX_ENERGY + teamSize);
+}
 
 function activeOf(state: CombatState): Combatant {
   const mon = state.team[state.activeIndex];
@@ -44,15 +54,17 @@ export interface CreateCombatOptions {
 export function createCombat(opts: CreateCombatOptions): CombatState {
   const rng = rngFrom(opts.seed);
   const shuffled = shuffle(opts.deck, rng.next);
-  const piles = drawCards({ draw: shuffled, hand: [], discard: [] }, HAND_SIZE, rng.next);
+  const handSize = handSizeFor(opts.team.length);
+  const maxEnergy = maxEnergyFor(opts.team.length);
+  const piles = drawCards({ draw: shuffled, hand: [], discard: [] }, handSize, rng.next);
   const fresh: CombatState = {
     team: opts.team,
     activeIndex: 0,
     enemies: [opts.enemy],
     enemyActiveIndex: 0,
     enemyIntent: rollIntent(opts.enemy, rng.next),
-    energy: START_ENERGY,
-    maxEnergy: START_ENERGY,
+    energy: maxEnergy,
+    maxEnergy,
     hand: piles.hand,
     draw: piles.draw,
     discard: piles.discard,
@@ -62,7 +74,7 @@ export function createCombat(opts: CreateCombatOptions): CombatState {
     rngState: rng.state,
     outcome: 'ongoing',
     enemyActed: false,
-    freeSwitch: false,
+    comboDiscount: 'inactive',
     log: [],
   };
   return maybeEnemyGoesFirst(fresh, rng);
@@ -84,7 +96,11 @@ function playCard(state: CombatState, handIndex: number): CombatState {
   const id = state.hand[handIndex];
   if (id === undefined) return state;
   const card = CARDS[id];
-  if (!card || state.energy < card.cost) return state;
+  if (!card) return state;
+  // Switch-combo discount: U-Turn-class card → switch → next card costs 1 less.
+  const discount = state.comboDiscount === 'armed-for-next-card' ? 1 : 0;
+  const cost = Math.max(0, card.cost - discount);
+  if (state.energy < cost) return state;
   // Recharge: per-mon counter locks ATK cards while > 0. Hyper Beam sets it to 2 so
   // the lockout covers the rest of this turn + all of next turn (ticks at end of turn).
   const attacker = state.team[state.activeIndex];
@@ -94,10 +110,13 @@ function playCard(state: CombatState, handIndex: number): CombatState {
   const rng = rngFrom(state.rngState);
   let s: CombatState = {
     ...state,
-    energy: state.energy - card.cost,
+    energy: state.energy - cost,
     hand: state.hand.filter((_, i) => i !== handIndex),
     discard: exhausts ? state.discard : [...state.discard, id],
     exhaust: exhausts ? [...state.exhaust, id] : state.exhaust,
+    // Burn the discount once consumed; otherwise leave state alone (a `pending`
+    // discount stays pending if the player plays a card before switching).
+    comboDiscount: discount > 0 ? 'inactive' : state.comboDiscount,
   };
   for (const effect of card.effects) {
     s = applyEffect(s, effect, card, rng.next);
@@ -110,9 +129,6 @@ function switchTo(state: CombatState, teamIndex: number): CombatState {
   if (teamIndex === state.activeIndex) return state;
   const target = state.team[teamIndex];
   if (!target || target.hp <= 0) return state;
-  // A pending freeSwitch (U-Turn-style) waives the energy cost for this one switch.
-  const cost = state.freeSwitch ? 0 : SWITCH_COST;
-  if (state.energy < cost) return state;
   // Outgoing mon loses block and resets stat-stages (canon: stages don't persist on bench).
   const team = state.team.map((mon, i) =>
     i === state.activeIndex ? { ...mon, block: 0, stages: { ...EMPTY_STAGES } } : mon,
@@ -121,8 +137,9 @@ function switchTo(state: CombatState, teamIndex: number): CombatState {
     ...state,
     team,
     activeIndex: teamIndex,
-    energy: state.energy - cost,
-    freeSwitch: false,
+    // Promote a pending combo-discount into armed-for-the-next-card. Switching after
+    // any other state keeps the machine where it was (free switches don't consume it).
+    comboDiscount: state.comboDiscount === 'pending' ? 'armed-for-next-card' : state.comboDiscount,
   };
 }
 
@@ -224,7 +241,7 @@ function startTurn(state: CombatState, rng: SeededRng): CombatState {
   const team = state.team.map((mon, i) => (i === state.activeIndex ? { ...mon, block: 0 } : mon));
   const piles = drawCards(
     { draw: state.draw, hand: state.hand, discard: state.discard },
-    HAND_SIZE,
+    handSizeFor(state.team.length),
     rng.next,
   );
   const next: CombatState = {
@@ -235,7 +252,7 @@ function startTurn(state: CombatState, rng: SeededRng): CombatState {
     ...piles,
     turn: state.turn + 1,
     enemyActed: false,
-    freeSwitch: false,
+    comboDiscount: 'inactive',
   };
   return maybeEnemyGoesFirst(next, rng);
 }
