@@ -8,6 +8,7 @@ function pokemon(overrides: Partial<Combatant> = {}): Combatant {
   return {
     speciesId: 4,
     name: 'Charmander',
+    speciesSlug: 'charmander',
     types: ['fire'],
     level: 5,
     baseStats: { hp: 39, atk: 52, def: 43, spAtk: 60, spDef: 50, spd: 65 },
@@ -33,6 +34,7 @@ const pidgey = pokemon({ speciesId: 16, name: 'Pidgey', types: ['normal', 'flyin
 const rattata = pokemon({
   speciesId: 19,
   name: 'Rattata',
+  speciesSlug: 'rattata',
   types: ['normal'],
   maxHp: 28,
   hp: 28,
@@ -40,6 +42,7 @@ const rattata = pokemon({
 const spearow = pokemon({
   speciesId: 21,
   name: 'Spearow',
+  speciesSlug: 'spearow',
   types: ['normal', 'flying'],
   maxHp: 26,
   hp: 26,
@@ -48,6 +51,7 @@ const zubat = pokemon({ speciesId: 41, name: 'Zubat', types: ['poison', 'flying'
 const ekans = pokemon({
   speciesId: 23,
   name: 'Ekans',
+  speciesSlug: 'ekans',
   types: ['poison'],
   statuses: [{ id: 'paralyze', stacks: 1 }],
 });

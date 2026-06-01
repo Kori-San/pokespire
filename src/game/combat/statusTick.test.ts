@@ -8,6 +8,7 @@ function mon(statuses: StatusInstance[], hp = 100): Combatant {
   return {
     speciesId: 0,
     name: 'test',
+    speciesSlug: 'test',
     types: ['normal'],
     level: 5,
     baseStats: { hp: 100, atk: 50, def: 50, spAtk: 50, spDef: 50, spd: 50 },

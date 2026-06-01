@@ -6,6 +6,7 @@ import { rollIntent } from './intent';
 const enemy: Combatant = {
   speciesId: 19,
   name: 'Rattata',
+  speciesSlug: 'rattata',
   types: ['normal'],
   level: 10,
   baseStats: { hp: 30, atk: 56, def: 35, spAtk: 25, spDef: 35, spd: 72 },

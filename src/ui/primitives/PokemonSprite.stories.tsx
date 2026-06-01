@@ -7,6 +7,7 @@ function fakePokemon(overrides: Partial<Combatant> = {}): Combatant {
   return {
     speciesId: 4,
     name: 'Charmander',
+    speciesSlug: 'charmander',
     types: ['fire'],
     level: 5,
     baseStats: { hp: 39, atk: 52, def: 43, spAtk: 60, spDef: 50, spd: 65 },
@@ -41,6 +42,7 @@ export const Legendary: Story = {
     pokemon: fakePokemon({
       speciesId: 150,
       name: 'Mewtwo',
+      speciesSlug: 'mewtwo',
       types: ['psychic'],
       level: 70,
       baseStats: { hp: 106, atk: 110, def: 90, spAtk: 154, spDef: 90, spd: 130 },

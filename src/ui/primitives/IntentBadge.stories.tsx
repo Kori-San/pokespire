@@ -6,6 +6,7 @@ import { IntentBadge } from './IntentBadge';
 const target: Combatant = {
   speciesId: 4,
   name: 'Charmander',
+  speciesSlug: 'charmander',
   types: ['fire'],
   level: 5,
   baseStats: { hp: 39, atk: 52, def: 43, spAtk: 60, spDef: 50, spd: 65 },

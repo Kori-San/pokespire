@@ -11,18 +11,19 @@ interface PokemonSpriteProps {
 }
 
 /**
- * A Pokémon's vendored BW-animated sprite with a name + level chip below. Falls back to
- * the missingno GIF if the species/form has no asset on disk yet. Uses `pokemon.name`
- * lowercased as the form id — fine for Gen 1 base forms; multi-form species (mega / Gmax
- * / regional) will need a `formId` field on Combatant when those land.
+ * A Pokémon's vendored BW sprite with a name + level chip below. Resolves via
+ * `pokemon.speciesSlug` against the generated `SPRITE_INDEX` (animated → static
+ * fallback inside the resolver). Display name flows through the `pokemonNames:`
+ * locale namespace so the FR build renders Salamèche / Bulbizarre / etc.
  *
- * The fallback strategy tracks which specific URL failed so the component recovers
+ * The `onError` retry tracks which specific URL failed so the component recovers
  * automatically when the Pokémon changes — we never get stuck on missingno after one
  * bad load.
  */
 export function PokemonSprite({ pokemon, facing = 'front' }: PokemonSpriteProps) {
   const { t } = useTranslation();
-  const intended = spriteUrl(pokemon.name.toLowerCase(), { facing, shiny: pokemon.shiny });
+  const displayName = t(`pokemonNames:${pokemon.speciesSlug}`, { defaultValue: pokemon.name });
+  const intended = spriteUrl(pokemon.speciesSlug, { facing, shiny: pokemon.shiny });
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
   const src = failedSrc === intended ? FALLBACK_SPRITE : intended;
 
@@ -31,13 +32,13 @@ export function PokemonSprite({ pokemon, facing = 'front' }: PokemonSpriteProps)
       <img
         className={styles.sprite}
         src={src}
-        alt={pokemon.name}
+        alt={displayName}
         onError={() => {
           setFailedSrc(intended);
         }}
       />
       <figcaption className={styles.nameplate}>
-        <span className={styles.name}>{pokemon.name}</span>
+        <span className={styles.name}>{displayName}</span>
         <span className={styles.level}>{t('mon.level', { level: pokemon.level })}</span>
       </figcaption>
     </figure>

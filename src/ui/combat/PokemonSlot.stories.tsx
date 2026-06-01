@@ -8,6 +8,7 @@ function pokemon(overrides: Partial<Combatant> = {}): Combatant {
   return {
     speciesId: 4,
     name: 'Charmander',
+    speciesSlug: 'charmander',
     types: ['fire'],
     level: 5,
     baseStats: { hp: 39, atk: 52, def: 43, spAtk: 60, spDef: 50, spd: 65 },
@@ -27,6 +28,7 @@ const charmander = pokemon();
 const rattata = pokemon({
   speciesId: 19,
   name: 'Rattata',
+  speciesSlug: 'rattata',
   types: ['normal'],
   maxHp: 28,
   hp: 28,

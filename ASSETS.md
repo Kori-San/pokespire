@@ -27,7 +27,7 @@ Three 32×14 PNGs. Refresh: re-download from the URLs above into
 Custom battlefield backgrounds for each biome — pixel art, 16:9, no characters, wide
 open foreground compatible with the StS-style multi-mon cluster layout. Vendored
 locally instead of pulling Showdown's CDN bgs because Showdown's are composition-baked
-for two diagonal mounds (one mon per side), which fights our 1–6 vs 1–6 scene.
+for two diagonal mounds (one mon per side), which fights our 1-6 vs 1-6 scene.
 
 | Path                                  | Source                                               | Refresh |
 | ------------------------------------- | ---------------------------------------------------- | ------- |
@@ -37,30 +37,42 @@ for two diagonal mounds (one mon per side), which fights our 1–6 vs 1–6 scen
 | `public/sprites/bg/meadow-night.png`  | Authored by [@Kori-San](https://github.com/Kori-San) | manual  |
 
 v0 only ships the meadow biome (four time-of-day variants). Future biomes append to
-`src/data/battleBackgrounds.ts` as their assets are generated.
+`src/data/battleBackgrounds.ts` as their assets land.
 
-## Held-item icons
+## Pokémon sprites + items + trainers (vendored from Pokémon Showdown)
 
-24×24 item icons from the Pokémon Showdown CDN, used by the relic strip on the battle stage.
+Three scripts vendor the bulk of the runtime asset payload — sprites, species stats,
+localized names. The shipped app reads only local files, never hits Showdown or PokéAPI.
 
-| Path                                   | Source                                                                                                     | Refresh |
-| -------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ------- |
-| `public/sprites/items/leftovers.png`   | [Pokémon Showdown — `leftovers.png`](https://play.pokemonshowdown.com/sprites/itemicons/leftovers.png)     | manual  |
-| `public/sprites/items/flame-plate.png` | [Pokémon Showdown — `flame-plate.png`](https://play.pokemonshowdown.com/sprites/itemicons/flame-plate.png) | manual  |
-| `public/sprites/items/choice-band.png` | [Pokémon Showdown — `choice-band.png`](https://play.pokemonshowdown.com/sprites/itemicons/choice-band.png) | manual  |
-| `public/sprites/items/leppa-berry.png` | [Pokémon Showdown — `leppa-berry.png`](https://play.pokemonshowdown.com/sprites/itemicons/leppa-berry.png) | manual  |
-| `public/sprites/items/poke-ball.png`   | [Pokémon Showdown — `poke-ball.png`](https://play.pokemonshowdown.com/sprites/itemicons/poke-ball.png)     | manual  |
+| Path                                              | Source                                                                                                | Refresh                 |
+| ------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------- |
+| `public/sprites/pokemon/animated[-back][-shiny]/` | [Pokémon Showdown — `gen5ani` buckets](https://play.pokemonshowdown.com/sprites/gen5ani/)             | `npm run fetch-sprites` |
+| `public/sprites/pokemon/static[-back][-shiny]/`   | [Pokémon Showdown — `gen5` buckets](https://play.pokemonshowdown.com/sprites/gen5/)                   | `npm run fetch-sprites` |
+| `public/sprites/pokemon/fallback/missingno.gif`   | _Missingno Sprite_ by [RetroNC](https://www.deviantart.com/retronc) on DeviantArt — fan work          | manual                  |
+| `public/sprites/items/*.png`                      | [Pokémon Showdown — `itemicons/`](https://play.pokemonshowdown.com/sprites/itemicons/)                | `npm run fetch-sprites` |
+| `public/sprites/trainers/*.png`                   | [Pokémon Showdown — `trainers/`](https://play.pokemonshowdown.com/sprites/trainers/)                  | `npm run fetch-sprites` |
+| `src/data/pokedex.ts`                             | [Showdown `data/pokedex.json`](https://play.pokemonshowdown.com/data/pokedex.json) + PokéAPI gap-fill | `npm run fetch-pokedex` |
+| `src/data/speciesIndex.ts`                        | [Showdown `sprites/index.js`](https://play.pokemonshowdown.com/sprites/index.js)                      | `npm run fetch-sprites` |
+| `src/locales/{en,fr}/pokemonNames.json`           | [PokéAPI](https://pokeapi.co/) `/pokemon-species/{id}/names`                                          | `npm run fetch-pokedex` |
 
-Refresh: re-download from the URLs above into `public/sprites/items/`. Track new items
-by adding a row here in the same commit that introduces the file.
+The sprite resolver ([`src/services/sprites.ts`](src/services/sprites.ts)) reads
+`SPRITE_INDEX` and resolves each species to the best-available local file:
+**animated > static > missingno**. We stay strictly in the BW art style (no HOME
+3D-render mixing) — if a species lacks both the animated GIF and static PNG, it
+falls through to `missingno.gif` rather than swapping aesthetics.
 
-## Fallback sprites
+Coverage at last fetch: **1240 species** indexed (Gen 1-8 + Pokestar Studios + canon
+form variants; CAP and Gen 9 filtered out). Animated tier covers ~82%, static fallback
+~11%, missing ~7% (mostly Gen-8 Galarian forms with no community sprite yet). Run
+`npm run audit-coverage` for a current per-species report.
 
-| Path                                    | Source                                                                                       | Refresh |
-| --------------------------------------- | -------------------------------------------------------------------------------------------- | ------- |
-| `public/sprites/fallback/missingno.gif` | _Missingno Sprite_ by [RetroNC](https://www.deviantart.com/retronc) on DeviantArt — fan work | manual  |
+`fetch-sprites` also consults four [Smogon BW Sprite Project](https://docs.google.com/spreadsheets/d/1Gn0UORn-unvcbUeQhQdEBz0ADNcH49BZZqQ1dpXm9eo/)
+tracker sheets and downloads any community sprite Showdown's CDN hasn't synced yet —
+gap-closing happens automatically.
 
-Served by the sprite resolver when a species/form has no vendored animated sprite.
+Licence: Showdown sprites are community-contributed under the [Smogon BW Sprite
+Project's published terms](https://www.smogon.com/forums/threads/3669764/) (free
+non-commercial use). PokéAPI data is [CC-BY-SA 4.0](https://pokeapi.co/about).
 
 ## Fonts
 

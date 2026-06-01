@@ -7,6 +7,7 @@ function mon(overrides: Partial<Combatant> = {}): Combatant {
   return {
     speciesId: 1,
     name: 'mon',
+    speciesSlug: 'mon',
     types: ['normal'],
     level: 10,
     baseStats: { hp: 100, atk: 75, def: 75, spAtk: 75, spDef: 75, spd: 75 },

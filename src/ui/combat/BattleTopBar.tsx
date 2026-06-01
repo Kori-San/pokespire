@@ -76,17 +76,19 @@ export function BattleTopBar({ active, gold, potions, onSettings }: BattleTopBar
 }
 
 function ActivePortrait({ active }: { active: Combatant | null }) {
+  const { t } = useTranslation();
   const [failed, setFailed] = useState<string | null>(null);
   if (!active) return <div className={styles.portraitFrame} aria-hidden />;
 
-  const intended = spriteUrl(active.name.toLowerCase(), { facing: 'front', shiny: active.shiny });
+  const displayName = t(`pokemonNames:${active.speciesSlug}`, { defaultValue: active.name });
+  const intended = spriteUrl(active.speciesSlug, { facing: 'front', shiny: active.shiny });
   const src = failed === intended ? FALLBACK_SPRITE : intended;
   return (
     <div className={styles.portraitFrame}>
       <img
         className={styles.portrait}
         src={src}
-        alt={active.name}
+        alt={displayName}
         onError={() => {
           setFailed(intended);
         }}
@@ -97,12 +99,13 @@ function ActivePortrait({ active }: { active: Combatant | null }) {
 
 function ActiveStats({ active }: { active: Combatant }) {
   const { t } = useTranslation();
+  const displayName = t(`pokemonNames:${active.speciesSlug}`, { defaultValue: active.name });
   const ratio = active.maxHp > 0 ? Math.max(0, Math.min(1, active.hp / active.maxHp)) : 0;
   const tier = ratio > 0.5 ? 'high' : ratio > 0.2 ? 'mid' : 'low';
   return (
     <div className={styles.activeInfo}>
       <span className={styles.activeName}>
-        {active.name} · {t('mon.level', { level: active.level })}
+        {displayName} · {t('mon.level', { level: active.level })}
       </span>
       <div className={styles.activeHpRow}>
         <div className={styles.activeHpBar}>

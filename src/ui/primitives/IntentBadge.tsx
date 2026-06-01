@@ -22,13 +22,16 @@ interface IntentBadgeProps {
  */
 export function IntentBadge({ intent, target }: IntentBadgeProps) {
   const { t } = useTranslation();
+  const targetName = target
+    ? t(`pokemonNames:${target.speciesSlug}`, { defaultValue: target.name })
+    : '';
   const targetSprite =
     target && intent.kind !== 'defend' ? (
       <img
         className={styles.target}
-        src={spriteUrl(target.name.toLowerCase(), { facing: 'front', shiny: target.shiny })}
-        alt={target.name}
-        aria-label={`Target: ${target.name}`}
+        src={spriteUrl(target.speciesSlug, { facing: 'front', shiny: target.shiny })}
+        alt={targetName}
+        aria-label={`Target: ${targetName}`}
       />
     ) : null;
 

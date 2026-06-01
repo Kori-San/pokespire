@@ -71,7 +71,8 @@ export function PokemonSlot({
 
   const fainted = pokemon.hp <= 0;
   const clickable = onClick !== undefined && !active && !fainted;
-  const intended = spriteUrl(pokemon.name.toLowerCase(), { facing: 'front', shiny: pokemon.shiny });
+  const displayName = t(`pokemonNames:${pokemon.speciesSlug}`, { defaultValue: pokemon.name });
+  const intended = spriteUrl(pokemon.speciesSlug, { facing: 'front', shiny: pokemon.shiny });
   const src = failedSrc === intended ? FALLBACK_SPRITE : intended;
 
   const hpRatio = pokemon.maxHp > 0 ? Math.max(0, Math.min(1, pokemon.hp / pokemon.maxHp)) : 0;
@@ -102,7 +103,7 @@ export function PokemonSlot({
         onClick={handleClick}
         role={role}
         tabIndex={tabIndex}
-        aria-label={pokemon.name}
+        aria-label={displayName}
       >
         {/* Enemy intent telegraph — pinned above the sprite. Carries the target
          *  Combatant so the badge can show the targeted ally's mini sprite. */}
@@ -115,7 +116,7 @@ export function PokemonSlot({
           <img
             className={styles.sprite}
             src={src}
-            alt={pokemon.name}
+            alt={displayName}
             onError={() => {
               setFailedSrc(intended);
             }}
@@ -181,7 +182,7 @@ export function PokemonSlot({
       <span className={styles.tooltipGroup}>
         <span className={styles.statsBubble} role="tooltip">
           <span className={styles.tooltipTitle}>
-            {pokemon.name} · {t('mon.level', { level: pokemon.level })}
+            {displayName} · {t('mon.level', { level: pokemon.level })}
           </span>
           <span className={styles.tooltipTypes}>
             {pokemon.types.map((type) => (

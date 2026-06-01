@@ -21,6 +21,7 @@ function mon(
   return {
     speciesId: 0,
     name: 'test',
+    speciesSlug: 'test',
     types,
     level,
     baseStats,

@@ -75,6 +75,17 @@ export interface Weather {
 
 export interface Combatant {
   speciesId: number;
+  /**
+   * PokéAPI-style species slug — the identity key used by `SPRITE_INDEX` (sprite
+   * resolution) and `pokemonNames:` locale lookups. Hyphenated form: `'bulbasaur'`,
+   * `'mr-mime'`, `'nidoran-f'`, `'charizard-mega-x'`, `'pokestar-smeargle'`.
+   */
+  speciesSlug: string;
+  /**
+   * English display name. Acts as a fallback when no localized `pokemonNames:` entry
+   * exists for the active language. UI surfaces should prefer
+   * `t('pokemonNames:' + speciesSlug, { defaultValue: name })`.
+   */
   name: string;
   types: PokeType[];
   level: number;

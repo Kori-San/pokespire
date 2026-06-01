@@ -45,18 +45,19 @@ interface PartyTileProps {
 function PartyTile({ mon, active, onClick }: PartyTileProps) {
   const { t } = useTranslation();
   const fainted = mon.hp <= 0;
-  const intended = spriteUrl(mon.name.toLowerCase(), { facing: 'front', shiny: mon.shiny });
+  const displayName = t(`pokemonNames:${mon.speciesSlug}`, { defaultValue: mon.name });
+  const intended = spriteUrl(mon.speciesSlug, { facing: 'front', shiny: mon.shiny });
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
   const src = failedSrc === intended ? FALLBACK_SPRITE : intended;
   const interactive = !!onClick && !active && !fainted;
-  const label = `${mon.name} ${t('mon.level', { level: mon.level })}`;
+  const label = `${displayName} ${t('mon.level', { level: mon.level })}`;
 
   const inner = (
     <>
       <img
         className={styles.sprite}
         src={src}
-        alt={mon.name}
+        alt={displayName}
         onError={() => {
           setFailedSrc(intended);
         }}

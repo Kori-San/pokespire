@@ -8,6 +8,7 @@ function fakeMon(overrides: Partial<Combatant> = {}): Combatant {
   return {
     speciesId: 1,
     name: 'Bulbasaur',
+    speciesSlug: 'bulbasaur',
     types: ['grass'],
     level: 5,
     baseStats: { hp: 45, atk: 49, def: 49, spAtk: 65, spDef: 65, spd: 45 },

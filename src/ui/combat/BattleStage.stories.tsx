@@ -11,6 +11,7 @@ function pokemon(overrides: Partial<Combatant> = {}): Combatant {
   return {
     speciesId: 4,
     name: 'Charmander',
+    speciesSlug: 'charmander',
     types: ['fire'],
     level: 5,
     baseStats: { hp: 39, atk: 52, def: 43, spAtk: 60, spDef: 50, spd: 65 },
@@ -37,12 +38,14 @@ const charmander = pokemon({
 const squirtle = pokemon({
   speciesId: 7,
   name: 'Squirtle',
+  speciesSlug: 'squirtle',
   types: ['water'],
   baseStats: { hp: 44, atk: 48, def: 65, spAtk: 50, spDef: 64, spd: 43 },
 });
 const bulbasaur = pokemon({
   speciesId: 1,
   name: 'Bulbasaur',
+  speciesSlug: 'bulbasaur',
   types: ['grass', 'poison'],
   baseStats: { hp: 45, atk: 49, def: 49, spAtk: 65, spDef: 65, spd: 45 },
 });
@@ -53,6 +56,7 @@ const pidgey = pokemon({ speciesId: 16, name: 'Pidgey', types: ['normal', 'flyin
 const rattata = pokemon({
   speciesId: 19,
   name: 'Rattata',
+  speciesSlug: 'rattata',
   types: ['normal'],
   baseStats: { hp: 30, atk: 56, def: 35, spAtk: 25, spDef: 35, spd: 72 },
   catchRate: 255,
@@ -62,6 +66,7 @@ const rattata = pokemon({
 const spearow = pokemon({
   speciesId: 21,
   name: 'Spearow',
+  speciesSlug: 'spearow',
   types: ['normal', 'flying'],
   baseStats: { hp: 40, atk: 60, def: 30, spAtk: 31, spDef: 31, spd: 70 },
   maxHp: 26,
@@ -70,6 +75,7 @@ const spearow = pokemon({
 const zubat = pokemon({
   speciesId: 41,
   name: 'Zubat',
+  speciesSlug: 'zubat',
   types: ['poison', 'flying'],
   baseStats: { hp: 40, atk: 45, def: 35, spAtk: 30, spDef: 40, spd: 55 },
   maxHp: 25,
@@ -78,6 +84,7 @@ const zubat = pokemon({
 const ekans = pokemon({
   speciesId: 23,
   name: 'Ekans',
+  speciesSlug: 'ekans',
   types: ['poison'],
   baseStats: { hp: 35, atk: 60, def: 44, spAtk: 40, spDef: 54, spd: 55 },
   maxHp: 27,
@@ -86,6 +93,7 @@ const ekans = pokemon({
 const sandshrew = pokemon({
   speciesId: 27,
   name: 'Sandshrew',
+  speciesSlug: 'sandshrew',
   types: ['ground'],
   baseStats: { hp: 50, atk: 75, def: 85, spAtk: 20, spDef: 30, spd: 40 },
   maxHp: 32,
@@ -94,6 +102,7 @@ const sandshrew = pokemon({
 const machop = pokemon({
   speciesId: 66,
   name: 'Machop',
+  speciesSlug: 'machop',
   types: ['fighting'],
   baseStats: { hp: 70, atk: 80, def: 50, spAtk: 35, spDef: 35, spd: 35 },
   maxHp: 35,
@@ -171,6 +180,7 @@ export const LegendaryFoe: Story = {
       enemy: pokemon({
         speciesId: 150,
         name: 'Mewtwo',
+        speciesSlug: 'mewtwo',
         types: ['psychic'],
         level: 70,
         baseStats: { hp: 106, atk: 110, def: 90, spAtk: 154, spDef: 90, spd: 130 },

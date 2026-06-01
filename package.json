@@ -14,6 +14,8 @@
     "lint": "eslint . --max-warnings 0",
     "knip": "knip",
     "fetch-pokedex": "node scripts/fetch-pokedex.mjs",
+    "fetch-sprites": "node scripts/fetch-sprites.mjs",
+    "audit-coverage": "node scripts/audit-coverage.mjs",
     "format": "prettier --write .",
     "storybook": "storybook dev -p 6006 --no-open",
     "build-storybook": "storybook build",
