@@ -43,6 +43,8 @@ npm-debug.log*
 # 🤖 Claude Code
 # ─────────────────────────────────────────────────────────────
 .claude/settings.local.json
+.claude/*.lock
+.claude/scheduled_tasks.lock
 
 # ─────────────────────────────────────────────────────────────
 # 🔑 Local-only scratch (e.g. the design-reference bundle)
