@@ -127,177 +127,36 @@ async function downloadOnce(url, dest) {
 }
 
 /**
- * Convert a Showdown SPECIES entry into its sprite filename stem.
- *   "Bulbasaur"           → "bulbasaur"
- *   "Bulbasaur*"          → "bulbasaur"            (the `*` only marks gender-distinct; stripped here)
- *   "Nidoran-F"           → "nidoranf"
- *   "Mr. Mime"            → "mrmime"
- *   "Ho-Oh"               → "hooh"
- *   "Charizard-Mega-X"    → "charizard-mega-x"     (form hyphen preserved)
- *   "Farfetch'd-Galar"    → "farfetchd-galar"
- *   "Type: Null"          → "typenull"
- *   "Tapu Koko"           → "tapukoko"
+ * Convert a Showdown SPECIES entry into its sprite filename stem, looking up the
+ * `baseSpecies` + `forme` fields from Showdown's own pokedex.json so we don't have
+ * to maintain a hand-rolled form-suffix allowlist. Showdown's filename rule (verified
+ * against the live directory):
  *
- * Rule: strip the gender-distinct marker, then split off any recognized form
- * suffix, squash base name (drop non-alphanumeric), keep `-form` suffix verbatim.
+ *   - No `forme`: filename = `toID(name)` — every non-alphanumeric char dropped.
+ *       "Ho-Oh"      → "hooh"
+ *       "Mr. Mime"   → "mrmime"
+ *       "Bulbasaur*" → "bulbasaur"  (`*` is the gender-distinct marker, stripped)
+ *       "Nidoran-F"  → "nidoranf"
+ *       "Type: Null" → "typenull"
+ *       "Tapu Koko"  → "tapukoko"
+ *   - With `forme`: filename = `toID(baseSpecies) + "-" + toID(forme)`.
+ *       "Charizard-Mega-X" → "charizard-megax"     (Mega-X squashes to megax)
+ *       "Rotom-Frost"      → "rotom-frost"
+ *       "Arceus-Bug"       → "arceus-bug"
+ *       "Urshifu-Rapid-Strike" → "urshifu-rapidstrike"
  */
-const FORM_SUFFIXES = [
-  'mega-x',
-  'mega-y',
-  'mega',
-  'primal',
-  'gmax',
-  'alola',
-  'galar',
-  'hisui',
-  'paldea',
-  'paldea-combat',
-  'paldea-blaze',
-  'paldea-aqua',
-  'libre',
-  'cosplay',
-  'rock-star',
-  'belle',
-  'pop-star',
-  'phd',
-  'original',
-  'hoenn',
-  'sinnoh',
-  'unova',
-  'kalos',
-  'alola-cap',
-  'partner',
-  'starter',
-  'world',
-  'therian',
-  'crowned',
-  'origin',
-  'sky',
-  'resolute',
-  'pirouette',
-  'eternamax',
-  'dawn-wings',
-  'dusk-mane',
-  'ultra',
-  'ash',
-  'pom-pom',
-  'pa’u',
-  'sensu',
-  'midnight',
-  'dusk',
-  'school',
-  'zen',
-  'galar-zen',
-  'blade',
-  'sandy',
-  'trash',
-  'sunshine',
-  'east',
-  'sunny',
-  'rainy',
-  'snowy',
-  'attack',
-  'defense',
-  'speed',
-  'complete',
-  '10',
-  'antique',
-  'low-key',
-  'low-key-gmax',
-  'hangry',
-  'noice',
-  'busted',
-  'total',
-  'rubycream',
-  'matchacream',
-  'mintcream',
-  'lemoncream',
-  'saltedcream',
-  'rubyswirl',
-  'caramelswirl',
-  'rainbowswirl',
-  'caramel',
-  'lemon',
-  'matcha',
-  'mint',
-  'rainbow',
-  'ruby',
-  'salted',
-  'pokeball',
-  'fancy',
-  'archipelago',
-  'continental',
-  'elegant',
-  'garden',
-  'highplains',
-  'icysnow',
-  'jungle',
-  'marine',
-  'modern',
-  'monsoon',
-  'ocean',
-  'polar',
-  'river',
-  'sandstorm',
-  'savanna',
-  'sun',
-  'tundra',
-  'large',
-  'small',
-  'super',
-  'gulping',
-  'gorging',
-  'three-segment',
-  'eternal',
-  'blue',
-  'orange',
-  'red',
-  'yellow',
-  'white',
-  'green',
-  'indigo',
-  'violet',
-  'meteor',
-  'core',
-  'red-striped',
-  'blue-striped',
-  'white-striped',
-  'red-meteor',
-  'orange-meteor',
-  'yellow-meteor',
-  'green-meteor',
-  'blue-meteor',
-  'indigo-meteor',
-  'violet-meteor',
-  'incarnate',
-  'spiky-eared',
-  'dandy',
-  'debutante',
-  'diamond',
-  'heart',
-  'kabuki',
-  'lareine',
-  'matron',
-  'pharaoh',
-  'star',
-];
+function toID(s) {
+  return s.toLowerCase().replace(/[^a-z0-9]/g, '');
+}
 
-function spriteIdFromSpeciesName(rawName) {
-  // Drop gender-distinct marker.
+function spriteIdFromSpeciesName(rawName, pokedex) {
   const name = rawName.replace(/\*+$/, '');
-  // Try each known form suffix, longest first.
-  const lower = name.toLowerCase();
-  const sortedSuffixes = [...FORM_SUFFIXES].sort((a, b) => b.length - a.length);
-  for (const suffix of sortedSuffixes) {
-    const needle = `-${suffix}`;
-    if (lower.endsWith(needle)) {
-      const base = name.slice(0, name.length - needle.length);
-      const baseId = base.toLowerCase().replace(/[^a-z0-9]/g, '');
-      return `${baseId}-${suffix}`;
-    }
+  const key = toID(name);
+  const entry = pokedex[key];
+  if (entry?.forme && entry?.baseSpecies) {
+    return `${toID(entry.baseSpecies)}-${toID(entry.forme)}`;
   }
-  // No form suffix — squash the whole name.
-  return name.toLowerCase().replace(/[^a-z0-9]/g, '');
+  return key;
 }
 
 /** Same logic but yields the PokéAPI slug (every word hyphenated). Mirrors fetch-pokedex.mjs. */
@@ -453,7 +312,7 @@ async function main() {
     work.push({
       rawName,
       slug: pokeApiSlug(rawName),
-      stem: spriteIdFromSpeciesName(rawName),
+      stem: spriteIdFromSpeciesName(rawName, pokedex),
       female: rawName.endsWith('*'),
       dexId: entry?.num ?? 0,
     });
@@ -461,6 +320,38 @@ async function main() {
   console.log(`  ${work.length} after CAP filter${ONLY ? ' + --only' : ''}`);
 
   const smogonSheets = await loadSmogonSheets();
+
+  // Sheet-only species — entries the Smogon BW Sprite Project tracks but that
+  // Showdown's SPECIES list hasn't picked up (Urshifu styles, Zorua / Zoroark
+  // Hisui, late SwSh DLC, Paradox mons, etc.). For these we have no Showdown
+  // bucket URL, but the smogon-sheet step further down already knows how to
+  // pull forum-attachment URLs — we just need to make sure the species is in
+  // `work[]` so it's considered. Derive stems the same way as Showdown-sourced
+  // species (base + squashed forme) for filename consistency.
+  const existingSlugs = new Set(work.map((w) => w.slug));
+  let sheetOnlyAdded = 0;
+  for (const [slug, sheet] of smogonSheets) {
+    if (existingSlugs.has(slug)) continue;
+    if (ONLY && !ONLY.has(slug)) continue;
+    if (!sheet.front && !sheet.back) continue; // no usable URL at all
+    // Split on first hyphen — base is `urshifu`, formParts is ['rapid', 'strike'];
+    // squashed forme is `rapidstrike`. Single-word slugs (no hyphen) stay verbatim.
+    const [base, ...formParts] = slug.split('-');
+    const stem = formParts.length ? `${base ?? slug}-${formParts.join('')}` : slug;
+    work.push({
+      rawName: slug,
+      slug,
+      stem,
+      female: false,
+      dexId: 0,
+      sheetOnly: true,
+    });
+    existingSlugs.add(slug);
+    sheetOnlyAdded++;
+  }
+  if (sheetOnlyAdded > 0) {
+    console.log(`  +${sheetOnlyAdded} sheet-only species (Showdown SPECIES doesn't list them)`);
+  }
 
   // Make local folders.
   await mkdir(`${POKEMON_DIR}/fallback`, { recursive: true });
@@ -496,35 +387,19 @@ async function main() {
 
   // Build (item) tasks: every (species, variant) pair, plus the female alt where applicable.
   // Showdown's female suffix is `-f` (hyphenated): pikachu-f.gif, not pikachuf.gif.
-  // For mega-x / mega-y forms, Showdown's naming is inconsistent across species — some
-  // ship `name-mega-x.gif`, others `name-megax.gif`, others both. We try both and the
-  // tracker picks the one that 200s.
+  // The stem already encodes Showdown's canonical naming (forme squashed, base separated
+  // by a single hyphen) via pokedex.json — no alt-stem fallback needed.
   const tasks = [];
-  const megaXSquashedStem = (stem) =>
-    stem.endsWith('-mega-x') ? `${stem.slice(0, -7)}-megax` : null;
-  const megaYSquashedStem = (stem) =>
-    stem.endsWith('-mega-y') ? `${stem.slice(0, -7)}-megay` : null;
   for (const w of work) {
     for (const v of variants) {
       tasks.push({ ...w, ...v, suffix: '' });
       if (w.female) tasks.push({ ...w, ...v, suffix: '-f' });
-      // Mega-X / Mega-Y squashed-form fallback — emitted alongside the hyphenated form;
-      // whichever returns 200 wins, the other 404s silently.
-      const megaXAlt = megaXSquashedStem(w.stem);
-      const megaYAlt = megaYSquashedStem(w.stem);
-      if (megaXAlt) tasks.push({ ...w, ...v, suffix: '', altStem: megaXAlt });
-      if (megaYAlt) tasks.push({ ...w, ...v, suffix: '', altStem: megaYAlt });
     }
   }
 
   await plimit(tasks, CONCURRENCY, async (t) => {
-    // `altStem` is the alternate naming attempt (e.g., `-megax` instead of `-mega-x`).
-    // The output filename always uses the canonical hyphenated stem so the resolver
-    // doesn't need to know about Showdown's inconsistency.
-    const remoteStem = t.altStem ?? t.stem;
-    const remoteFilename = `${remoteStem}${t.suffix}.${t.ext}`;
     const filename = `${t.stem}${t.suffix}.${t.ext}`;
-    const url = `${SD}/${t.bucket}/${remoteFilename}`;
+    const url = `${SD}/${t.bucket}/${filename}`;
     const dest = `${POKEMON_DIR}/${t.folder}/${filename}`;
     const existed = !FORCE && (await fileExists(dest));
     const ok = existed ? true : await downloadOnce(url, dest);
@@ -535,9 +410,8 @@ async function main() {
       else if (t.bucket === 'gen5ani') tierByStem.set(t.stem, 'animated');
       else if (t.bucket === 'gen5' && !tierByStem.has(t.stem))
         tierByStem.set(t.stem, 'static');
-    } else if (t.suffix !== '-f' && !t.altStem) {
-      // Only count base-variant 404s — female 404s and alt-stem 404s are expected
-      // when the species's canonical naming sticks to the hyphenated form.
+    } else if (t.suffix !== '-f') {
+      // Only count base-variant 404s — female 404s are expected for non-dimorphic species.
       misses++;
     }
     if ((downloads + misses + skips) % 200 === 0) {
