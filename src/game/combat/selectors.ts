@@ -23,10 +23,9 @@ export function effectiveCardFor(card: CardDef, active: Combatant): CardDef {
   // G-Max signature: replaces match-type ATKs for the base species.
   const gmax = GMAX_MOVES[active.dynamax.prevSlug];
   if (gmax && card.kind === 'ATK' && card.type === gmax.matchType) return gmax.card;
-  // Generic Max moves.
+  // Generic Max moves: ATK → typed Max move, SKL / PWR → universal Max Guard.
   if (card.kind === 'ATK') return MAX_MOVES[card.type];
-  if (card.kind === 'SKL' || card.kind === 'PWR') return MAX_GUARD;
-  return card;
+  return MAX_GUARD;
 }
 
 /** Type-effectiveness magnitude — drives the damage number's color/vibe. Independent of STAB. */

@@ -17,8 +17,6 @@ import { DRAGON_CARDS } from './dragon';
 import { DARK_CARDS } from './dark';
 import { STEEL_CARDS } from './steel';
 import { FAIRY_CARDS } from './fairy';
-import { BALL_CARDS } from './balls';
-import { ITEM_CARDS } from './items';
 import { SPECIAL_CARDS } from './special';
 import { MAX_CARDS } from './maxMoves';
 import { GMAX_CARDS } from './gmaxMoves';
@@ -51,8 +49,6 @@ export const CARDS: Record<string, CardDef> = Object.fromEntries(
     ...DARK_CARDS,
     ...STEEL_CARDS,
     ...FAIRY_CARDS,
-    ...BALL_CARDS,
-    ...ITEM_CARDS,
     ...SPECIAL_CARDS,
     // Synthetic Max / G-Max cards — never in reward pools or starter decks, but
     // registered here so the reducer / selectors can resolve their ids when the active
@@ -63,15 +59,12 @@ export const CARDS: Record<string, CardDef> = Object.fromEntries(
 );
 
 /**
- * Cards that leave for the exhaust pile when played (StS-style one-shot per combat).
- * Source of truth for both the reducer's routing AND the card UI's `(Exhausts.)` tag —
- * keep them in sync.
+ * True when a card should leave for the exhaust pile on play (StS-style one-shot per
+ * combat). Now driven entirely by the per-card `exhaust` flag — the kind-based routing
+ * (BALL / ITEM) went away with the inventory redesign.
  */
-const EXHAUST_KINDS = new Set<CardDef['kind']>(['BALL', 'ITEM']);
-
-/** True when a card should leave for the exhaust pile on play instead of the discard. */
 export function exhaustsOnPlay(card: CardDef): boolean {
-  return card.exhaust === true || EXHAUST_KINDS.has(card.kind);
+  return card.exhaust === true;
 }
 
 /** True when the card vanishes from the RUN's deck after use (one-shot-per-run). */
@@ -181,7 +174,12 @@ export function keywordsOf(card: CardDef, ctx: KeywordContext = {}): Keyword[] {
   return k;
 }
 
-/** The universal opening deck — same for every starter, spanning multiple types. */
+/**
+ * The opening deck for every run until Phase 3 replaces this with a per-species starter
+ * DSL (see [planning/05_inventory-redesign.md]). Captures now live in the trainer's
+ * inventory (`RunState.inventory.balls`), so the deck is moves-only — Phase 2 drops the
+ * `pokeBall` line that used to seed every deck with a capture card.
+ */
 export const STARTER_DECK: string[] = [
   'tackle',
   'tackle',
@@ -193,5 +191,4 @@ export const STARTER_DECK: string[] = [
   'harden',
   'growl',
   'focusEnergy',
-  'pokeBall',
 ];

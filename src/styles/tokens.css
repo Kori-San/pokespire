@@ -58,11 +58,6 @@
   --type-steel: #b8b8d0;
   --type-fairy: #ee99ac;
 
-  /* Card-kind tints — used by BALL and ITEM cards instead of a Pokémon type color.
-   * These sit OUTSIDE the 18-type palette so capture cards and consumables stand out. */
-  --card-ball: #d8262f; /* Poké Ball red */
-  --card-item: #e8a86b; /* potion amber */
-
   --font-display: 'Press Start 2P', monospace;
   --font-body: 'Pixelify Sans', monospace;
 

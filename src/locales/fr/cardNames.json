@@ -115,20 +115,6 @@
   "mistyTerrain": "CHAMP BRUMEUX",
   "drainingKiss": "VAMPIBAISER",
 
-  "pokeBall": "POKÉ BALL",
-  "greatBall": "SUPER BALL",
-  "ultraBall": "HYPER BALL",
-  "masterBall": "MASTER BALL",
-
-  "potion": "POTION",
-  "superPotion": "SUPER POTION",
-  "hyperPotion": "HYPER POTION",
-  "maxPotion": "POTION MAX",
-  "xAttack": "ATTAQUE +",
-  "xDefend": "DÉFENSE +",
-  "xSpeed": "VITESSE +",
-  "direHit": "CRITIK +",
-
   "maxGuard": "GARDE MAX",
   "maxStrike": "NORMALOMAX",
   "maxFlare": "PYROMAX",

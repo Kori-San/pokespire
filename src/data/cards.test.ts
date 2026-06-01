@@ -8,19 +8,18 @@ describe('CARDS', () => {
     }
   });
 
-  it('BALL cards carry a capture effect', () => {
-    const ballCards = Object.values(CARDS).filter((c) => c.kind === 'BALL');
-    expect(ballCards.length).toBeGreaterThan(0);
-    for (const card of ballCards) {
-      expect(card.effects.some((e) => e.kind === 'capture')).toBe(true);
-    }
-  });
-
   it('includes at least one weather card', () => {
     const hasWeather = Object.values(CARDS).some((c) =>
       c.effects.some((e) => e.kind === 'weather'),
     );
     expect(hasWeather).toBe(true);
+  });
+
+  it('no card carries a capture effect anymore — captures live in the inventory layer', () => {
+    const captureCards = Object.values(CARDS).filter((c) =>
+      c.effects.some((e) => e.kind === 'capture'),
+    );
+    expect(captureCards).toHaveLength(0);
   });
 });
 
@@ -31,7 +30,10 @@ describe('STARTER_DECK', () => {
     }
   });
 
-  it('contains a capture ball', () => {
-    expect(STARTER_DECK.some((id) => CARDS[id]?.kind === 'BALL')).toBe(true);
+  it('contains no BALL or ITEM cards — those moved to the inventory layer', () => {
+    for (const id of STARTER_DECK) {
+      const kind = CARDS[id]?.kind;
+      expect(kind === 'ATK' || kind === 'SKL' || kind === 'PWR').toBe(true);
+    }
   });
 });

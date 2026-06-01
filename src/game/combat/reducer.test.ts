@@ -95,17 +95,10 @@ describe('combatReducer — PLAY_CARD', () => {
     expect(out).toBe(s);
   });
 
-  it('exhausts BALL cards on play (one-shot, not redrawable this combat)', () => {
-    const s = state({ hand: ['pokeBall'] });
+  it('exhausts cards flagged `exhaust: true` (e.g. Mega Evolve / Dynamax) on play', () => {
+    const s = state({ hand: ['megaEvolve'], team: [mon({ speciesSlug: 'charizard' })] });
     const out = combatReducer(s, { type: 'PLAY_CARD', handIndex: 0 });
-    expect(out.exhaust).toEqual(['pokeBall']);
-    expect(out.discard).toEqual([]);
-  });
-
-  it('exhausts ITEM cards on play', () => {
-    const s = state({ hand: ['potion'], team: [mon({ hp: 50 })] });
-    const out = combatReducer(s, { type: 'PLAY_CARD', handIndex: 0 });
-    expect(out.exhaust).toEqual(['potion']);
+    expect(out.exhaust).toEqual(['megaEvolve']);
     expect(out.discard).toEqual([]);
   });
 });

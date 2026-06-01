@@ -18,9 +18,7 @@
   "kind": {
     "ATK": "ATK",
     "SKL": "SKL",
-    "PWR": "PWR",
-    "BALL": "BALL",
-    "ITEM": "OBJET"
+    "PWR": "PWR"
   },
   "status": {
     "burn": "Brûlure",

@@ -64,11 +64,11 @@ export const Default: Story = {
  *  un-hoverable lift). Distinct visual state, kept as its own story. */
 export const SomeUnaffordable: Story = {
   args: {
-    hand: ['tackle', 'doubleKick', 'greatBall', 'hyperBeam'],
+    hand: ['tackle', 'doubleKick', 'swordsDance', 'hyperBeam'],
     views: [
       viewFor('tackle', { affordable: true }),
       viewFor('doubleKick', { affordable: false }),
-      viewFor('greatBall', { affordable: false }),
+      viewFor('swordsDance', { affordable: false }),
       viewFor('hyperBeam', { affordable: false }),
     ],
   },

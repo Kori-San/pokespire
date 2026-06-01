@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react';
 import type { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import type { CardDef, CardKind, PokeType } from '@/types';
+import type { CardDef, PokeType } from '@/types';
 import { keywordsOf } from '@/data/cards';
 import { selectCardLines, type ComputedCardView, type EffectLine } from '@/game/combat/selectors';
 import { cx } from '@/ui/cx';
@@ -19,13 +19,12 @@ import styles from './Card.module.css';
 const ENERGY_SLOTS = 3;
 
 /**
- * The card's accent color. BALL and ITEM sit outside the 18-type palette (red / amber)
- * so capture and consumable cards read as their own category at a glance; everything
- * else inherits the active Pokémon-type tint.
+ * The card's accent color — always the active Pokémon-type tint. The BALL / ITEM
+ * special-cases went away with the inventory redesign (those cards no longer exist;
+ * captures + consumables live in `RunState.inventory`). Trans-type meta cards (Mega,
+ * Dynamax) use the `theme` field to override the tint chrome entirely.
  */
-function tintVar(kind: CardKind, type: PokeType): string {
-  if (kind === 'BALL') return 'var(--card-ball)';
-  if (kind === 'ITEM') return 'var(--card-item)';
+function tintVar(type: PokeType): string {
   return `var(--type-${type})`;
 }
 
@@ -75,7 +74,7 @@ export function Card({ card, view, onPlay }: CardProps) {
       <button
         type="button"
         className={cx(styles.card, !view.affordable && styles.disabled)}
-        style={{ '--card-type': tintVar(card.kind, card.type) } as CSSProperties}
+        style={{ '--card-type': tintVar(card.type) } as CSSProperties}
         data-theme={card.theme}
         disabled={!view.affordable}
         onClick={onPlay}

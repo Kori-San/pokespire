@@ -62,7 +62,7 @@ const meta = {
 
 export default meta;
 
-const CARD_KINDS = ['ATK', 'SKL', 'PWR', 'BALL', 'ITEM'] as const satisfies readonly CardKind[];
+const CARD_KINDS = ['ATK', 'SKL', 'PWR'] as const satisfies readonly CardKind[];
 const CATEGORIES = ['physical', 'special', 'status'] as const satisfies readonly MoveCategory[];
 const RARITIES = ['common', 'uncommon', 'rare', 'epic'] as const satisfies readonly Rarity[];
 const EFFECT_KINDS = [

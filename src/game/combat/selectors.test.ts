@@ -74,13 +74,6 @@ describe('selectComputedCardView', () => {
     expect(view?.damage?.effectiveness).toBe('immune');
   });
 
-  it('computes capture % for ball cards', () => {
-    const s = state({ hand: ['pokeBall'], enemies: [mon(['grass'], { name: 'foe', hp: 10 })] });
-    const view = selectComputedCardView(s, 0);
-    expect(view?.capturePercent).toBeGreaterThan(0);
-    expect(view?.damage).toBeUndefined();
-  });
-
   it('marks unaffordable cards', () => {
     const view = selectComputedCardView(state({ energy: 0 }), 0);
     expect(view?.affordable).toBe(false);
@@ -89,7 +82,7 @@ describe('selectComputedCardView', () => {
 
 describe('selectHandViews', () => {
   it('returns a view per hand card', () => {
-    const views = selectHandViews(state({ hand: ['ember', 'tackle', 'pokeBall'] }));
+    const views = selectHandViews(state({ hand: ['ember', 'tackle', 'protect'] }));
     expect(views).toHaveLength(3);
   });
 });

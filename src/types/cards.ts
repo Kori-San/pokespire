@@ -3,7 +3,14 @@ import type { Stat, TerrainKind, WeatherKind } from './combat';
 
 export type BallTier = 'poke' | 'great' | 'ultra' | 'master';
 
-export type CardKind = 'ATK' | 'SKL' | 'PWR' | 'BALL' | 'ITEM';
+/**
+ * Canonical Pokémon-card categories. Deck-eligible kinds only — `BALL` and `ITEM`
+ * were removed in the inventory redesign (Pokéballs / Potions / X-Items / Berries
+ * now live in `RunState.inventory`, see [planning/05_inventory-redesign.md]).
+ * The `capture` and `heal` Effect kinds are kept: capture is invoked by the
+ * post-battle prompt, heal is used by canonical healing moves (Recover, …).
+ */
+export type CardKind = 'ATK' | 'SKL' | 'PWR';
 
 /**
  * Pokespire rarity tied to canonical move PP — the rarer it is, the fewer times
