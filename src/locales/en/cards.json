@@ -46,6 +46,16 @@
       "label": "Switch.",
       "desc": "Your next switch this turn costs no energy."
     },
+    "megaEvolve": {
+      "name": "Mega Evolve",
+      "label": "Mega Evolve.",
+      "desc": "Usable only on a Pokémon that can Mega Evolve. Mega Evolving changes the Pokémon's form, stats, and sometimes its types — making it more powerful."
+    },
+    "dynamax": {
+      "name": "Dynamax",
+      "label": "Dynamax.",
+      "desc": "For 3 turns the active Pokémon's max HP is doubled and all its moves become Max Moves. If the Pokémon has a Gigantamax form, it takes that form for the duration."
+    },
     "priority": {
       "name": "Priority",
       "label": "Priority +{{level}}.",

@@ -120,11 +120,14 @@ export function BattleStage({
             activeIndex={state.activeIndex}
             side="left"
             // Compute per-slot "I'm being targeted" counts from the active enemy
-            // intent's targetIndex. defend self-applies → no ally is targeted.
-            // Multi-foe targeting will sum across `state.intents[]` once C2 (B)
-            // grows the per-enemy intent array.
+            // intent's targetIndex. defend / megaEvolve / dynamax self-apply → no ally
+            // is targeted. Multi-foe targeting will sum across `state.intents[]` once
+            // C2 (B) grows the per-enemy intent array.
             targetedBy={state.team.map((_, i) =>
-              state.enemyIntent.kind !== 'defend' && state.enemyIntent.targetIndex === i ? 1 : 0,
+              (state.enemyIntent.kind === 'attack' || state.enemyIntent.kind === 'status') &&
+              state.enemyIntent.targetIndex === i
+                ? 1
+                : 0,
             )}
             {...(switchTo && !isOver && { onSwitch: switchTo })}
           />

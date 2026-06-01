@@ -181,6 +181,101 @@ describe('combatReducer — END_TURN', () => {
     const out = combatReducer(s, { type: 'END_TURN' });
     expect(out.outcome).toBe('lose');
   });
+
+  it('ticks dynamax turnsLeft each turn; reverts at 0 and clamps hp to original maxHp', () => {
+    // Active mon mid-dynamax with 1 turn left. Ending the turn should revert it.
+    const s = state({
+      team: [
+        mon({
+          speciesSlug: 'charizard-gmax',
+          maxHp: 200,
+          hp: 180,
+          dynamax: {
+            turnsLeft: 1,
+            gmax: true,
+            prevSlug: 'charizard',
+            prevTypes: ['fire', 'flying'] as PokeType[],
+            prevBaseStats: { hp: 78, atk: 84, def: 78, spAtk: 109, spDef: 85, spd: 100 },
+            prevMaxHp: 100,
+          },
+        }),
+      ],
+      enemyIntent: { kind: 'defend', amount: 0 },
+      hand: [],
+      draw: Array<string>(10).fill('tackle'),
+    });
+    const out = combatReducer(s, { type: 'END_TURN' });
+    const after = out.team[0]!;
+    expect(after.dynamax).toBeNull();
+    expect(after.speciesSlug).toBe('charizard');
+    expect(after.maxHp).toBe(100);
+    // hp clamps to the lower original max — 180 was over the original cap.
+    expect(after.hp).toBe(100);
+  });
+
+  it("an enemy 'megaEvolve' intent transforms the active enemy on end-of-turn", () => {
+    const s = state({
+      enemies: [
+        mon({
+          name: 'Charizard',
+          speciesSlug: 'charizard',
+          types: ['fire', 'flying'] as PokeType[],
+          baseStats: { hp: 78, atk: 84, def: 78, spAtk: 109, spDef: 85, spd: 100 },
+        }),
+      ],
+      enemyIntent: { kind: 'megaEvolve' },
+      draw: Array<string>(10).fill('tackle'),
+    });
+    const out = combatReducer(s, { type: 'END_TURN' });
+    expect(out.enemies[0]?.speciesSlug).toBe('charizard-mega-x');
+    expect(out.team[0]?.hp).toBe(100); // no damage taken — Mega is self-apply
+  });
+
+  it("an enemy 'dynamax' intent doubles the foe's maxHp and ticks down each turn", () => {
+    const s = state({
+      enemies: [
+        mon({
+          name: 'Pikachu',
+          speciesSlug: 'pikachu',
+          maxHp: 80,
+          hp: 80,
+        }),
+      ],
+      enemyIntent: { kind: 'dynamax' },
+      draw: Array<string>(10).fill('tackle'),
+    });
+    // Turn 1: enemy dynamaxes.
+    const t1 = combatReducer(s, { type: 'END_TURN' });
+    expect(t1.enemies[0]?.maxHp).toBe(160);
+    expect(t1.enemies[0]?.speciesSlug).toBe('pikachu-gmax');
+    // Turn 1 already consumed one tick at end-of-turn (the dynamax was applied this same
+    // end-of-turn, then the tick fires on the next end-of-turn). turnsLeft starts at 3.
+    expect(t1.enemies[0]?.dynamax?.turnsLeft).toBe(3);
+  });
+
+  it('dynamax with turnsLeft > 1 just decrements, no revert', () => {
+    const s = state({
+      team: [
+        mon({
+          dynamax: {
+            turnsLeft: 3,
+            gmax: false,
+            prevSlug: 'mon',
+            prevTypes: ['normal'] as PokeType[],
+            prevBaseStats: { hp: 100, atk: 75, def: 75, spAtk: 75, spDef: 75, spd: 75 },
+            prevMaxHp: 100,
+          },
+          maxHp: 200,
+          hp: 200,
+        }),
+      ],
+      enemyIntent: { kind: 'defend', amount: 0 },
+      draw: Array<string>(10).fill('tackle'),
+    });
+    const out = combatReducer(s, { type: 'END_TURN' });
+    expect(out.team[0]?.dynamax?.turnsLeft).toBe(2);
+    expect(out.team[0]?.maxHp).toBe(200);
+  });
 });
 
 describe('combatReducer — sleep / freeze / paralyze', () => {

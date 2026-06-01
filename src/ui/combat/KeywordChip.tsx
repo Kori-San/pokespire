@@ -1,8 +1,8 @@
-import { Icon } from '@iconify/react';
 import { useTranslation } from 'react-i18next';
 import type { Keyword } from '@/data/cards';
 import { Tooltip, type TooltipPlacement } from '@/ui/primitives/Tooltip';
 import { KEYWORD_VISUAL, keywordLabel, keywordTooltipDesc, keywordTooltipName } from './keywords';
+import { KwIcon } from './KwIcon';
 import styles from './KeywordChip.module.css';
 
 interface KeywordChipProps {
@@ -26,7 +26,7 @@ export function KeywordChip({ keyword: k, tooltipPlacement = 'right' }: KeywordC
       content={
         <span className={styles.tooltipEntry}>
           <span className={styles.tooltipLabel}>
-            <Icon icon={v.icon} className={styles.icon} style={{ color: v.color }} />
+            <KwIcon visual={v} className={styles.icon} />
             {keywordTooltipName(k, t)}
           </span>
           <span className={styles.tooltipDesc}>{keywordTooltipDesc(k, t)}</span>
@@ -34,7 +34,7 @@ export function KeywordChip({ keyword: k, tooltipPlacement = 'right' }: KeywordC
       }
     >
       <span className={styles.chip} data-kind={k.id}>
-        <Icon icon={v.icon} className={styles.icon} style={{ color: v.color }} />
+        <KwIcon visual={v} className={styles.icon} />
         {keywordLabel(k, t)}
       </span>
     </Tooltip>

@@ -44,3 +44,13 @@ export const Status: Story = {
     intent: { kind: 'status', status: { id: 'burn', stacks: 2 }, targetIndex: 0 },
   },
 };
+
+/** Mega Evolve telegraph — boss-tier; rainbow bar + mega mark + "MEGA" label. */
+export const MegaEvolve: Story = {
+  args: { intent: { kind: 'megaEvolve' } },
+};
+
+/** Dynamax telegraph — boss-tier; magenta bar + dmax mark + "DYNAMAX" label. */
+export const Dynamax: Story = {
+  args: { intent: { kind: 'dynamax' } },
+};

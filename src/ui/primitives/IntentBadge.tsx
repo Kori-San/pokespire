@@ -59,5 +59,19 @@ export function IntentBadge({ intent, target }: IntentBadgeProps) {
           {targetSprite}
         </span>
       );
+    case 'megaEvolve':
+      return (
+        <span className={cx(styles.badge, styles.megaEvolve)}>
+          <img src="/sprites/misc/mega.png" alt="" className={styles.markIcon} aria-hidden />
+          <span className={styles.label}>{t('intent.megaEvolve')}</span>
+        </span>
+      );
+    case 'dynamax':
+      return (
+        <span className={cx(styles.badge, styles.dynamax)}>
+          <img src="/sprites/misc/dmax.png" alt="" className={styles.markIcon} aria-hidden />
+          <span className={styles.label}>{t('intent.dynamax')}</span>
+        </span>
+      );
   }
 }

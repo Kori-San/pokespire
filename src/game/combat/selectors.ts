@@ -1,8 +1,33 @@
-import type { CardDef, CombatState, Stat, StatusId, WeatherKind } from '@/types';
+import type { CardDef, Combatant, CombatState, Stat, StatusId, WeatherKind } from '@/types';
 import { activeEnemyOf } from '@/types';
 import { CARDS } from '@/data/cards';
+import { MAX_GUARD, MAX_MOVES } from '@/data/cards/maxMoves';
+import { GMAX_MOVES } from '@/data/cards/gmaxMoves';
 import { calcCaptureChance } from './capture';
 import { calcDamage, type DamageBreakdown } from './damage';
+import { hasMegaForm } from './effects';
+
+/**
+ * The card a Pokémon ACTUALLY plays in the current state. While the active mon is
+ * dynamaxed, every hand card maps to its Max equivalent:
+ *   - ATKs match-typed to the species' G-Max signature (if the species has one) → G-Max card
+ *   - All other ATKs → `MAX_MOVES[card.type]`
+ *   - SKL / PWR → `MAX_GUARD`
+ * When the active mon isn't dynamaxed, the card passes through unchanged. The Dynamax
+ * card itself is never mapped (you play it once to enter the state).
+ */
+export function effectiveCardFor(card: CardDef, active: Combatant): CardDef {
+  if (!active.dynamax) return card;
+  // The Dynamax card itself stays as-is — it's how the state was entered.
+  if (card.effects.some((e) => e.kind === 'dynamax')) return card;
+  // G-Max signature: replaces match-type ATKs for the base species.
+  const gmax = GMAX_MOVES[active.dynamax.prevSlug];
+  if (gmax && card.kind === 'ATK' && card.type === gmax.matchType) return gmax.card;
+  // Generic Max moves.
+  if (card.kind === 'ATK') return MAX_MOVES[card.type];
+  if (card.kind === 'SKL' || card.kind === 'PWR') return MAX_GUARD;
+  return card;
+}
 
 /** Type-effectiveness magnitude — drives the damage number's color/vibe. Independent of STAB. */
 export type Effectiveness = 'super' | 'neutral' | 'resisted' | 'immune';
@@ -53,18 +78,36 @@ export function selectComputedCardView(
 ): ComputedCardView | null {
   const id = state.hand[handIndex];
   if (id === undefined) return null;
-  const card = CARDS[id];
+  const rawCard = CARDS[id];
   const attacker = state.team[state.activeIndex];
-  if (!card || !attacker) return null;
+  if (!rawCard || !attacker) return null;
+  // Dynamax substitutes the hand card with its Max / G-Max equivalent. Every downstream
+  // step (cost, damage preview, affordability, keyword chips, description lines) reads
+  // from the effective card so the UI accurately reflects what will actually play.
+  const card = effectiveCardFor(rawCard, attacker);
 
   // Recharge (Hyper-Beam-style): per-mon counter locks ATK cards while > 0. Status /
   // Ball / Item plays still work. Folds into `affordable: false` so the UI greys ATK
   // cards out the same way an unpayable cost would.
   const rechargeBlocksAttack = attacker.recharge > 0 && card.kind === 'ATK';
+  // Mega Evolution is gated on the active mon having a canonical Mega forme — a Pikachu
+  // can't mega-evolve, so the card greys out the same way an unpayable cost would.
+  const megaBlocked =
+    card.effects.some((e) => e.kind === 'megaEvolve') && !hasMegaForm(attacker.speciesSlug);
+  // Dynamax greys out when the active mon is already dynamaxed — once-per-battle is
+  // enforced by `exhaust: true` on the card AND by this affordability check (in case the
+  // player owns more than one Dynamax card via a relic).
+  const dynamaxBlocked =
+    card.effects.some((e) => e.kind === 'dynamax') && Boolean(attacker.dynamax);
   const view: ComputedCardView = {
-    cardId: id,
+    // The effective card's id — the Hand renders `CARDS[view.cardId]`, so during a
+    // dynamax window it'll show the Max / G-Max card name + theme + chips while the
+    // underlying `state.hand[handIndex]` still holds the raw id (so the original card
+    // returns to the deck after revert).
+    cardId: card.id,
     cost: card.cost,
-    affordable: state.energy >= card.cost && !rechargeBlocksAttack,
+    affordable:
+      state.energy >= card.cost && !rechargeBlocksAttack && !megaBlocked && !dynamaxBlocked,
   };
 
   // Default target for live preview: the foe currently in front. C5 will let cards target
@@ -123,6 +166,7 @@ export type EffectLine =
   | { kind: 'stat'; stat: Stat; stages: number; self: boolean }
   | { kind: 'energy'; value: number }
   | { kind: 'weather'; weather: WeatherKind }
+  | { kind: 'megaEvolve' }
   | { kind: 'capture'; percent: number };
 
 /**
@@ -173,6 +217,11 @@ export function selectCardLines(card: CardDef, view: ComputedCardView): EffectLi
         break;
       case 'weather':
         lines.push({ kind: 'weather', weather: e.weather });
+        break;
+      case 'megaEvolve':
+        // The Mega Evolve keyword chip below covers this completely — no inline
+        // description line so we don't duplicate "Méga-Évolue. / Méga-Évolue." in
+        // the body.
         break;
       case 'capture':
         lines.push({ kind: 'capture', percent: view.capturePercent ?? 0 });

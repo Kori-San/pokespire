@@ -73,6 +73,25 @@ export interface Weather {
   turnsLeft: number;
 }
 
+/**
+ * Active dynamax state on a Combatant. Captured at activation time so the engine can
+ * fully restore the mon when the 3-turn window expires:
+ *   - `turnsLeft`    — countdown, ticked once per end-of-turn. Revert at 0.
+ *   - `gmax`         — true when the species had a `forme: 'Gmax'` and we swapped to it.
+ *   - `prevSlug`     — pre-dynamax `speciesSlug` (used to restore on revert).
+ *   - `prevTypes`    — pre-dynamax `types`.
+ *   - `prevBaseStats`— pre-dynamax `baseStats`.
+ *   - `prevMaxHp`    — pre-dynamax `maxHp`. Current hp clamps to this on revert.
+ */
+export interface DynamaxState {
+  turnsLeft: number;
+  gmax: boolean;
+  prevSlug: string;
+  prevTypes: PokeType[];
+  prevBaseStats: BaseStats;
+  prevMaxHp: number;
+}
+
 export interface Combatant {
   speciesId: number;
   /**
@@ -106,6 +125,14 @@ export interface Combatant {
    * attack. Status-kind cards (SKL/PWR/BALL/ITEM) play normally during Recharge.
    */
   recharge: number;
+  /**
+   * Canon Gen-VIII Dynamax state. `null`/`undefined` = not dynamaxed (default). When
+   * set, the mon is in its 3-turn dynamax window: `maxHp` is the doubled value, the
+   * `DynamaxState` carries the pre-dynamax fields to restore on revert. Hand cards
+   * map to their Max-Move equivalents while this is non-null. Optional for fixture
+   * compatibility — every helper uses a truthy check.
+   */
+  dynamax?: DynamaxState | null;
 }
 
 /**
@@ -115,12 +142,25 @@ export interface Combatant {
  * applies a condition can't exist without something to hit or condition. The
  * index refers to `state.team[targetIndex]` (the ally being targeted).
  *
- * `defend` self-applies — the enemy is buffing its own block, so no target.
+ * `defend`, `megaEvolve`, and `dynamax` self-apply — the enemy is buffing or
+ * transforming itself, so there's no separate target index.
  */
 export type Intent =
   | { kind: 'attack'; amount: number; targetIndex: number }
   | { kind: 'defend'; amount: number }
-  | { kind: 'status'; status: StatusInstance; targetIndex: number };
+  | { kind: 'status'; status: StatusInstance; targetIndex: number }
+  /**
+   * Boss-tier intent: the enemy will Mega Evolve next turn. Applies the same
+   * transform as the player's Mega Evolve card — swaps speciesSlug / types /
+   * baseStats to the first Mega forme. No-op if the species has none.
+   */
+  | { kind: 'megaEvolve' }
+  /**
+   * Boss-tier intent: the enemy will Dynamax next turn — HP doubled, 3-turn
+   * window, Gmax sprite swap if available. Same `DynamaxState` machinery as
+   * the player side.
+   */
+  | { kind: 'dynamax' };
 
 export type CombatOutcome = 'ongoing' | 'win' | 'lose' | 'captured';
 

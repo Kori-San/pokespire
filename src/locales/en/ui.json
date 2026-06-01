@@ -4,7 +4,9 @@
   },
   "intent": {
     "attack": "ATK",
-    "defend": "DEF"
+    "defend": "DEF",
+    "megaEvolve": "MEGA",
+    "dynamax": "DYNAMAX"
   },
   "title": {
     "tagline": "A roguelike deckbuilder",

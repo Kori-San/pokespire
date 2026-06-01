@@ -2,17 +2,19 @@ import type { TFunction } from 'i18next';
 import type { Keyword } from '@/data/cards';
 
 /**
- * Per-keyword glyph + tint. Icons resolve through the global registry loaded once
- * at startup via `src/ui/icons.ts` — Dinkie Icons for expressive pixel art (fire /
- * blood / biohazard / sparkles / sleeping-face / hourglass), pixelarticons for
- * neutral chips, streamline-pixel for weather glyphs.
+ * Per-keyword glyph. Two flavours:
+ *   - `{ icon, color }` — Iconify glyph (pixelarticons / dinkie-icons / streamline-pixel /
+ *     `local:*`) tinted via `currentColor`. The default for monochrome chips.
+ *   - `{ image }` — local PNG path (e.g. `/sprites/misc/mega.png`), painted as an `<img>`.
+ *     Reserved for canonical multi-colour glyphs that don't translate to monochrome (the
+ *     Mega Evolution mark, future Dynamax / Tera marks).
  *
- * Colors are picked to clear WCAG AA contrast (≥ 4.5:1) against the white card body.
- *
- * Shared across Card chips and any other consumer that wants to render a keyword
- * with its canonical icon (PokemonSlot's status chips, future relic / move-mod UI).
+ * Icons resolve through the global registry loaded once at startup via `src/ui/icons.ts`.
+ * Shared across Card chips, PokemonSlot status chips, and the standalone KeywordChip.
  */
-export const KEYWORD_VISUAL: Record<Keyword['id'], { icon: string; color: string }> = {
+export type KeywordVisual = { icon: string; color: string } | { image: string };
+
+export const KEYWORD_VISUAL: Record<Keyword['id'], KeywordVisual> = {
   exhaust: { icon: 'dinkie-icons:hourglass-with-flowing-sand', color: '#b45309' },
   ephemeral: { icon: 'dinkie-icons:ghost', color: '#6366f1' },
   switch: { icon: 'pixelarticons:switch', color: '#1f2937' },
@@ -36,6 +38,13 @@ export const KEYWORD_VISUAL: Record<Keyword['id'], { icon: string; color: string
   freeze: { icon: 'pixelarticons:cloud', color: '#0e7490' },
   weather: { icon: 'streamline-pixel:weather-cloud-sun-fine', color: '#374151' },
   terrain: { icon: 'dinkie-icons:snow-capped-mountain', color: '#374151' },
+  // Canonical Mega Evolution mark from Pokémon Showdown's misc sprite bucket — the
+  // multi-colour swirl reads as "mega" instantly to anyone who's seen Gen-VI canon, no
+  // monochrome substitute does it justice. Source: see ASSETS.md.
+  megaEvolve: { image: '/sprites/misc/mega.png' },
+  // Canon Gen-VIII Dynamax mark — reworked from Cobblemon's battle-gimmick-max sprite.
+  // Pink starburst silhouette; the colour identity carries Dynamax instantly.
+  dynamax: { image: '/sprites/misc/dmax.png' },
 };
 
 /** Stable React key per keyword instance (some chips can repeat — e.g. self+foe statuses). */

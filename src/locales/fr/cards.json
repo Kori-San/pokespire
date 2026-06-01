@@ -46,6 +46,16 @@
       "label": "Changement.",
       "desc": "Le prochain changement ce tour-ci ne coûte aucune énergie."
     },
+    "megaEvolve": {
+      "name": "Méga-Évolution",
+      "label": "Méga-Évolue.",
+      "desc": "Utilisable seulement sur un Pokémon pouvant méga-évoluer. En méga-évoluant la forme, les statistiques, et parfois même les types du Pokémon changent, le rendant plus puissant."
+    },
+    "dynamax": {
+      "name": "Dynamax",
+      "label": "Dynamax.",
+      "desc": "Pendant 3 tours, les PV max du Pokémon actif sont doublés et toutes ses capacités deviennent des Capacités Max. Si le Pokémon a une forme Gigamax, il prend cette forme pendant la durée."
+    },
     "priority": {
       "name": "Priorité",
       "label": "Priorité +{{level}}.",

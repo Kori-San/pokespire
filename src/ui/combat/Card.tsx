@@ -1,7 +1,6 @@
 import type { CSSProperties } from 'react';
 import type { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { Icon } from '@iconify/react';
 import type { CardDef, CardKind, PokeType } from '@/types';
 import { keywordsOf } from '@/data/cards';
 import { selectCardLines, type ComputedCardView, type EffectLine } from '@/game/combat/selectors';
@@ -13,6 +12,7 @@ import {
   keywordTooltipDesc,
   keywordTooltipName,
 } from './keywords';
+import { KwIcon } from './KwIcon';
 import styles from './Card.module.css';
 
 /** Energy ceiling visualised on every card; the deck cannot print costs above this. */
@@ -76,6 +76,7 @@ export function Card({ card, view, onPlay }: CardProps) {
         type="button"
         className={cx(styles.card, !view.affordable && styles.disabled)}
         style={{ '--card-type': tintVar(card.kind, card.type) } as CSSProperties}
+        data-theme={card.theme}
         disabled={!view.affordable}
         onClick={onPlay}
       >
@@ -112,7 +113,7 @@ export function Card({ card, view, onPlay }: CardProps) {
                 const v = KEYWORD_VISUAL[k.id];
                 return (
                   <span key={chipKey(k)} className={cx(styles.keyword, styles[`kw_${k.id}`])}>
-                    <Icon icon={v.icon} className={styles.kwIcon} style={{ color: v.color }} />
+                    <KwIcon visual={v} className={styles.kwIcon} />
                     {keywordLabel(k, t)}
                   </span>
                 );
@@ -138,7 +139,7 @@ export function Card({ card, view, onPlay }: CardProps) {
                 {i > 0 && <hr className={styles.tooltipDivider} />}
                 <span className={styles.tooltipEntry}>
                   <span className={styles.tooltipLabel}>
-                    <Icon icon={v.icon} className={styles.kwIcon} style={{ color: v.color }} />
+                    <KwIcon visual={v} className={styles.kwIcon} />
                     {keywordTooltipName(k, t)}
                   </span>
                   <span className={styles.tooltipDesc}>{keywordTooltipDesc(k, t)}</span>
@@ -182,6 +183,11 @@ function renderLine(line: EffectLine, t: TFunction): string {
     case 'weather':
       // Weather state now surfaces via the Weather keyword chip — inline description would
       // duplicate the same data.
+      return '';
+    case 'megaEvolve':
+      // Unreachable — `selectCardLines` no longer emits a `megaEvolve` line (the keyword
+      // chip carries the full description). Kept as a typesafe branch in case future code
+      // pushes one back.
       return '';
     case 'capture':
       return t('cards:lines.capture', { percent: line.percent });

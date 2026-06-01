@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Icon } from '@iconify/react';
 import type { Combatant, Intent } from '@/types';
 import { FALLBACK_SPRITE, spriteUrl } from '@/services/sprites';
 import { IntentBadge } from '@/ui/primitives/IntentBadge';
 import { type TooltipPlacement } from '@/ui/primitives/Tooltip';
 import { KEYWORD_VISUAL, keywordLabel, keywordTooltipDesc, keywordTooltipName } from './keywords';
+import { KwIcon } from './KwIcon';
 import styles from './PokemonSlot.module.css';
 
 interface PokemonSlotProps {
@@ -218,12 +218,7 @@ export function PokemonSlot({
                 const v = KEYWORD_VISUAL[s.id];
                 return (
                   <span key={s.id} className={styles.tooltipStatusChip}>
-                    <Icon
-                      icon={v.icon}
-                      className={styles.tooltipStatusIcon}
-                      style={{ color: v.color }}
-                      aria-hidden
-                    />
+                    <KwIcon visual={v} className={styles.tooltipStatusIcon} />
                     {keywordLabel({ id: s.id, stacks: s.stacks, self: false }, t)}
                   </span>
                 );
@@ -239,12 +234,7 @@ export function PokemonSlot({
               return (
                 <span key={s.id} className={styles.keywordBubble} role="tooltip">
                   <span className={styles.tooltipGlossaryLabel}>
-                    <Icon
-                      icon={v.icon}
-                      className={styles.tooltipStatusIcon}
-                      style={{ color: v.color }}
-                      aria-hidden
-                    />
+                    <KwIcon visual={v} className={styles.tooltipStatusIcon} />
                     {keywordTooltipName(k, t)}
                   </span>
                   <span className={styles.tooltipGlossaryDesc}>{keywordTooltipDesc(k, t)}</span>

@@ -9,9 +9,10 @@ import {
 import { CARDS, exhaustsOnPlay } from '@/data/cards';
 import { applyStatus } from '@/data/statuses';
 import { rngFrom, type SeededRng } from '@/game/run/rng';
-import { applyEffect } from './effects';
+import { applyEffect, dynamaxCombatant, megaEvolveCombatant } from './effects';
 import { drawCards, shuffle } from './deck';
 import { rollIntent } from './intent';
+import { effectiveCardFor } from './selectors';
 import { tickStatuses } from './statusTick';
 
 const BASE_HAND_SIZE = 5;
@@ -95,16 +96,19 @@ export function combatReducer(state: CombatState, action: CombatAction): CombatS
 function playCard(state: CombatState, handIndex: number): CombatState {
   const id = state.hand[handIndex];
   if (id === undefined) return state;
-  const card = CARDS[id];
-  if (!card) return state;
+  const raw = CARDS[id];
+  const attacker = state.team[state.activeIndex];
+  if (!raw || !attacker) return state;
+  // Resolve the effective card — while the active mon is dynamaxed, this swaps the
+  // raw card for its Max / G-Max equivalent so the reducer applies Max effects.
+  const card = effectiveCardFor(raw, attacker);
   // Switch-combo discount: U-Turn-class card → switch → next card costs 1 less.
   const discount = state.comboDiscount === 'armed-for-next-card' ? 1 : 0;
   const cost = Math.max(0, card.cost - discount);
   if (state.energy < cost) return state;
   // Recharge: per-mon counter locks ATK cards while > 0. Hyper Beam sets it to 2 so
   // the lockout covers the rest of this turn + all of next turn (ticks at end of turn).
-  const attacker = state.team[state.activeIndex];
-  if (attacker && attacker.recharge > 0 && card.kind === 'ATK') return state;
+  if (attacker.recharge > 0 && card.kind === 'ATK') return state;
 
   const exhausts = exhaustsOnPlay(card);
   const rng = rngFrom(state.rngState);
@@ -154,6 +158,15 @@ function endTurn(state: CombatState): CombatState {
     ...s,
     team: s.team.map((mon) => ({ ...mon, recharge: Math.max(0, mon.recharge - 1) })),
   };
+  // Dynamax tick — every mon (team AND enemy side) in dynamax loses 1 turn. At 0,
+  // revert: restore pre-dynamax slug / types / baseStats / maxHp, clamp hp to the
+  // (lower) original max. Bench mons tick too (canon: the dynamax timer doesn't
+  // pause on switch).
+  s = {
+    ...s,
+    team: s.team.map((mon) => tickDynamax(mon)),
+    enemies: s.enemies.map((mon) => tickDynamax(mon)),
+  };
   s = tickActiveStatuses(s);
   s = resolveFaints(s);
   if (s.outcome !== 'ongoing') return { ...s, rngState: rng.state };
@@ -172,6 +185,28 @@ function endTurn(state: CombatState): CombatState {
   // Start the player's next turn.
   s = startTurn(s, rng);
   return { ...s, rngState: rng.state };
+}
+
+/**
+ * Decrement a mon's `dynamax.turnsLeft` by 1 — when it reaches 0, revert all the
+ * pre-dynamax fields (slug / types / baseStats / maxHp) and clamp `hp` to the (lower)
+ * original max. No-op when the mon isn't dynamaxed.
+ */
+function tickDynamax(mon: Combatant): Combatant {
+  if (!mon.dynamax) return mon;
+  const next = mon.dynamax.turnsLeft - 1;
+  if (next > 0) {
+    return { ...mon, dynamax: { ...mon.dynamax, turnsLeft: next } };
+  }
+  return {
+    ...mon,
+    speciesSlug: mon.dynamax.prevSlug,
+    types: mon.dynamax.prevTypes,
+    baseStats: mon.dynamax.prevBaseStats,
+    maxHp: mon.dynamax.prevMaxHp,
+    hp: Math.min(mon.hp, mon.dynamax.prevMaxHp),
+    dynamax: null,
+  };
 }
 
 function tickActiveStatuses(state: CombatState): CombatState {
@@ -226,6 +261,13 @@ function enemyAct(state: CombatState): CombatState {
         ),
       };
     }
+    case 'megaEvolve':
+      // Self-applied — transform the active enemy. No-op if no Mega forme exists.
+      return withActiveEnemy(state, megaEvolveCombatant);
+    case 'dynamax':
+      // Self-applied — HP×2, 3-turn window, Gmax sprite swap if available. The bench
+      // tick in `endTurn` already covers the enemy's dynamax revert via `tickDynamax`.
+      return withActiveEnemy(state, dynamaxCombatant);
   }
 }
 

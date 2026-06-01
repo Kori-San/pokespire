@@ -95,6 +95,26 @@ export type Effect =
    * out without paying the switch tax this turn.
    */
   | { kind: 'freeSwitch' }
+  /**
+   * In-combat Mega Evolution. Looks up the active mon's first canonical Mega forme in
+   * the pokedex and swaps `speciesSlug` + `types` + `baseStats` (preserving hp, block,
+   * statuses, stages, recharge). No-op when the active mon has no Mega forme — the
+   * affordability check in `selectComputedCardView` greys the card out in that case.
+   * Dual-Mega species (Charizard, Mewtwo) take the first forme listed in `otherFormes`;
+   * a Mega-X / Mega-Y picker lands when the relic family ships.
+   */
+  | { kind: 'megaEvolve' }
+  /**
+   * Gen-VIII Dynamax. Active mon enters a 3-turn dynamax state — `maxHp` is doubled
+   * (canon: "Points de Vie doublés"), the difference is healed into `hp`, and if the
+   * species has a Gigantamax forme (`forme: 'Gmax'` in pokedex) the `speciesSlug` swaps
+   * to that visual. While dynamaxed every hand card is mapped at render/play time to
+   * its Max-Move equivalent (per-type `MAX_MOVES[card.type]` for ATKs, universal
+   * `MAX_GUARD` for SKL/PWR). End-of-turn ticks `turnsLeft`; on revert `maxHp` returns
+   * to pre-dynamax and `hp` clamps. Canon: once per battle — wired via `exhaust: true`
+   * on the card. No-op if the active mon is already dynamaxed.
+   */
+  | { kind: 'dynamax' }
   | { kind: 'capture'; ballTier: BallTier };
 
 export interface CardDef {
@@ -129,4 +149,25 @@ export interface CardDef {
    * resolve step lands). Per-combat exhaust already applies via BALL/ITEM routing.
    */
   ephemeral?: boolean;
+  /**
+   * Single-use for **this combat** — the card leaves for the exhaust pile on play
+   * instead of the discard pile. Canon mapping: Mega Evolution (once per battle),
+   * Z-Moves, signature ultimates. Kind-based routing (BALL / ITEM) still applies
+   * automatically; this opt-in flag lets ATK / SKL / PWR cards exhaust too without
+   * misrepresenting their kind. Surfaces as the `Exhaust` keyword chip.
+   */
+  exhaust?: boolean;
+  /**
+   * Cosmetic theme override for the card's visual treatment — replaces the type-tint
+   * border / banner with a curated palette. Reserved for trans-type meta-mechanics that
+   * sit outside the 18-type colour wheel:
+   *   - `mega`    — rainbow conic border + hue-rotate shimmer, mirrors canonical Mega
+   *                 Evolution iconography.
+   *   - `dynamax` — magenta/pink radial pulse with a deep-purple inner shade, mirrors
+   *                 the Gen-VIII Dynamax aura.
+   * The `type` field still drives STAB calculations even when a theme is set — the
+   * card just *looks* off-type. Optional; absence falls through to the default
+   * type-tint chrome.
+   */
+  theme?: 'mega' | 'dynamax';
 }

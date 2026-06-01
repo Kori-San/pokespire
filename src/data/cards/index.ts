@@ -19,6 +19,9 @@ import { STEEL_CARDS } from './steel';
 import { FAIRY_CARDS } from './fairy';
 import { BALL_CARDS } from './balls';
 import { ITEM_CARDS } from './items';
+import { SPECIAL_CARDS } from './special';
+import { MAX_CARDS } from './maxMoves';
+import { GMAX_CARDS } from './gmaxMoves';
 
 /**
  * The whole pool, indexed by card id. Per-type files are the source of truth;
@@ -50,6 +53,12 @@ export const CARDS: Record<string, CardDef> = Object.fromEntries(
     ...FAIRY_CARDS,
     ...BALL_CARDS,
     ...ITEM_CARDS,
+    ...SPECIAL_CARDS,
+    // Synthetic Max / G-Max cards — never in reward pools or starter decks, but
+    // registered here so the reducer / selectors can resolve their ids when the active
+    // mon is dynamaxed and `effectiveCardFor` swaps in the Max equivalent.
+    ...MAX_CARDS,
+    ...GMAX_CARDS,
   ].map((c) => [c.id, c]),
 );
 
@@ -62,7 +71,7 @@ const EXHAUST_KINDS = new Set<CardDef['kind']>(['BALL', 'ITEM']);
 
 /** True when a card should leave for the exhaust pile on play instead of the discard. */
 export function exhaustsOnPlay(card: CardDef): boolean {
-  return EXHAUST_KINDS.has(card.kind);
+  return card.exhaust === true || EXHAUST_KINDS.has(card.kind);
 }
 
 /** True when the card vanishes from the RUN's deck after use (one-shot-per-run). */
@@ -83,6 +92,8 @@ export type Keyword =
   | { id: 'exhaust' }
   | { id: 'ephemeral' }
   | { id: 'switch' }
+  | { id: 'megaEvolve' }
+  | { id: 'dynamax' }
   | { id: 'stab' }
   | { id: 'super' }
   | { id: 'resisted' }
@@ -116,20 +127,23 @@ export interface KeywordContext {
 export function keywordsOf(card: CardDef, ctx: KeywordContext = {}): Keyword[] {
   const k: Keyword[] = [];
 
-  // Ephemeral subsumes exhaust — gone-forever is strictly stronger than gone-this-combat,
-  // so we don't double up the chips on Master Ball / Max Potion.
-  if (isEphemeral(card)) k.push({ id: 'ephemeral' });
-  else if (exhaustsOnPlay(card)) k.push({ id: 'exhaust' });
+  // 1) Card-defining mechanics first — these chips ARE the card (Mega Evolve, Dynamax).
+  //    Player should see them at a glance before scanning meta tags.
+  for (const e of card.effects) {
+    if (e.kind === 'megaEvolve') k.push({ id: 'megaEvolve' });
+    if (e.kind === 'dynamax') k.push({ id: 'dynamax' });
+  }
 
-  // Canon move priority — surfaces a chip on every card that breaks the default
-  // speed-based turn order. Engine-side enforcement lands with C3 (initiative).
+  // 2) Canon move priority — turn-order signal sits up top so it reads before secondary chips.
   if (card.priority && card.priority !== 0) k.push({ id: 'priority', level: card.priority });
 
+  // 3) Matchup chips — situational signals derived from the live view.
   if (ctx.stab) k.push({ id: 'stab' });
   if (ctx.effectiveness === 'super') k.push({ id: 'super' });
   else if (ctx.effectiveness === 'resisted') k.push({ id: 'resisted' });
   else if (ctx.effectiveness === 'immune') k.push({ id: 'immune' });
 
+  // 4) Effect riders — secondary mechanics surfaced from the card's effects.
   for (const e of card.effects) {
     if ((e.kind === 'damage' || e.kind === 'lifesteal') && e.critBoost) {
       k.push({ id: 'crit', boost: e.critBoost });
@@ -158,6 +172,11 @@ export function keywordsOf(card: CardDef, ctx: KeywordContext = {}): Keyword[] {
       });
     }
   }
+
+  // 5) Meta tags last — Exhaust / Ephemeral describe what happens to the card AFTER play.
+  //    Ephemeral subsumes exhaust (gone-forever > gone-this-combat) so we only emit one.
+  if (isEphemeral(card)) k.push({ id: 'ephemeral' });
+  else if (exhaustsOnPlay(card)) k.push({ id: 'exhaust' });
 
   return k;
 }

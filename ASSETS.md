@@ -22,6 +22,20 @@ buff) — the matching item icon from Showdown's `itemicons/` set is overlaid on
 Three 32×14 PNGs. Refresh: re-download from the URLs above into
 `public/sprites/move-category/`. BALL / ITEM cards fall back to `status.png`.
 
+## Misc — keyword glyphs
+
+Canonical multi-colour marks used as keyword-chip icons where a monochrome Iconify
+glyph would not do the symbol justice (e.g. the rainbow Mega Evolution swirl).
+
+| Path                           | Source                                                                                                                                                                                                                                    | Refresh |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| `public/sprites/misc/mega.png` | [Pokémon Showdown — `misc/mega.png`](https://play.pokemonshowdown.com/sprites/misc/mega.png)                                                                                                                                              | manual  |
+| `public/sprites/misc/dmax.png` | Reworked by [@Kori-San](https://github.com/Kori-San) from [Cobblemon — `battle_gimmick_max.png`](https://gitlab.com/cable-mc/cobblemon/-/blob/main/common/src/main/resources/assets/cobblemon/textures/gui/battle/battle_gimmick_max.png) | manual  |
+
+`mega.png` is a 16×16 RGBA PNG surfaced by the `megaEvolve` keyword via
+`KEYWORD_VISUAL`. `dmax.png` is a 21×15 indexed PNG surfaced by the `dynamax`
+keyword. Cobblemon ships under the [MIT licence](https://gitlab.com/cable-mc/cobblemon/-/blob/main/LICENSE.md).
+
 ## Battle backgrounds
 
 Custom battlefield backgrounds for each biome — pixel art, 16:9, no characters, wide

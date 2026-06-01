@@ -54,7 +54,11 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 /** Canonical opening hand — five mixed-type cards, all affordable. */
-export const Default: Story = {};
+export const Default: Story = {
+  args: {
+    hand: ['dynamax', 'tackle', 'megaEvolve', 'ember', 'waterGun'],
+  },
+};
 
 /** Mid-turn after spending energy — some cards become unaffordable (grayscaled,
  *  un-hoverable lift). Distinct visual state, kept as its own story. */

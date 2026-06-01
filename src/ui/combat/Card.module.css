@@ -260,3 +260,151 @@
   height: auto;
   image-rendering: pixelated;
 }
+
+/* ───────────────────────────────────────────────────────────────────────────
+ * Mega Evolution theme — `data-theme="mega"` on the card root.
+ *
+ * Mega Evolution sits outside the 18-type palette, so the type tint (`--card-type`)
+ * is replaced by a conic rainbow border + a sweeping banner gradient. The border
+ * itself is painted by a `::before` pseudo with a mask-composite hole punched
+ * through it so the content area stays clean. A 6s `hue-rotate` animation on the
+ * border + a 4s background-position sweep on the banner give the card the
+ * "alive" shimmer of a freshly mega-evolved Pokémon. Reduced-motion users get
+ * the static gradient. Drawn over the disabled-card greyscale filter via a
+ * specificity bump on `.card[data-theme='mega']`.
+ * ─────────────────────────────────────────────────────────────────────────── */
+.card[data-theme='mega'] {
+  /* Two layered insets to match the default `--card-type` + `--card-shade` chrome
+   * the type-tinted cards get: the pseudo-element below paints a 3px rainbow rim,
+   * and this inset shadow paints a 2px deep-navy band just inside it so the body
+   * doesn't sit flush against the rainbow. Color picked to read as "cosmic" against
+   * the spectrum — not pure black (too harsh) and not type-tinted (no type). */
+  box-shadow:
+    inset 0 0 0 5px rgba(20, 14, 38, 0.55),
+    0 4px 0 rgba(0, 0, 0, 0.3);
+}
+
+.card[data-theme='mega']::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  padding: 3px;
+  background: conic-gradient(
+    from 0deg,
+    #ff5e8a,
+    #ffa75e,
+    #ffe85e,
+    #5eff8a,
+    #5edcff,
+    #a75eff,
+    #ff5e8a
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  animation: mega-hue 6s linear infinite;
+}
+
+@keyframes mega-hue {
+  to {
+    filter: hue-rotate(360deg);
+  }
+}
+
+.card[data-theme='mega'] .banner {
+  background: linear-gradient(90deg, #ff5e8a, #ffa75e, #ffe85e, #5eff8a, #5edcff, #a75eff, #ff5e8a);
+  background-size: 200% 100%;
+  animation: mega-shimmer 4s linear infinite;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.55);
+}
+
+@keyframes mega-shimmer {
+  to {
+    background-position: 200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card[data-theme='mega']::before,
+  .card[data-theme='mega'] .banner {
+    animation: none;
+  }
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+ * Dynamax theme — `data-theme="dynamax"` on the card root.
+ *
+ * Gen-VIII Dynamax aura: a magenta/fuchsia gradient border with a soft outer
+ * pulse, plus a banner gradient that sweeps left-to-right. Same `::before`
+ * border-painting trick as the mega theme, swapped to a fixed two-stop magenta
+ * conic so the border reads as a continuous neon ring rather than a rainbow.
+ * Inner shade is deep aubergine — reads as the dark "Dynaspace" purple.
+ * ─────────────────────────────────────────────────────────────────────────── */
+.card[data-theme='dynamax'] {
+  /* Inner band — same layered chrome the type-tinted cards get. Aubergine deep
+   * purple complements the magenta rim without competing with it. */
+  box-shadow:
+    inset 0 0 0 5px rgba(48, 8, 56, 0.6),
+    0 4px 0 rgba(0, 0, 0, 0.3),
+    /* Soft outer glow — telegraphs "dynamaxed" even from a distance. */ 0 0 16px 2px
+      rgba(255, 79, 199, 0.45);
+}
+
+.card[data-theme='dynamax']::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  padding: 3px;
+  background: conic-gradient(
+    from 0deg,
+    #ff4fc7,
+    #ff8fdc,
+    #ffd5f0,
+    #ff8fdc,
+    #ff4fc7,
+    #c026d3,
+    #ff4fc7
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  animation: dynamax-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes dynamax-pulse {
+  0%,
+  100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.35);
+  }
+}
+
+.card[data-theme='dynamax'] .banner {
+  background: linear-gradient(90deg, #c026d3, #ff4fc7, #ff8fdc, #ff4fc7, #c026d3);
+  background-size: 200% 100%;
+  animation: dynamax-shimmer 3.2s linear infinite;
+  text-shadow: 1px 1px 0 rgba(40, 0, 50, 0.7);
+}
+
+@keyframes dynamax-shimmer {
+  to {
+    background-position: 200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card[data-theme='dynamax']::before,
+  .card[data-theme='dynamax'] .banner {
+    animation: none;
+  }
+}

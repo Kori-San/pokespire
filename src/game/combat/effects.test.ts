@@ -220,6 +220,84 @@ describe('applyEffect', () => {
     expect(out.team[0]?.hp).toBeLessThanOrEqual(100);
   });
 
+  it('megaEvolve swaps the active mon to its first Mega forme, preserving hp + statuses', () => {
+    // Charizard has otherFormes = ['charizard-mega-x', 'charizard-mega-y'].
+    const s = state({
+      team: [
+        mon({
+          speciesSlug: 'charizard',
+          name: 'Charizard',
+          types: ['fire', 'flying'],
+          baseStats: { hp: 78, atk: 84, def: 78, spAtk: 109, spDef: 85, spd: 100 },
+          hp: 40,
+        }),
+      ],
+    });
+    const out = applyEffect(s, { kind: 'megaEvolve' }, card('normal'), rng(0));
+    const after = out.team[0]!;
+    expect(after.speciesSlug).toBe('charizard-mega-x');
+    expect(after.hp).toBe(40);
+    // Mega-X is fire / dragon and the atk stat balloons — quick sanity that stats actually swapped.
+    expect(after.types).toContain('dragon');
+    expect(after.baseStats.atk).toBeGreaterThan(84);
+  });
+
+  it('megaEvolve is a no-op when the active mon has no Mega forme', () => {
+    const s = state({
+      team: [mon({ speciesSlug: 'pikachu', name: 'Pikachu', types: ['electric'] })],
+    });
+    const out = applyEffect(s, { kind: 'megaEvolve' }, card('normal'), rng(0));
+    expect(out.team[0]?.speciesSlug).toBe('pikachu');
+  });
+
+  it('dynamax doubles maxHp + heals the gained capacity + sets a 3-turn window', () => {
+    const s = state({
+      team: [mon({ speciesSlug: 'charizard', name: 'Charizard', maxHp: 100, hp: 60 })],
+    });
+    const out = applyEffect(s, { kind: 'dynamax' }, card('normal'), rng(0));
+    const after = out.team[0]!;
+    expect(after.maxHp).toBe(200);
+    expect(after.hp).toBe(160); // 60 + (200-100) capacity gain
+    expect(after.dynamax?.turnsLeft).toBe(3);
+    expect(after.dynamax?.prevMaxHp).toBe(100);
+    // Charizard HAS a Gmax form, so the sprite swap fires.
+    expect(after.speciesSlug).toBe('charizard-gmax');
+    expect(after.dynamax?.gmax).toBe(true);
+    expect(after.dynamax?.prevSlug).toBe('charizard');
+  });
+
+  it('dynamax on a species with no Gmax form keeps the original slug but still buffs HP', () => {
+    const s = state({ team: [mon({ speciesSlug: 'mewtwo', name: 'Mewtwo', maxHp: 100, hp: 80 })] });
+    const out = applyEffect(s, { kind: 'dynamax' }, card('normal'), rng(0));
+    const after = out.team[0]!;
+    expect(after.speciesSlug).toBe('mewtwo');
+    expect(after.dynamax?.gmax).toBe(false);
+    expect(after.maxHp).toBe(200);
+  });
+
+  it('dynamax is a no-op when the mon is already dynamaxed', () => {
+    const s = state({
+      team: [
+        mon({
+          speciesSlug: 'charizard',
+          dynamax: {
+            turnsLeft: 2,
+            gmax: true,
+            prevSlug: 'charizard',
+            prevTypes: ['fire', 'flying'],
+            prevBaseStats: { hp: 78, atk: 84, def: 78, spAtk: 109, spDef: 85, spd: 100 },
+            prevMaxHp: 100,
+          },
+          maxHp: 200,
+          hp: 200,
+        }),
+      ],
+    });
+    const out = applyEffect(s, { kind: 'dynamax' }, card('normal'), rng(0));
+    expect(out.team[0]?.maxHp).toBe(200); // unchanged — didn't double again
+    expect(out.team[0]?.dynamax?.turnsLeft).toBe(2);
+  });
+
   it('capture succeeds or fails based on the roll', () => {
     const s = state({ enemies: [mon({ name: 'foe', hp: 5 })] });
     const caught = applyEffect(s, { kind: 'capture', ballTier: 'ultra' }, card('normal'), rng(0));

@@ -12,6 +12,8 @@
   "recover": "SOIN",
   "softBoiled": "DOUX REGARD",
   "swordsDance": "DANSE LAMES",
+  "megaEvolve": "MÉGA-ÉVOLUTION",
+  "dynamax": "DYNAMAX",
 
   "ember": "FLAMMÈCHE",
   "flamethrower": "LANCE-FLAMMES",
@@ -125,5 +127,31 @@
   "xAttack": "ATTAQUE +",
   "xDefend": "DÉFENSE +",
   "xSpeed": "VITESSE +",
-  "direHit": "CRITIK +"
+  "direHit": "CRITIK +",
+
+  "maxGuard": "GARDE MAX",
+  "maxStrike": "NORMALOMAX",
+  "maxFlare": "PYROMAX",
+  "maxGeyser": "HYDROMAX",
+  "maxLightning": "FULGUROMAX",
+  "maxOvergrowth": "PHYTOMAX",
+  "maxHailstorm": "CRYOMAX",
+  "maxKnuckle": "PUGILOMAX",
+  "maxOoze": "TOXINOMAX",
+  "maxQuake": "SISMOMAX",
+  "maxAirstream": "AÉROMAX",
+  "maxMindstorm": "PSYCHOMAX",
+  "maxFlutterby": "INSECTOMAX",
+  "maxRockfall": "LITHOMAX",
+  "maxPhantasm": "SPECTROMAX",
+  "maxWyrmwind": "DRACOMAX",
+  "maxDarkness": "SINISTROMAX",
+  "maxSteelspike": "MÉTALLOMAX",
+  "maxStarfall": "ENCHANTOMAX",
+
+  "gmaxWildfire": "FOURNAISE G-MAX",
+  "gmaxVoltCrash": "FOUDRE G-MAX",
+  "gmaxReplenish": "RÉCOLTE G-MAX",
+  "gmaxTerror": "HANTISE G-MAX",
+  "gmaxWindRage": "RAFALE G-MAX"
 }

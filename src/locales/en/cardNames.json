@@ -12,6 +12,8 @@
   "recover": "RECOVER",
   "softBoiled": "SOFT-BOILED",
   "swordsDance": "SWORDS DANCE",
+  "megaEvolve": "MEGA EVOLVE",
+  "dynamax": "DYNAMAX",
 
   "ember": "EMBER",
   "flamethrower": "FLAMETHROWER",
@@ -125,5 +127,31 @@
   "xAttack": "X ATTACK",
   "xDefend": "X DEFEND",
   "xSpeed": "X SPEED",
-  "direHit": "DIRE HIT"
+  "direHit": "DIRE HIT",
+
+  "maxGuard": "MAX GUARD",
+  "maxStrike": "MAX STRIKE",
+  "maxFlare": "MAX FLARE",
+  "maxGeyser": "MAX GEYSER",
+  "maxLightning": "MAX LIGHTNING",
+  "maxOvergrowth": "MAX OVERGROWTH",
+  "maxHailstorm": "MAX HAILSTORM",
+  "maxKnuckle": "MAX KNUCKLE",
+  "maxOoze": "MAX OOZE",
+  "maxQuake": "MAX QUAKE",
+  "maxAirstream": "MAX AIRSTREAM",
+  "maxMindstorm": "MAX MINDSTORM",
+  "maxFlutterby": "MAX FLUTTERBY",
+  "maxRockfall": "MAX ROCKFALL",
+  "maxPhantasm": "MAX PHANTASM",
+  "maxWyrmwind": "MAX WYRMWIND",
+  "maxDarkness": "MAX DARKNESS",
+  "maxSteelspike": "MAX STEELSPIKE",
+  "maxStarfall": "MAX STARFALL",
+
+  "gmaxWildfire": "G-MAX WILDFIRE",
+  "gmaxVoltCrash": "G-MAX VOLT CRASH",
+  "gmaxReplenish": "G-MAX REPLENISH",
+  "gmaxTerror": "G-MAX TERROR",
+  "gmaxWindRage": "G-MAX WIND RAGE"
 }

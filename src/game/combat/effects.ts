@@ -1,9 +1,96 @@
 import type { CardDef, Combatant, CombatState, Effect, StatStages } from '@/types';
 import { activeEnemyOf, columnOf, critChance, CRIT_MULTIPLIER, withActiveEnemy } from '@/types';
 import { applyStatus } from '@/data/statuses';
+import { POKEDEX } from '@/data/pokedex';
 import { calcCaptureChance, rollCapture } from './capture';
 import { calcDamage } from './damage';
 import { drawCards } from './deck';
+
+/** First canonical Mega forme of a species (forme name starts with "Mega"), or null. */
+function firstMegaFormeOf(speciesSlug: string): string | null {
+  const sp = POKEDEX[speciesSlug];
+  if (!sp) return null;
+  for (const other of sp.otherFormes) {
+    const candidate = POKEDEX[other];
+    if (candidate?.forme?.startsWith('Mega')) return other;
+  }
+  return null;
+}
+
+/** True when the species has at least one canonical Mega forme — drives card affordability. */
+export function hasMegaForm(speciesSlug: string): boolean {
+  return firstMegaFormeOf(speciesSlug) !== null;
+}
+
+/**
+ * Canonical Gigantamax forme of a species, or null. Tries `otherFormes` first; the
+ * generated pokedex doesn't always cross-link Gmax forms back from the base species
+ * (e.g. `charizard.otherFormes` lists the two Megas but omits `charizard-gmax`), so
+ * we fall back to the convention `{slug}-gmax`.
+ */
+function gmaxFormeOf(speciesSlug: string): string | null {
+  const sp = POKEDEX[speciesSlug];
+  if (sp) {
+    for (const other of sp.otherFormes) {
+      if (POKEDEX[other]?.forme === 'Gmax') return other;
+    }
+  }
+  const direct = `${speciesSlug}-gmax`;
+  if (POKEDEX[direct]?.forme === 'Gmax') return direct;
+  return null;
+}
+
+/** True when the species has a Gigantamax forme — drives the Gmax sprite swap on dynamax. */
+export function hasGmaxForm(speciesSlug: string): boolean {
+  return gmaxFormeOf(speciesSlug) !== null;
+}
+
+/**
+ * Apply Mega Evolution to a Combatant: swap speciesSlug / name / types / baseStats to the
+ * first canonical Mega forme. No-op if the species has none. Shared between the player-side
+ * `megaEvolve` Effect handler and the enemy-side `megaEvolve` Intent.
+ */
+export function megaEvolveCombatant(mon: Combatant): Combatant {
+  const megaSlug = firstMegaFormeOf(mon.speciesSlug);
+  if (!megaSlug) return mon;
+  const mega = POKEDEX[megaSlug];
+  if (!mega) return mon;
+  return {
+    ...mon,
+    speciesSlug: megaSlug,
+    name: mega.displayName,
+    types: mega.types,
+    baseStats: mega.baseStats,
+  };
+}
+
+/**
+ * Apply Dynamax to a Combatant: double maxHp (healing the gained capacity), swap to the
+ * Gigantamax forme if the species has one, and stash pre-dynamax fields in `DynamaxState`
+ * for the end-of-turn revert. No-op if the mon is already dynamaxed. Shared between the
+ * player-side `dynamax` Effect handler and the enemy-side `dynamax` Intent.
+ */
+export function dynamaxCombatant(mon: Combatant): Combatant {
+  if (mon.dynamax) return mon;
+  const newMaxHp = mon.maxHp * 2;
+  const gain = newMaxHp - mon.maxHp;
+  const gSlug = gmaxFormeOf(mon.speciesSlug);
+  const gForm = gSlug ? POKEDEX[gSlug] : null;
+  return {
+    ...mon,
+    ...(gForm && gSlug ? { speciesSlug: gSlug, name: gForm.displayName, types: gForm.types } : {}),
+    maxHp: newMaxHp,
+    hp: mon.hp + gain,
+    dynamax: {
+      turnsLeft: 3,
+      gmax: gForm !== null,
+      prevSlug: mon.speciesSlug,
+      prevTypes: mon.types,
+      prevBaseStats: mon.baseStats,
+      prevMaxHp: mon.maxHp,
+    },
+  };
+}
 
 const STAGE_MIN = -6;
 const STAGE_MAX = 6;
@@ -212,6 +299,12 @@ export function applyEffect(
       // arms the switch-combo discount state machine instead of waiving a switch
       // energy cost (switching is always free).
       return { ...state, comboDiscount: 'pending' };
+    }
+    case 'megaEvolve': {
+      return setActive(state, megaEvolveCombatant(activeOf(state)));
+    }
+    case 'dynamax': {
+      return setActive(state, dynamaxCombatant(activeOf(state)));
     }
     case 'capture': {
       const target = activeEnemyOf(state);

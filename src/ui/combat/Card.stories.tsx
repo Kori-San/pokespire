@@ -77,6 +77,8 @@ const EFFECT_KINDS = [
   'weather',
   'terrain',
   'freeSwitch',
+  'megaEvolve',
+  'dynamax',
   'capture',
 ] as const satisfies readonly Effect['kind'][];
 const STATUSES = ['burn', 'weak'] as const satisfies readonly StatusId[];
@@ -252,6 +254,10 @@ function buildEffect(a: PlaygroundArgs): Effect {
       return { kind: 'terrain', terrain: 'electric', turns: a.turns };
     case 'freeSwitch':
       return { kind: 'freeSwitch' };
+    case 'megaEvolve':
+      return { kind: 'megaEvolve' };
+    case 'dynamax':
+      return { kind: 'dynamax' };
     case 'capture':
       return { kind: 'capture', ballTier: a.ballTier };
   }

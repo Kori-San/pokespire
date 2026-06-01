@@ -63,3 +63,76 @@
   box-shadow: inset 0 4px 0 var(--type-electric);
   padding-top: 8px;
 }
+
+/* Mega Evolve — rainbow top bar with the hue-rotate shimmer used by the Mega card
+ * theme. The colored bar is painted by a `::before` pseudo (linear-gradient can't ride
+ * inside a `box-shadow inset`). 4px tall to match the other intent stripes. We do NOT
+ * use `overflow: hidden` here so the badge's `::after` arrow nub stays visible — the
+ * strip rounds its own top corners instead (matches the badge's `border-radius: 4px`). */
+.megaEvolve {
+  position: relative;
+  padding-top: 8px;
+}
+
+.megaEvolve::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 4px;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  background: linear-gradient(90deg, #ff5e8a, #ffa75e, #ffe85e, #5eff8a, #5edcff, #a75eff, #ff5e8a);
+  background-size: 200% 100%;
+  animation: intent-mega-shimmer 4s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes intent-mega-shimmer {
+  to {
+    background-position: 200% 0;
+  }
+}
+
+/* Dynamax — magenta bar with the Dynamax card's pink/aubergine palette. */
+.dynamax {
+  position: relative;
+  padding-top: 8px;
+  /* Faint outer glow telegraphs "boss buff incoming" even from across the screen. */
+  box-shadow: 0 0 12px 1px rgba(255, 79, 199, 0.4);
+}
+
+.dynamax::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 4px;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  background: linear-gradient(90deg, #c026d3, #ff4fc7, #ff8fdc, #ff4fc7, #c026d3);
+  background-size: 200% 100%;
+  animation: intent-dynamax-shimmer 3.2s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes intent-dynamax-shimmer {
+  to {
+    background-position: 200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .megaEvolve::before,
+  .dynamax::before {
+    animation: none;
+  }
+}
+
+/* The canonical mark icon (mega.png / dmax.png) sits where the .target sprite would.
+ * `height: auto` preserves the natural aspect ratio (dmax.png is 21×15, not square). */
+.markIcon {
+  width: 18px;
+  height: auto;
+  image-rendering: pixelated;
+  object-fit: contain;
+  flex-shrink: 0;
+}
