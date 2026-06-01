@@ -98,6 +98,9 @@ export function selectComputedCardView(
   // player owns more than one Dynamax card via a relic).
   const dynamaxBlocked =
     card.effects.some((e) => e.kind === 'dynamax') && Boolean(attacker.dynamax);
+  // Terastallize greys out the same way once the mon is already terastallized — Tera
+  // is once per combat and irreversible, so a second Tera card on the same mon is moot.
+  const teraBlocked = card.effects.some((e) => e.kind === 'terastallize') && Boolean(attacker.tera);
   const view: ComputedCardView = {
     // The effective card's id — the Hand renders `CARDS[view.cardId]`, so during a
     // dynamax window it'll show the Max / G-Max card name + theme + chips while the
@@ -106,7 +109,11 @@ export function selectComputedCardView(
     cardId: card.id,
     cost: card.cost,
     affordable:
-      state.energy >= card.cost && !rechargeBlocksAttack && !megaBlocked && !dynamaxBlocked,
+      state.energy >= card.cost &&
+      !rechargeBlocksAttack &&
+      !megaBlocked &&
+      !dynamaxBlocked &&
+      !teraBlocked,
   };
 
   // Default target for live preview: the foe currently in front. C5 will let cards target

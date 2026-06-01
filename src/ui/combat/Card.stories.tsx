@@ -79,6 +79,7 @@ const EFFECT_KINDS = [
   'freeSwitch',
   'megaEvolve',
   'dynamax',
+  'terastallize',
   'capture',
 ] as const satisfies readonly Effect['kind'][];
 const STATUSES = ['burn', 'weak'] as const satisfies readonly StatusId[];
@@ -258,6 +259,10 @@ function buildEffect(a: PlaygroundArgs): Effect {
       return { kind: 'megaEvolve' };
     case 'dynamax':
       return { kind: 'dynamax' };
+    case 'terastallize':
+      // Picks Fire as the showcase Tera type for the playground; real Tera cards have
+      // one fixed `teraType` each, but this is just the controls-driven preview.
+      return { kind: 'terastallize', teraType: 'fire' };
     case 'capture':
       return { kind: 'capture', ballTier: a.ballTier };
   }

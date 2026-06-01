@@ -54,6 +54,11 @@
       "label": "Dynamax.",
       "desc": "For 3 turns the active Pokémon's max HP is doubled and all its moves become Max Moves. If the Pokémon has a Gigantamax form, it takes that form for the duration."
     },
+    "tera": {
+      "name": "Terastallize",
+      "label": "Terastallize.",
+      "desc": "The active Pokémon's type changes to the Tera type for the rest of combat. If the Tera type matches one of its original types, {stab} on that type doubles to ×2."
+    },
     "priority": {
       "name": "Priority",
       "label": "Priority +{{level}}.",

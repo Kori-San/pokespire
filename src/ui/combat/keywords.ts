@@ -45,6 +45,10 @@ export const KEYWORD_VISUAL: Record<Keyword['id'], KeywordVisual> = {
   // Canon Gen-VIII Dynamax mark — reworked from Cobblemon's battle-gimmick-max sprite.
   // Pink starburst silhouette; the colour identity carries Dynamax instantly.
   dynamax: { image: '/sprites/misc/dmax.png' },
+  // Canon Gen-IX Terastallization mark — reworked from Cobblemon's battle-gimmick-
+  // terastal sprite. Stylized crystal "T" with prismatic edges; same on every Tera card
+  // so the family reads as one mechanic even with 18 type variants.
+  tera: { image: '/sprites/misc/tera.png' },
 };
 
 /** Stable React key per keyword instance (some chips can repeat — e.g. self+foe statuses). */

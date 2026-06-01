@@ -298,6 +298,20 @@ describe('applyEffect', () => {
     expect(out.team[0]?.dynamax?.turnsLeft).toBe(2);
   });
 
+  it('terastallize sets the active mon tera type and persists (no revert)', () => {
+    const s = state({ team: [mon({ types: ['fire'] })] });
+    const out = applyEffect(s, { kind: 'terastallize', teraType: 'water' }, card('normal'), rng(0));
+    expect(out.team[0]?.tera?.type).toBe('water');
+    // Original types untouched — only the `tera` slot tracks the new effective type.
+    expect(out.team[0]?.types).toEqual(['fire']);
+  });
+
+  it('terastallize is a no-op on an already-terastallized mon', () => {
+    const s = state({ team: [mon({ tera: { type: 'water' } })] });
+    const out = applyEffect(s, { kind: 'terastallize', teraType: 'fire' }, card('normal'), rng(0));
+    expect(out.team[0]?.tera?.type).toBe('water'); // unchanged
+  });
+
   it('capture succeeds or fails based on the roll', () => {
     const s = state({ enemies: [mon({ name: 'foe', hp: 5 })] });
     const caught = applyEffect(s, { kind: 'capture', ballTier: 'ultra' }, card('normal'), rng(0));

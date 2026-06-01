@@ -133,6 +133,19 @@ export interface Combatant {
    * compatibility — every helper uses a truthy check.
    */
   dynamax?: DynamaxState | null;
+  /**
+   * Canon Gen-IX Terastallization. `null`/`undefined` = not terastallized. When set,
+   * the mon's effective type for STAB is `tera.type`. No revert — persists until
+   * combat ends. Canon Tera Boost: if a played card's type matches both `tera.type`
+   * AND one of the mon's original types, STAB is ×2 instead of ×1.5 (see
+   * `calcDamage`). Once per battle; the Tera card enforces with `exhaust: true`.
+   */
+  tera?: TeraState | null;
+}
+
+/** Stored on a Combatant once Terastallization is active for the rest of combat. */
+export interface TeraState {
+  type: PokeType;
 }
 
 /**

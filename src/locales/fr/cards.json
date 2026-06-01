@@ -54,6 +54,11 @@
       "label": "Dynamax.",
       "desc": "Pendant 3 tours, les PV max du Pokémon actif sont doublés et toutes ses capacités deviennent des Capacités Max. Si le Pokémon a une forme Gigamax, il prend cette forme pendant la durée."
     },
+    "tera": {
+      "name": "Téracristallisation",
+      "label": "Téracristallise.",
+      "desc": "Le type du Pokémon actif devient le type Téracristal pour le reste du combat. Si ce type correspond à l'un de ses types d'origine, le {stab} sur ce type passe à ×2."
+    },
     "priority": {
       "name": "Priorité",
       "label": "Priorité +{{level}}.",

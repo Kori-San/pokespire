@@ -20,6 +20,7 @@ import { FAIRY_CARDS } from './fairy';
 import { SPECIAL_CARDS } from './special';
 import { MAX_CARDS } from './maxMoves';
 import { GMAX_CARDS } from './gmaxMoves';
+import { TERA_CARDS } from './teraCrystals';
 
 /**
  * The whole pool, indexed by card id. Per-type files are the source of truth;
@@ -50,6 +51,7 @@ export const CARDS: Record<string, CardDef> = Object.fromEntries(
     ...STEEL_CARDS,
     ...FAIRY_CARDS,
     ...SPECIAL_CARDS,
+    ...TERA_CARDS,
     // Synthetic Max / G-Max cards — never in reward pools or starter decks, but
     // registered here so the reducer / selectors can resolve their ids when the active
     // mon is dynamaxed and `effectiveCardFor` swaps in the Max equivalent.
@@ -87,6 +89,7 @@ export type Keyword =
   | { id: 'switch' }
   | { id: 'megaEvolve' }
   | { id: 'dynamax' }
+  | { id: 'tera' }
   | { id: 'stab' }
   | { id: 'super' }
   | { id: 'resisted' }
@@ -120,11 +123,12 @@ export interface KeywordContext {
 export function keywordsOf(card: CardDef, ctx: KeywordContext = {}): Keyword[] {
   const k: Keyword[] = [];
 
-  // 1) Card-defining mechanics first — these chips ARE the card (Mega Evolve, Dynamax).
-  //    Player should see them at a glance before scanning meta tags.
+  // 1) Card-defining mechanics first — these chips ARE the card (Mega Evolve, Dynamax,
+  //    Terastallize). Player should see them at a glance before scanning meta tags.
   for (const e of card.effects) {
     if (e.kind === 'megaEvolve') k.push({ id: 'megaEvolve' });
     if (e.kind === 'dynamax') k.push({ id: 'dynamax' });
+    if (e.kind === 'terastallize') k.push({ id: 'tera' });
   }
 
   // 2) Canon move priority — turn-order signal sits up top so it reads before secondary chips.
@@ -172,6 +176,61 @@ export function keywordsOf(card: CardDef, ctx: KeywordContext = {}): Keyword[] {
   else if (exhaustsOnPlay(card)) k.push({ id: 'exhaust' });
 
   return k;
+}
+
+/**
+ * StS-style **keyword cross-references**: when a keyword's description body mentions
+ * another keyword (e.g. Tera's desc references STAB), this table pulls that second
+ * keyword's full definition into the card's tooltip glossary too — the player gets
+ * the chained explanation without leaving the hover.
+ *
+ * Restricted to **parameterless** keyword ids so the renderer can construct each
+ * referenced `Keyword` from just the id. Status / priority / lifesteal-style
+ * keywords carry per-instance numbers and aren't safe to reference this way.
+ */
+export type ReferenceableKeyword =
+  | 'exhaust'
+  | 'ephemeral'
+  | 'switch'
+  | 'megaEvolve'
+  | 'dynamax'
+  | 'tera'
+  | 'stab'
+  | 'super'
+  | 'resisted'
+  | 'immune'
+  | 'recharge';
+
+export const KEYWORD_REFS: Partial<Record<Keyword['id'], readonly ReferenceableKeyword[]>> = {
+  // Tera's desc mentions STAB — so hovering a Tera card also surfaces the STAB rule
+  // (the player learns Tera's Tera-Boost interaction without needing a second hover).
+  tera: ['stab'],
+};
+
+/**
+ * The full keyword list for the **tooltip glossary** — the body chips from `keywordsOf`
+ * plus their referenced keywords (deduped). Body chips render unchanged via `keywordsOf`;
+ * this function only adds entries to the right-side glossary stack.
+ */
+export function tooltipKeywordsOf(card: CardDef, ctx: KeywordContext = {}): Keyword[] {
+  const base = keywordsOf(card, ctx);
+  // Interleave each keyword's cross-refs immediately after it, so the referenced
+  // keyword sits next to the parent that mentions it (Tera → STAB → … → Exhaust).
+  // Dedup via the running `seen` set so the same ref doesn't surface twice.
+  const out: Keyword[] = [];
+  const seen = new Set<string>();
+  for (const k of base) {
+    if (!seen.has(k.id)) {
+      out.push(k);
+      seen.add(k.id);
+    }
+    for (const refId of KEYWORD_REFS[k.id] ?? []) {
+      if (seen.has(refId)) continue;
+      seen.add(refId);
+      out.push({ id: refId });
+    }
+  }
+  return out;
 }
 
 /**

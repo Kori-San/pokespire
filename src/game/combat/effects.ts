@@ -1,4 +1,4 @@
-import type { CardDef, Combatant, CombatState, Effect, StatStages } from '@/types';
+import type { CardDef, Combatant, CombatState, Effect, PokeType, StatStages } from '@/types';
 import { activeEnemyOf, columnOf, critChance, CRIT_MULTIPLIER, withActiveEnemy } from '@/types';
 import { applyStatus } from '@/data/statuses';
 import { POKEDEX } from '@/data/pokedex';
@@ -62,6 +62,16 @@ export function megaEvolveCombatant(mon: Combatant): Combatant {
     types: mega.types,
     baseStats: mega.baseStats,
   };
+}
+
+/**
+ * Apply Terastallization to a Combatant: locks `tera.type` for the rest of combat (no
+ * revert). No-op if the mon is already terastallized. Shared between the player-side
+ * `terastallize` Effect handler and any future enemy-side intent.
+ */
+export function terastallizeCombatant(mon: Combatant, teraType: PokeType): Combatant {
+  if (mon.tera) return mon;
+  return { ...mon, tera: { type: teraType } };
 }
 
 /**
@@ -305,6 +315,9 @@ export function applyEffect(
     }
     case 'dynamax': {
       return setActive(state, dynamaxCombatant(activeOf(state)));
+    }
+    case 'terastallize': {
+      return setActive(state, terastallizeCombatant(activeOf(state), effect.teraType));
     }
     case 'capture': {
       const target = activeEnemyOf(state);

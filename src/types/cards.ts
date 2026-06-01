@@ -112,6 +112,14 @@ export type Effect =
    */
   | { kind: 'megaEvolve' }
   /**
+   * Gen-IX Terastallization. Sets the active mon's effective type to `teraType`
+   * for the rest of combat — STAB now keys off the Tera type instead of the
+   * original. Canon "Tera Boost": if the move's type matches BOTH the Tera type
+   * AND one of the mon's original types, STAB is ×2 instead of ×1.5. Once per
+   * battle (enforced by `exhaust: true`). No revert; persists until combat ends.
+   */
+  | { kind: 'terastallize'; teraType: PokeType }
+  /**
    * Gen-VIII Dynamax. Active mon enters a 3-turn dynamax state — `maxHp` is doubled
    * (canon: "Points de Vie doublés"), the difference is healed into `hp`, and if the
    * species has a Gigantamax forme (`forme: 'Gmax'` in pokedex) the `speciesSlug` swaps
@@ -172,9 +180,12 @@ export interface CardDef {
    *                 Evolution iconography.
    *   - `dynamax` — magenta/pink radial pulse with a deep-purple inner shade, mirrors
    *                 the Gen-VIII Dynamax aura.
+   *   - `tera`    — TYPE-coloured crystal facets (light + dark stops mixed off
+   *                 `--card-type`) with a soft twinkle and an outer glow in the
+   *                 same hue. Each Tera card reads as a gem of its tera type.
    * The `type` field still drives STAB calculations even when a theme is set — the
    * card just *looks* off-type. Optional; absence falls through to the default
    * type-tint chrome.
    */
-  theme?: 'mega' | 'dynamax';
+  theme?: 'mega' | 'dynamax' | 'tera';
 }

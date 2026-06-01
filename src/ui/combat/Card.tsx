@@ -2,7 +2,7 @@ import type { CSSProperties } from 'react';
 import type { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import type { CardDef, PokeType } from '@/types';
-import { keywordsOf } from '@/data/cards';
+import { keywordsOf, tooltipKeywordsOf } from '@/data/cards';
 import { selectCardLines, type ComputedCardView, type EffectLine } from '@/game/combat/selectors';
 import { cx } from '@/ui/cx';
 import {
@@ -12,6 +12,7 @@ import {
   keywordTooltipDesc,
   keywordTooltipName,
 } from './keywords';
+import { KeywordRefText } from './KeywordRefText';
 import { KwIcon } from './KwIcon';
 import styles from './Card.module.css';
 
@@ -51,10 +52,16 @@ export function Card({ card, view, onPlay }: CardProps) {
   // surface via the keyword chip below instead of inline body text).
   const renderedLines = lines.map((line) => renderLine(line, t)).filter((s) => s.length > 0);
   const name = t(`cardNames:${card.id}`, { defaultValue: card.name });
-  const keywords = keywordsOf(card, {
+  const keywordCtx = {
     ...(view.damage?.stab !== undefined && { stab: view.damage.stab }),
     ...(view.damage?.effectiveness && { effectiveness: view.damage.effectiveness }),
-  });
+  };
+  const keywords = keywordsOf(card, keywordCtx);
+  // The tooltip glossary auto-expands references — e.g. a Tera card's tooltip
+  // appends the STAB definition because Tera's desc mentions STAB. Body chips
+  // stay the same (we don't want a STAB chip on the card body just because the
+  // explanation mentions it — that's the glossary's job).
+  const tooltipKeywords = tooltipKeywordsOf(card, keywordCtx);
   // Density bucket — shrinks the body font so chip-heavy cards still fit the locked
   // height. Mid kicks in for mildly busy cards (Shell Smash's 5 stat-changes fit
   // comfortably here); dense is reserved for truly stuffed effect+keyword stacks.
@@ -129,19 +136,18 @@ export function Card({ card, view, onPlay }: CardProps) {
           />
         </span>
       </button>
-      {keywords.length > 0 && (
-        <span className={styles.tooltip} role="tooltip">
-          {keywords.map((k, i) => {
+      {tooltipKeywords.length > 0 && (
+        <span className={styles.tooltipStack}>
+          {tooltipKeywords.map((k) => {
             const v = KEYWORD_VISUAL[k.id];
             return (
-              <span key={chipKey(k)}>
-                {i > 0 && <hr className={styles.tooltipDivider} />}
-                <span className={styles.tooltipEntry}>
-                  <span className={styles.tooltipLabel}>
-                    <KwIcon visual={v} className={styles.kwIcon} />
-                    {keywordTooltipName(k, t)}
-                  </span>
-                  <span className={styles.tooltipDesc}>{keywordTooltipDesc(k, t)}</span>
+              <span key={chipKey(k)} className={styles.tooltipBubble} role="tooltip">
+                <span className={styles.tooltipLabel}>
+                  <KwIcon visual={v} className={styles.kwIcon} />
+                  {keywordTooltipName(k, t)}
+                </span>
+                <span className={styles.tooltipDesc}>
+                  <KeywordRefText text={keywordTooltipDesc(k, t)} t={t} />
                 </span>
               </span>
             );

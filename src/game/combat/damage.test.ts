@@ -186,4 +186,59 @@ describe('calcDamage', () => {
     // special sees attacker.spAtk (high) and defender.spDef (low) → bigger number
     expect(special.final).toBeGreaterThan(physical.final);
   });
+
+  describe('Terastallization', () => {
+    it('STAB ×1.5 when the Tera type matches the card type but NOT an original type', () => {
+      const atk = mon(['fire'], 10, stats(75, 75));
+      atk.tera = { type: 'water' };
+      const out = calcDamage({
+        amount: 20,
+        cardType: 'water',
+        category: 'special',
+        attacker: atk,
+        defender: mon(['normal'], 10, stats(75, 75)),
+      });
+      expect(out.stab).toBe(1.5);
+    });
+
+    it('Tera Boost — STAB ×2 when the Tera type matches the card type AND an original type', () => {
+      const atk = mon(['fire'], 10, stats(75, 75));
+      atk.tera = { type: 'fire' };
+      const out = calcDamage({
+        amount: 20,
+        cardType: 'fire',
+        category: 'special',
+        attacker: atk,
+        defender: mon(['normal'], 10, stats(75, 75)),
+      });
+      expect(out.stab).toBe(2);
+    });
+
+    it('a terastallized mon LOSES STAB on its original type if the Tera type differs', () => {
+      const atk = mon(['fire'], 10, stats(75, 75));
+      atk.tera = { type: 'water' };
+      // Without tera this would be ×1.5 STAB. After tera-into-water, fire is no longer the
+      // effective type so STAB drops to ×1.
+      const out = calcDamage({
+        amount: 20,
+        cardType: 'fire',
+        category: 'special',
+        attacker: atk,
+        defender: mon(['normal'], 10, stats(75, 75)),
+      });
+      expect(out.stab).toBe(1);
+    });
+
+    it('STAB on the original type stays ×1.5 when not terastallized', () => {
+      const atk = mon(['fire'], 10, stats(75, 75));
+      const out = calcDamage({
+        amount: 20,
+        cardType: 'fire',
+        category: 'special',
+        attacker: atk,
+        defender: mon(['normal'], 10, stats(75, 75)),
+      });
+      expect(out.stab).toBe(1.5);
+    });
+  });
 });

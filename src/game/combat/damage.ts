@@ -3,6 +3,12 @@ import { stageMultiplier } from '@/types';
 import { typeEffectiveness } from '@/data/typeChart';
 
 export const STAB_MULTIPLIER = 1.5;
+/**
+ * Canon "Tera Boost" — when a terastallized mon attacks with a move whose type matches
+ * BOTH the Tera type AND one of its original types, STAB stacks to ×2 (the famous
+ * Adaptability-like boost that rewards "Tera-into-your-own-type" plays).
+ */
+export const TERA_BOOST_STAB = 2;
 export const IMMUNITY_FLOOR = 0.25;
 export const WEAK_MULTIPLIER = 0.75;
 const STAT_BASELINE = 75;
@@ -78,7 +84,21 @@ export function calcDamage({
   weather = null,
   itemMod = 1,
 }: DamageParams): DamageBreakdown {
-  const stab = attacker.types.includes(cardType) ? STAB_MULTIPLIER : 1;
+  // STAB with Terastallization rules:
+  //   - Not terastallized: ×1.5 when card type ∈ attacker.types (canon).
+  //   - Terastallized to a NEW type (not in original): ×1.5 when card type matches Tera.
+  //   - Terastallized into one of the mon's ORIGINAL types AND card type matches:
+  //     ×2 (canon "Tera Boost" — the trade-off payoff for Tera-ing into your own type).
+  //   - Card type matches an original type but NOT the Tera type → no STAB (the
+  //     terastallized mon counts as ONLY its Tera type for STAB purposes).
+  const stab = (() => {
+    const teraType = attacker.tera?.type;
+    if (teraType) {
+      if (cardType !== teraType) return 1;
+      return attacker.types.includes(cardType) ? TERA_BOOST_STAB : STAB_MULTIPLIER;
+    }
+    return attacker.types.includes(cardType) ? STAB_MULTIPLIER : 1;
+  })();
   const rawEff = typeEffectiveness(cardType, defender.types);
   const immune = rawEff === 0;
   const eff = immune ? IMMUNITY_FLOOR : rawEff;

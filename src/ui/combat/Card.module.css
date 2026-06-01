@@ -98,12 +98,42 @@
   }
 }
 
-/* Glossary tooltip — appears beside the card on hover, lists every keyword on the card
- * with its full definition. `pointer-events: none` so the tooltip never steals hover. */
-.tooltip {
+/* Glossary tooltip — **one bubble per keyword**, stacked vertically beside the card.
+ * Each bubble is self-contained (own border, own background) so the player reads
+ * each keyword as a discrete card-like entry — StS-style. The outer `.tooltipStack`
+ * anchors the column to the card's right edge and handles the hover-reveal. */
+.tooltipStack {
   position: absolute;
   left: calc(100% + 8px);
-  top: 0;
+  /* Card content (banner) starts at 6px-padding from the card top. Bubble content
+   * (label) starts at 2px-border + 8px-padding = 10px from the bubble top. Shift the
+   * stack up by 4px so the first bubble's LABEL aligns with the card's BANNER. */
+  top: -4px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: start;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  z-index: 999;
+  transition:
+    opacity 0.12s ease,
+    visibility 0.12s ease,
+    transform 0.08s ease;
+}
+
+/* Adjacent-sibling selector — the stack is rendered as `.cardWrap > .card + .tooltipStack`
+ * so the card's `filter: grayscale(...)` (disabled state) can't cascade to it. Apply
+ * the same `translateY(-8px)` lift as the hovered card so the bubbles follow the card
+ * up instead of staying behind. */
+.card:hover + .tooltipStack {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(-8px);
+}
+
+.tooltipBubble {
   width: 180px;
   padding: 8px 10px;
   background: var(--box-bg);
@@ -112,32 +142,6 @@
   border-radius: 4px;
   font-size: 10px;
   line-height: 1.35;
-  text-align: start;
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  z-index: 999;
-  transition:
-    opacity 0.12s ease,
-    visibility 0.12s ease;
-}
-
-/* Tooltip is now an adjacent SIBLING of the card (rendered alongside it in a
- * fragment) so the disabled card's grayscale filter can't cascade to it.
- * `.card:hover + .tooltip` reveals the tooltip on hover via the adjacent
- * sibling selector — same UX, vivid color preserved on unaffordable cards. */
-.card:hover + .tooltip {
-  opacity: 1;
-  visibility: visible;
-}
-
-/* Horizontal rule between tooltip entries — clear separation when a card has several
- * keywords stacked (e.g. a STAB super-effective lifesteal crit). */
-.tooltipDivider {
-  margin: 6px 0;
-  border: none;
-  border-top: 1px solid var(--box-border-lo);
-  opacity: 0.4;
 }
 
 .tooltipLabel {
@@ -150,6 +154,27 @@
 
 .tooltipDesc {
   font-weight: normal;
+}
+
+/* Inline keyword reference — `{stab}` inside a tooltip desc renders as a tiny
+ * icon-plus-label pill that flows with the surrounding text (StS-style: the
+ * keyword IS visible inside the prose, and the cross-reference glossary entry
+ * below explains it). Pill stays inline so it doesn't break paragraph flow,
+ * picks up `currentColor` for the text so it matches the desc tint. */
+.kwRef {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  vertical-align: baseline;
+  padding: 0 3px;
+  font-weight: bold;
+}
+
+.kwRefIcon {
+  width: 1em;
+  height: 1em;
+  image-rendering: pixelated;
+  flex-shrink: 0;
 }
 
 /* Type-colored title banner — fixed 24px height + flex centering so every card has
@@ -405,6 +430,71 @@
 @media (prefers-reduced-motion: reduce) {
   .card[data-theme='dynamax']::before,
   .card[data-theme='dynamax'] .banner {
+    animation: none;
+  }
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+ * Tera Crystal theme — `data-theme="tera"` on the card root.
+ *
+ * Gen-IX Terastallization vibe: the card looks like a **gem of its tera type**.
+ * Unlike Mega (rainbow conic) or Dynamax (magenta pulse — both "raw energy"),
+ * Tera keeps the card's `--card-type` palette and adds CRYSTAL FACETS — a conic
+ * gradient mixing light + dark stops off `--card-type` to suggest cut-gem
+ * planes. Outer glow in the same hue telegraphs "crystallised" even without
+ * the chip. Twinkle animation pulses brightness instead of rotating hue, so
+ * the type identity stays readable at a glance.
+ * ─────────────────────────────────────────────────────────────────────────── */
+.card[data-theme='tera'] {
+  /* Two-stop inner band built off the type tint — mirrors the default
+   * `--card-type` + `--card-shade` chrome but in the tera-deep / tera-bright
+   * palette so the facet pseudo blends with the body. */
+  box-shadow:
+    inset 0 0 0 5px color-mix(in srgb, var(--card-type) 55%, black),
+    0 4px 0 rgba(0, 0, 0, 0.3),
+    /* Crystallised outer glow in the type colour. */ 0 0 14px 1px
+      color-mix(in srgb, var(--card-type) 70%, transparent);
+}
+
+.card[data-theme='tera']::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  padding: 3px;
+  /* Six-stop conic with HARD breakpoints (each 60° wedge is a single colour)
+   * — reads as hexagonal-cut gem facets. The light / mid / deep mix is built
+   * off `--card-type` so the chrome stays type-coherent. */
+  background: conic-gradient(
+    from 30deg,
+    color-mix(in srgb, var(--card-type) 30%, white) 0deg 60deg,
+    var(--card-type) 60deg 120deg,
+    color-mix(in srgb, var(--card-type) 60%, black) 120deg 180deg,
+    color-mix(in srgb, var(--card-type) 30%, white) 180deg 240deg,
+    var(--card-type) 240deg 300deg,
+    color-mix(in srgb, var(--card-type) 60%, black) 300deg 360deg
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  animation: tera-twinkle 3.6s ease-in-out infinite;
+}
+
+@keyframes tera-twinkle {
+  0%,
+  100% {
+    filter: brightness(0.95) saturate(1);
+  }
+  50% {
+    filter: brightness(1.3) saturate(1.2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card[data-theme='tera']::before {
     animation: none;
   }
 }
